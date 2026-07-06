@@ -28,6 +28,8 @@ class Collector:
         os.makedirs(self.data_dir, exist_ok=True)
         self.backtest_every = args.backtest_every
         self.cost_bps = args.cost_bps
+        self.max_hours = args.max_hours
+        self.start_time = time.time()
         self.bids = {}          # price -> size
         self.asks = {}
         self.book_ready = False
@@ -159,9 +161,33 @@ class Collector:
                 self.book_ready = False
                 await asyncio.sleep(2)
 
+    async def stop_after(self):
+        """Auto-stop after --max-hours: run a final backtest, write a summary, exit cleanly."""
+        if self.max_hours <= 0:
+            return
+        await asyncio.sleep(self.max_hours * 3600)
+        print(f'reached max-hours={self.max_hours}; finalizing…', flush=True)
+        await self.run_backtest()
+        hrs = (time.time() - self.start_time) / 3600
+        log = os.path.join(self.data_dir, 'backtest_log.txt')
+        with open(log, 'a') as f:
+            f.write(f'\n{"#"*66}\n[{datetime.datetime.now():%Y-%m-%d %H:%M:%S}] '
+                    f'AUTO-STOP after {hrs:.1f}h · {self.n_trades:,} trades · '
+                    f'{self.n_books:,} book snaps · file '
+                    f'{os.path.basename(getattr(self, "cur_path", "—"))}\n'
+                    f'Read the auto-backtest block just above for the verdict.\n{"#"*66}\n')
+        print(f'auto-stopped after {hrs:.1f}h. Summary in backtest_log.txt.', flush=True)
+        pidf = os.path.join(self.data_dir, 'collector.pid')
+        if os.path.exists(pidf):
+            os.remove(pidf)
+        if self.fh:
+            self.fh.close()
+        os._exit(0)
+
     async def main(self):
         await asyncio.gather(self.consume(), self.snapshot_loop(),
-                             self.heartbeat_loop(), self.backtest_loop())
+                             self.heartbeat_loop(), self.backtest_loop(),
+                             self.stop_after())
 
 
 def main():
@@ -171,6 +197,8 @@ def main():
     ap.add_argument('--backtest-every', type=int, default=3600,
                     help='seconds between auto-backtests (0 = off)')
     ap.add_argument('--cost-bps', type=float, default=60.0)
+    ap.add_argument('--max-hours', type=float, default=0.0,
+                    help='auto-stop after this many hours (0 = run until stopped)')
     args = ap.parse_args()
     c = Collector(args)
     try:

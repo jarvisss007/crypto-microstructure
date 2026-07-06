@@ -11,12 +11,18 @@ dated CSV, and **auto-runs the backtest every hour**, appending each verdict to
 `data/backtest_log.txt`. This is the hands-off pipeline.
 
 ```
-./run.sh                 # start in the background (BTC-USD, hourly backtest, 60 bps cost)
+./run.sh --max-hours 72  # run 3 days, then AUTO-STOP + write a final summary (recommended)
+./run.sh                 # run until stopped (BTC-USD, hourly backtest, 60 bps cost)
 ./run.sh --product ETH-USD --backtest-every 1800
 tail -f data/collector.log        # watch it live
-cat data/backtest_log.txt         # read accumulated verdicts
-./stop.sh                # stop it
+cat data/backtest_log.txt         # read accumulated verdicts (+ AUTO-STOP summary at the end)
+./stop.sh                # stop it early
 ```
+
+**Automation:** `--max-hours N` makes it self-terminate after N hours — it runs one final
+backtest, appends an `AUTO-STOP` summary to `backtest_log.txt`, and exits cleanly. So you can
+"fire and forget": start it, walk away, come back to a finished dataset + verdict. (It pauses
+while the Mac sleeps and won't survive a reboot — restart if that happens.)
 
 - Data lands in `data/<PRODUCT>_<YYYY-MM-DD>.csv` (rotates daily).
 - **Start at login (optional, survives reboot):** see `com.anupam.crypto-collector.plist`
