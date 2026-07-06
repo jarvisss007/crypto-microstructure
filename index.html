@@ -1,0 +1,328 @@
+<meta charset="utf-8">
+<title>Crypto Microstructure Lab</title>
+<style>
+  :root{
+    --bg:#0b0e14; --panel:#131824; --panel2:#0f1420; --line:#212838;
+    --txt:#e6edf3; --dim:#8b98a9; --dimmer:#5a6675;
+    --bid:#0ecb81; --ask:#f6465d; --accent:#f0b90b;
+    --bidbg:rgba(14,203,129,.14); --askbg:rgba(246,70,93,.14);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--txt);
+    font:13px/1.4 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  header{display:flex;align-items:center;gap:16px;padding:10px 16px;
+    border-bottom:1px solid var(--line);background:var(--panel2);flex-wrap:wrap}
+  header h1{font-size:14px;margin:0;letter-spacing:.5px;font-weight:600}
+  header h1 span{color:var(--accent)}
+  select{background:var(--panel);color:var(--txt);border:1px solid var(--line);
+    border-radius:6px;padding:5px 8px;font:inherit}
+  .status{display:flex;align-items:center;gap:6px;color:var(--dim);font-size:12px}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--dimmer)}
+  .dot.on{background:var(--bid);box-shadow:0 0 8px var(--bid)}
+  .dot.err{background:var(--ask)}
+  .price-hd{margin-left:auto;text-align:right}
+  .price-hd .px{font-size:22px;font-weight:700;font-variant-numeric:tabular-nums}
+  .price-hd .chg{font-size:12px}
+  .grid{display:grid;gap:12px;padding:12px;
+    grid-template-columns:1.1fr 1fr 1fr;align-items:start}
+  @media(max-width:1000px){.grid{grid-template-columns:1fr}}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+    padding:12px;overflow:hidden}
+  .panel h2{font-size:11px;text-transform:uppercase;letter-spacing:1px;
+    color:var(--dim);margin:0 0 10px;font-weight:600}
+  /* metrics */
+  .metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .metric{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:9px 10px}
+  .metric .lbl{color:var(--dim);font-size:10px;text-transform:uppercase;letter-spacing:.5px}
+  .metric .val{font-size:17px;font-weight:600;font-variant-numeric:tabular-nums;margin-top:3px}
+  .metric .sub{font-size:10px;color:var(--dimmer);margin-top:1px}
+  .bar{height:6px;border-radius:3px;background:var(--line);margin-top:6px;overflow:hidden;display:flex}
+  .bar .b{background:var(--bid)} .bar .a{background:var(--ask)}
+  /* order book */
+  .book{font-variant-numeric:tabular-nums}
+  .brow{display:grid;grid-template-columns:1fr 1fr;position:relative;padding:2px 6px;z-index:1}
+  .brow .sz{text-align:right;color:var(--dim)}
+  .brow.ask .px{color:var(--ask)} .brow.bid .px{color:var(--bid)}
+  .depthbg{position:absolute;top:0;bottom:0;right:0;z-index:-1;opacity:1}
+  .brow.ask .depthbg{background:var(--askbg)} .brow.bid .depthbg{background:var(--bidbg)}
+  .spread{text-align:center;color:var(--dim);padding:5px;font-size:11px;
+    border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:3px 0}
+  /* tape */
+  .tape{max-height:340px;overflow:hidden}
+  .trow{display:grid;grid-template-columns:auto 1fr auto;gap:8px;padding:2px 4px;
+    font-variant-numeric:tabular-nums;border-radius:3px}
+  .trow .t{color:var(--dimmer);font-size:11px}
+  .trow.buy .p{color:var(--bid)} .trow.sell .p{color:var(--ask)}
+  .trow .s{text-align:right;color:var(--dim)}
+  .trow.big{font-weight:700} .trow.buy.big{background:var(--bidbg)} .trow.sell.big{background:var(--askbg)}
+  /* recorder */
+  .rec{display:flex;align-items:center;gap:10px;padding:8px 16px;
+    border-top:1px solid var(--line);background:var(--panel2);flex-wrap:wrap;font-size:12px;color:var(--dim)}
+  button{background:var(--panel);color:var(--txt);border:1px solid var(--line);
+    border-radius:6px;padding:6px 12px;font:inherit;cursor:pointer}
+  button:hover{border-color:var(--accent)}
+  button.rec-on{border-color:var(--ask);color:var(--ask)}
+  canvas{width:100%;display:block}
+  .up{color:var(--bid)} .down{color:var(--ask)}
+</style>
+
+<header>
+  <h1>CRYPTO <span>MICROSTRUCTURE</span> LAB</h1>
+  <select id="sym">
+    <option value="BTC-USD">BTC / USD</option>
+    <option value="ETH-USD">ETH / USD</option>
+    <option value="SOL-USD">SOL / USD</option>
+    <option value="XRP-USD">XRP / USD</option>
+    <option value="DOGE-USD">DOGE / USD</option>
+  </select>
+  <div class="status"><span class="dot" id="dot"></span><span id="stat">connecting…</span></div>
+  <div class="price-hd">
+    <div class="px" id="hpx">—</div>
+    <div class="chg" id="hchg">—</div>
+  </div>
+</header>
+
+<div class="grid">
+  <!-- LEFT: metrics + price chart -->
+  <div class="panel">
+    <h2>Live Metrics</h2>
+    <div class="metrics">
+      <div class="metric"><div class="lbl">Mid Price</div><div class="val" id="m_mid">—</div><div class="sub" id="m_spread">spread —</div></div>
+      <div class="metric"><div class="lbl">Book Imbalance</div><div class="val" id="m_bi">—</div>
+        <div class="bar"><div class="b" id="bi_b"></div><div class="a" id="bi_a"></div></div></div>
+      <div class="metric"><div class="lbl">Realized Vol (ann.)</div><div class="val" id="m_vol">—</div><div class="sub">trailing 60s · 1s rets</div></div>
+      <div class="metric"><div class="lbl">Order-Flow Imb.</div><div class="val" id="m_ofi">—</div>
+        <div class="bar"><div class="b" id="ofi_b"></div><div class="a" id="ofi_a"></div></div></div>
+      <div class="metric"><div class="lbl">Trades / sec</div><div class="val" id="m_tps">—</div><div class="sub" id="m_vps">— vol/s</div></div>
+      <div class="metric"><div class="lbl">Aggressor Ratio</div><div class="val" id="m_agg">—</div><div class="sub">buy vol share · 30s</div></div>
+    </div>
+    <div style="margin-top:12px">
+      <h2>Mid Price · last ~2 min</h2>
+      <canvas id="chart" height="120"></canvas>
+    </div>
+  </div>
+
+  <!-- MID: order book -->
+  <div class="panel">
+    <h2>Order Book · top 15</h2>
+    <div class="book">
+      <div id="asks"></div>
+      <div class="spread" id="bookspread">—</div>
+      <div id="bids"></div>
+    </div>
+  </div>
+
+  <!-- RIGHT: trade tape -->
+  <div class="panel">
+    <h2>Trade Tape</h2>
+    <div class="tape" id="tape"></div>
+  </div>
+</div>
+
+<div class="rec">
+  <button id="recbtn">● Start Recording</button>
+  <span id="recinfo">not recording</span>
+  <button id="dlbtn" disabled>Download CSV</button>
+  <span style="margin-left:auto;color:var(--dimmer)">Coinbase public feed · no API key · data logged in-browser only</span>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const fmt=(n,d=2)=>n==null||isNaN(n)?'—':n.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
+const now=()=>performance.now();
+
+let SYM=$('sym').value;
+let ws=null, lastPx=null;
+let bidMap=new Map(), askMap=new Map();   // price -> size, maintained from level2 feed
+let trades=[];              // rolling window of recent trades {t,p,q,buy}
+let midHist=[];             // {t,mid} for vol + chart
+let recording=false, recBuf=[], recStart=0, lastSnap=0;
+let px24open=null, bookReady=false;
+
+// ---- Coinbase public WebSocket (matches + level2_batch + ticker, no auth) ----
+function connect(){
+  if(ws){try{ws.onclose=null;ws.close()}catch(e){}}
+  bidMap=new Map(); askMap=new Map(); trades=[]; midHist=[]; lastPx=null; bookReady=false;
+  setStat('connecting…','');
+  ws=new WebSocket('wss://ws-feed.exchange.coinbase.com');
+  ws.onopen=()=>{
+    setStat('live · '+SYM,'on');
+    ws.send(JSON.stringify({type:'subscribe',product_ids:[SYM],
+      channels:['matches','level2_batch','ticker']}));
+  };
+  ws.onerror=()=>setStat('connection error','err');
+  ws.onclose=()=>{setStat('reconnecting…','err');setTimeout(connect,1500)};
+  ws.onmessage=ev=>{
+    const d=JSON.parse(ev.data);
+    switch(d.type){
+      case 'match': case 'last_match': onTrade(d); break;
+      case 'snapshot': onSnapshot(d); break;
+      case 'l2update': onL2(d); break;
+      case 'ticker': onTicker(d); break;
+    }
+  };
+}
+function setStat(t,cls){$('stat').textContent=t;$('dot').className='dot '+cls;}
+
+// ---- handlers ----
+function onTicker(d){
+  const px=+d.price; lastPx=px;
+  px24open=+d.open_24h;
+  const chg=px24open?(px-px24open)/px24open*100:0;
+  $('hpx').textContent='$'+fmt(px,2);
+  const el=$('hchg'); el.textContent=(chg>=0?'▲ +':'▼ ')+fmt(chg,2)+'%  ·  24h';
+  el.className='chg '+(chg>=0?'up':'down');
+}
+function onTrade(d){
+  // Coinbase `side` = maker's side. sell-maker => taker/aggressor BOUGHT.
+  const p=+d.price, q=+d.size, buy=(d.side==='sell');
+  const tr={t:Date.now(),p,q,buy};
+  trades.push(tr); lastPx=p;
+  const cut=Date.now()-60000; while(trades.length&&trades[0].t<cut)trades.shift();
+  renderTape(tr);
+  if(recording) recBuf.push(['trade',Date.now(),p,q,buy?1:0,'','']);
+}
+function onSnapshot(d){
+  bidMap=new Map(); askMap=new Map();
+  d.bids.forEach(([p,s])=>bidMap.set(+p,+s));
+  d.asks.forEach(([p,s])=>askMap.set(+p,+s));
+  bookReady=true; renderBook();
+}
+function onL2(d){
+  d.changes.forEach(([side,p,s])=>{
+    const m=side==='buy'?bidMap:askMap, price=+p, size=+s;
+    if(size===0) m.delete(price); else m.set(price,size);
+  });
+  renderBook();
+}
+// derive sorted top-N ladders from the maintained maps
+function topLevels(){
+  const bids=[...bidMap].filter(x=>x[1]>0).sort((a,b)=>b[0]-a[0]).slice(0,15);
+  const asks=[...askMap].filter(x=>x[1]>0).sort((a,b)=>a[0]-b[0]).slice(0,15);
+  return {bids,asks};
+}
+
+// ---- order book render + metrics ----
+let bookDirty=false;
+function renderBook(){                // throttle: coalesce bursts of l2 updates to one paint per 80ms
+  if(!bookReady)return;              // (timer, not rAF — rAF freezes in a backgrounded tab)
+  if(bookDirty)return; bookDirty=true;
+  setTimeout(()=>{bookDirty=false;paintBook();},80);
+}
+function paintBook(){
+  const {bids,asks}=topLevels();
+  if(!asks.length||!bids.length)return;
+  const maxSz=Math.max(...asks.map(a=>a[1]),...bids.map(b=>b[1]));
+  const px=r=>`<span class="px">${fmt(r[0],2)}</span>`;
+  const sz=r=>`<span class="sz">${fmt(r[1],4)}</span>`;
+  const dp=r=>`<div class="depthbg" style="width:${(r[1]/maxSz*100).toFixed(1)}%"></div>`;
+  $('asks').innerHTML=asks.slice().reverse().map(r=>`<div class="brow ask">${dp(r)}${px(r)}${sz(r)}</div>`).join('');
+  $('bids').innerHTML=bids.map(r=>`<div class="brow bid">${dp(r)}${px(r)}${sz(r)}</div>`).join('');
+
+  const bestBid=bids[0][0], bestAsk=asks[0][0], mid=(bestBid+bestAsk)/2;
+  const spread=bestAsk-bestBid, spreadBps=spread/mid*1e4;
+  $('bookspread').innerHTML=`spread ${fmt(spread,2)} · ${fmt(spreadBps,1)} bps · mid ${fmt(mid,2)}`;
+  $('m_mid').textContent='$'+fmt(mid,2);
+  $('m_spread').textContent=`spread ${fmt(spreadBps,1)} bps`;
+
+  const bidVol=bids.reduce((a,b)=>a+b[1],0), askVol=asks.reduce((a,b)=>a+b[1],0);
+  const bi=bidVol/(bidVol+askVol);
+  $('m_bi').textContent=fmt(bi*100,1)+'%';
+  $('m_bi').className='val '+(bi>=.5?'up':'down');
+  $('bi_b').style.width=(bi*100)+'%'; $('bi_a').style.width=((1-bi)*100)+'%';
+
+  midHist.push({t:Date.now(),mid});
+  const mcut=Date.now()-120000; while(midHist.length&&midHist[0].t<mcut)midHist.shift();
+
+  if(recording&&Date.now()-lastSnap>1000){
+    lastSnap=Date.now();
+    recBuf.push(['book',Date.now(),mid,spread,bidVol,askVol,bi.toFixed(4)]);
+  }
+}
+
+// ---- rolling metrics loop ----
+setInterval(()=>{
+  // realized vol: std of 1s log returns over trailing 60s, annualized (crypto 24/7)
+  const secs={}; midHist.forEach(m=>{secs[Math.floor(m.t/1000)]=m.mid;});
+  const series=Object.keys(secs).sort().map(k=>secs[k]);
+  if(series.length>5){
+    const rets=[]; for(let i=1;i<series.length;i++)rets.push(Math.log(series[i]/series[i-1]));
+    const mean=rets.reduce((a,b)=>a+b,0)/rets.length;
+    const varr=rets.reduce((a,b)=>a+(b-mean)**2,0)/rets.length;
+    const annual=Math.sqrt(varr)*Math.sqrt(31536000)*100; // sqrt(secs/yr)
+    $('m_vol').textContent=fmt(annual,1)+'%';
+  }
+  // order-flow imbalance + throughput over trailing 60s
+  const w=trades;
+  const buyV=w.filter(t=>t.buy).reduce((a,b)=>a+b.q,0);
+  const sellV=w.filter(t=>!t.buy).reduce((a,b)=>a+b.q,0);
+  const tot=buyV+sellV;
+  const ofi=tot?(buyV-sellV)/tot:0;
+  $('m_ofi').textContent=(ofi>=0?'+':'')+fmt(ofi*100,1)+'%';
+  $('m_ofi').className='val '+(ofi>=0?'up':'down');
+  const bpct=tot?buyV/tot*100:50;
+  $('ofi_b').style.width=bpct+'%'; $('ofi_a').style.width=(100-bpct)+'%';
+  // last 30s aggressor share
+  const cut30=Date.now()-30000, w30=w.filter(t=>t.t>=cut30);
+  const bv30=w30.filter(t=>t.buy).reduce((a,b)=>a+b.q,0), tv30=w30.reduce((a,b)=>a+b.q,0);
+  $('m_agg').textContent=tv30?fmt(bv30/tv30*100,0)+'% buy':'—';
+  $('m_agg').className='val '+(tv30&&bv30/tv30>=.5?'up':'down');
+  // throughput
+  $('m_tps').textContent=fmt(w.length/60,1);
+  $('m_vps').textContent=fmt(tot/60,3)+' vol/s';
+  drawChart();
+  if(recording)$('recinfo').textContent=`recording · ${recBuf.length.toLocaleString()} rows · ${Math.floor((Date.now()-recStart)/1000)}s`;
+},1000);
+
+// ---- trade tape ----
+let tapeRows=[];
+function renderTape(tr){
+  const big=tr.q*tr.p>25000; // >$25k notional
+  const t=new Date(tr.t).toLocaleTimeString('en-US',{hour12:false});
+  const row=`<div class="trow ${tr.buy?'buy':'sell'} ${big?'big':''}">`+
+    `<span class="t">${t}</span><span class="p">${fmt(tr.p,2)}</span><span class="s">${fmt(tr.q,4)}</span></div>`;
+  tapeRows.unshift(row); if(tapeRows.length>40)tapeRows.pop();
+  $('tape').innerHTML=tapeRows.join('');
+}
+
+// ---- price chart ----
+function drawChart(){
+  const c=$('chart'), dpr=window.devicePixelRatio||1;
+  const W=c.clientWidth, H=120;
+  c.width=W*dpr; c.height=H*dpr; const g=c.getContext('2d'); g.scale(dpr,dpr);
+  g.clearRect(0,0,W,H);
+  if(midHist.length<2)return;
+  const xs=midHist, lo=Math.min(...xs.map(m=>m.mid)), hi=Math.max(...xs.map(m=>m.mid));
+  const t0=xs[0].t, t1=xs[xs.length-1].t, span=Math.max(1,t1-t0), rng=Math.max(1e-9,hi-lo);
+  const X=t=>(t-t0)/span*(W-2)+1, Y=v=>H-6-((v-lo)/rng)*(H-14);
+  const up=xs[xs.length-1].mid>=xs[0].mid;
+  g.strokeStyle=up?'#0ecb81':'#f6465d'; g.lineWidth=1.5; g.beginPath();
+  xs.forEach((m,i)=>{const x=X(m.t),y=Y(m.mid);i?g.lineTo(x,y):g.moveTo(x,y);});
+  g.stroke();
+  g.lineTo(X(t1),H); g.lineTo(X(t0),H); g.closePath();
+  g.fillStyle=up?'rgba(14,203,129,.10)':'rgba(246,70,93,.10)'; g.fill();
+  g.fillStyle='#5a6675'; g.font='10px monospace';
+  g.fillText(fmt(hi,2),4,12); g.fillText(fmt(lo,2),4,H-4);
+}
+
+// ---- recorder ----
+$('recbtn').onclick=()=>{
+  recording=!recording;
+  const b=$('recbtn');
+  if(recording){recBuf=[];recStart=Date.now();b.textContent='■ Stop Recording';b.className='rec-on';$('dlbtn').disabled=true;}
+  else{b.textContent='● Start Recording';b.className='';$('dlbtn').disabled=recBuf.length===0;
+    $('recinfo').textContent=`stopped · ${recBuf.length.toLocaleString()} rows captured`;}
+};
+$('dlbtn').onclick=()=>{
+  const hdr='type,ts_ms,px_or_mid,qty_or_spread,extra1_isbuy_or_bidvol,extra2_askvol,extra3_bookimb\n';
+  const body=recBuf.map(r=>r.join(',')).join('\n');
+  const blob=new Blob([hdr+body],{type:'text/csv'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=`${SYM}_micro_${new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')}.csv`;
+  a.click();
+};
+
+$('sym').onchange=()=>{SYM=$('sym').value;connect();};
+connect();
+</script>

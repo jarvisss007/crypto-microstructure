@@ -1,0 +1,392 @@
+<meta charset="utf-8">
+<title>Crypto 15-min Self-Learning Forecast</title>
+<style>
+  :root{
+    --bg:#0b0e14; --panel:#131824; --panel2:#0f1420; --line:#212838;
+    --txt:#e6edf3; --dim:#8b98a9; --dimmer:#5a6675;
+    --up:#0ecb81; --down:#f6465d; --accent:#f0b90b; --blue:#3b6ef0;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--txt);
+    font:13px/1.45 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  header{display:flex;align-items:center;gap:16px;padding:12px 18px;
+    border-bottom:1px solid var(--line);background:var(--panel2);flex-wrap:wrap}
+  header h1{font-size:14px;margin:0;letter-spacing:.5px;font-weight:600}
+  header h1 span{color:var(--accent)}
+  select{background:var(--panel);color:var(--txt);border:1px solid var(--line);
+    border-radius:6px;padding:5px 8px;font:inherit}
+  .status{display:flex;align-items:center;gap:6px;color:var(--dim);font-size:12px}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--dimmer)}
+  .dot.on{background:var(--up);box-shadow:0 0 8px var(--up)}
+  .dot.err{background:var(--down)}
+  .price-hd{margin-left:auto;text-align:right}
+  .price-hd .px{font-size:24px;font-weight:700;font-variant-numeric:tabular-nums}
+  .price-hd .chg{font-size:12px}
+  .up{color:var(--up)} .down{color:var(--down)}
+  .wrap{padding:16px;max-width:1120px;margin:0 auto}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px}
+  .panel h2{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--dim);margin:0 0 12px;font-weight:600}
+  canvas{width:100%;display:block}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:10px;font-size:11px;color:var(--dim)}
+  .legend i{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-2px;margin-right:5px}
+  .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px}
+  @media(max-width:760px){.cards{grid-template-columns:1fr 1fr}}
+  .card{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+  .card.hl{border-color:rgba(240,185,11,.5);background:rgba(240,185,11,.06)}
+  .card .lbl{color:var(--dim);font-size:10px;text-transform:uppercase;letter-spacing:.6px}
+  .card .val{font-size:20px;font-weight:700;font-variant-numeric:tabular-nums;margin-top:5px}
+  .card .sub{font-size:11px;color:var(--dimmer);margin-top:3px}
+  /* scoreboard */
+  .board{margin-top:16px}
+  .stats{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+  @media(max-width:760px){.stats{grid-template-columns:1fr 1fr}}
+  .stat{background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:10px 12px}
+  .stat .lbl{color:var(--dim);font-size:9.5px;text-transform:uppercase;letter-spacing:.5px}
+  .stat .v{font-size:17px;font-weight:700;font-variant-numeric:tabular-nums;margin-top:4px}
+  .stat .s{font-size:10px;color:var(--dimmer);margin-top:2px}
+  .weights{margin-top:14px}
+  .wrow{display:grid;grid-template-columns:130px 1fr 62px;align-items:center;gap:10px;margin:6px 0;font-size:11px}
+  .wrow .name{color:var(--dim)}
+  .wbar{height:10px;background:var(--panel2);border:1px solid var(--line);border-radius:5px;position:relative;overflow:hidden}
+  .wbar .fill{position:absolute;top:0;bottom:0;left:50%;background:var(--blue)}
+  .wbar .mid{position:absolute;left:50%;top:0;bottom:0;width:1px;background:var(--dimmer)}
+  .wrow .num{text-align:right;font-variant-numeric:tabular-nums;color:var(--txt)}
+  .board-actions{margin-top:12px;display:flex;gap:10px;align-items:center;font-size:11px;color:var(--dimmer)}
+  button{background:var(--panel2);color:var(--txt);border:1px solid var(--line);border-radius:6px;padding:5px 10px;font:inherit;cursor:pointer}
+  button:hover{border-color:var(--down);color:var(--down)}
+  .note{margin-top:16px;padding:12px 14px;border-radius:10px;background:rgba(240,185,11,.07);
+    border:1px solid rgba(240,185,11,.25);color:var(--dim);font-size:12px;line-height:1.6}
+  .note b{color:var(--accent)}
+  .nav{font-size:11px;color:var(--dimmer);margin-top:14px;text-align:center}
+  .nav a{color:var(--dim)}
+</style>
+
+<header>
+  <h1>CRYPTO <span>SELF-LEARNING FORECAST</span></h1>
+  <select id="sym">
+    <option value="BTC-USD">BTC / USD</option>
+    <option value="ETH-USD">ETH / USD</option>
+    <option value="SOL-USD">SOL / USD</option>
+    <option value="XRP-USD">XRP / USD</option>
+    <option value="DOGE-USD">DOGE / USD</option>
+  </select>
+  <div class="status"><span class="dot" id="dot"></span><span id="stat">loading…</span></div>
+  <div class="price-hd"><div class="px" id="hpx">—</div><div class="chg" id="hchg">—</div></div>
+</header>
+
+<div class="wrap">
+  <div class="panel">
+    <canvas id="chart" height="360"></canvas>
+    <div class="legend">
+      <span><i style="background:#3b6ef0"></i>Last 60 min</span>
+      <span><i style="background:var(--accent)"></i>Model forecast (15m)</span>
+      <span><i style="border:1px dashed #8b98a9;background:transparent"></i>Random-walk baseline</span>
+      <span><i style="background:rgba(14,203,129,.35)"></i>68% range</span>
+      <span><i style="background:rgba(14,203,129,.15)"></i>95% range</span>
+    </div>
+  </div>
+
+  <div class="cards">
+    <div class="card"><div class="lbl">Price now</div><div class="val" id="c_now">—</div><div class="sub">live</div></div>
+    <div class="card hl"><div class="lbl">Approx price in 15 min</div><div class="val" id="c_exp">—</div><div class="sub" id="c_drift">model drift —</div></div>
+    <div class="card"><div class="lbl">68% likely range</div><div class="val" id="c_68">—</div><div class="sub" id="c_68p">±—</div></div>
+    <div class="card"><div class="lbl">95% likely range</div><div class="val" id="c_95">—</div><div class="sub" id="c_95p">±—</div></div>
+  </div>
+
+  <div class="panel board">
+    <h2>Self-Learning Scoreboard — is the model beating a coin flip?</h2>
+    <div class="stats">
+      <div class="stat"><div class="lbl">Resolved</div><div class="v" id="s_n">0</div><div class="s" id="s_pending">0 pending</div></div>
+      <div class="stat"><div class="lbl">Skill vs Random Walk</div><div class="v" id="s_skill">—</div><div class="s">1 − MSE/baseline</div></div>
+      <div class="stat"><div class="lbl">Direction Hit-Rate</div><div class="v" id="s_hit">—</div><div class="s">50% = coin flip</div></div>
+      <div class="stat"><div class="lbl">Model error (MAE)</div><div class="v" id="s_mae">—</div><div class="s" id="s_base">baseline —</div></div>
+      <div class="stat"><div class="lbl">Learning status</div><div class="v" id="s_stat">warming up</div><div class="s" id="s_lr">updates: 0</div></div>
+    </div>
+    <div class="weights" id="weights"></div>
+    <div id="micro" style="margin-top:10px;font-size:11px;color:var(--dim)">order-flow feed warming up…</div>
+    <div class="board-actions">
+      <button id="reset">Reset learning</button>
+      <span>learns every minute · scores 15 min later · persists in this browser (localStorage)</span>
+    </div>
+  </div>
+
+  <div class="note">
+    <b>What "self-learning" means here.</b> Every minute the model makes a real point
+    forecast — the <b>Approx price in 15 min</b> card — as current price plus a small drift
+    from an <b>online linear model</b>. Its features are price momentum &amp; mean-reversion
+    <i>plus live microstructure</i>: <b>order-flow imbalance</b> (buy vs sell volume) and
+    <b>book imbalance</b> (bid vs ask depth), streamed from Coinbase trades and the order book.
+    Fifteen minutes later it looks up what actually happened, measures the error, and nudges its
+    weights by gradient descent. It keeps score against the <b>random-walk baseline</b>
+    (predict "no change") and remembers everything across sessions.
+    <br><br>
+    <b>Watch the weight bars.</b> They show what the model has actually learned to rely on. My
+    honest bet: the order-flow weights stay near zero at a 15-minute horizon — those signals
+    are real but decay in <i>seconds</i>, so they're near-useless this far out (they'd matter
+    far more on a 1-minute forecast). If an order-flow weight grows and Skill turns positive,
+    that's a genuine lead worth a proper backtest.
+    <br><br>
+    <b>Set expectations honestly:</b> at a 15-minute horizon price is near-unpredictable, so
+    the most likely thing the model <i>learns</i> is to shrink its weights toward zero and
+    forecast ≈ the current price — i.e. it discovers there's no edge. The scoreboard proves
+    it either way: <b>Skill &gt; 0</b> and <b>Hit-rate &gt; 50%</b> over many resolved
+    predictions would be a real signal; hovering around 0 / 50% means random walk wins. It's
+    an honest experiment and an ML demo, <b>not a trading signal</b> — no live trade without a
+    proper backtest.
+  </div>
+  <div class="nav">sibling tool: <a href="index.html">microstructure lab →</a> · Coinbase public data · no API key</div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const fmt=(n,d=2)=>n==null||isNaN(n)?'—':n.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
+const H=15;                          // horizon (minutes)
+const LR=0.02, L2=0.002;             // learning rate, L2 shrinkage
+const FEATS=['bias','1-min mom','5-min mom','15-min revert','order-flow imb','book imb'];
+const NF=FEATS.length;
+let SYM=$('sym').value, ws=null, hist=[], priceNow=null, sigMin=null;
+let model=null;                      // {w:[], n, mUpdates, sMSE, bMSE, sMAE, bMAE, hits, dir}
+// live microstructure state (Coinbase matches + level2_batch)
+let otrades=[];                      // rolling trades {t,q,buy} for order-flow imbalance
+let obid=new Map(), oask=new Map(), obookReady=false;
+
+function setStat(t,cls){$('stat').textContent=t;$('dot').className='dot '+cls;}
+const KEY=s=>'cml_v2_'+s;            // v2: feature set now includes order-flow + book imbalance
+
+// ---------- persistence ----------
+function loadModel(){
+  try{const raw=localStorage.getItem(KEY(SYM));if(raw){const m=JSON.parse(raw);
+    while(m.w.length<NF)m.w.push(0); return m;}}catch(e){}
+  return {w:Array(NF).fill(0),n:0,mUpdates:0,sMSE:0,bMSE:0,sMAE:0,bMAE:0,hits:0,dir:0,pending:[]};
+}
+function saveModel(){try{localStorage.setItem(KEY(SYM),JSON.stringify(model));}catch(e){}}
+
+// ---------- live microstructure features ----------
+// order-flow imbalance over trailing 60s: (buyVol - sellVol) / totalVol  ∈ [-1,1]
+function liveOFI(){
+  const cut=Date.now()-60000; while(otrades.length&&otrades[0].t<cut)otrades.shift();
+  let bv=0,sv=0; for(const t of otrades){if(t.buy)bv+=t.q;else sv+=t.q;}
+  const tot=bv+sv; return tot?(bv-sv)/tot:0;
+}
+// book imbalance over top-20 levels: (bidVol - askVol)/(bidVol+askVol)  ∈ [-1,1]
+function liveBookImb(){
+  if(!obookReady)return 0;
+  const top=(m,dir)=>[...m].filter(x=>x[1]>0).sort((a,b)=>dir*(a[0]-b[0])).slice(0,20).reduce((s,x)=>s+x[1],0);
+  const bv=top(obid,-1), av=top(oask,1), tot=bv+av;
+  return tot?(bv-av)/(tot):0;
+}
+
+// ---------- data ----------
+async function loadHistory(){
+  try{
+    const r=await fetch(`https://api.exchange.coinbase.com/products/${SYM}/candles?granularity=60`);
+    const a=await r.json();                        // [time,low,high,open,close,vol] newest first
+    hist=a.map(c=>({t:c[0],close:c[4]})).sort((x,y)=>x.t-y.t);   // t in SECONDS, minute-aligned
+    if(priceNow==null&&hist.length)priceNow=hist[hist.length-1].close;
+    computeSigma();
+    resolvePending();            // score matured predictions using fresh candles
+    maybePredict();              // log a new prediction for this minute
+    saveModel(); renderBoard(); draw();
+  }catch(e){setStat('history fetch failed','err');}
+}
+function computeSigma(){
+  if(hist.length<10)return;
+  const c=hist.map(h=>h.close), rets=[];
+  for(let i=1;i<c.length;i++)rets.push(Math.log(c[i]/c[i-1]));
+  const m=rets.reduce((a,b)=>a+b,0)/rets.length;
+  sigMin=Math.sqrt(rets.reduce((a,b)=>a+(b-m)**2,0)/rets.length)||1e-6;
+}
+function candleMap(){const m={};hist.forEach(h=>m[h.t]=h.close);return m;}
+
+// ---------- features & model ----------
+// features computed from candle closes ending at index `end` (inclusive)
+function featuresAt(closes,end,sig){
+  const p=closes[end];
+  const r1=end>=1?Math.log(p/closes[end-1])/sig:0;
+  const r5=end>=5?Math.log(p/closes[end-5])/(sig*Math.sqrt(5)):0;
+  const win=closes.slice(Math.max(0,end-14),end+1);
+  const ma=win.reduce((a,b)=>a+b,0)/win.length;
+  const rev=Math.log(ma/p)/(sig*Math.sqrt(15));      // >0 => price below MA => revert up
+  return [1,r1,r5,rev];
+}
+const clip=(x,a)=>Math.max(-a,Math.min(a,x));
+function predictZ(f){return clip(model.w.reduce((s,w,i)=>s+w*f[i],0),4);}  // standardized 15m return
+
+// build the full feature vector: candle features + live microstructure features
+function buildFeatures(closes,end,sig){
+  return [...featuresAt(closes,end,sig), liveOFI(), liveBookImb()];
+}
+// current live point forecast for the cards/chart
+function currentForecast(){
+  if(!hist.length||sigMin==null||priceNow==null)return null;
+  const closes=hist.map(h=>h.close);
+  const f=buildFeatures(closes,closes.length-1,sigMin);
+  const z=predictZ(f);
+  const ret=z*sigMin*Math.sqrt(H);                   // expected 15m return
+  return {ret,price:priceNow*(1+ret),f};
+}
+
+// ---------- learning loop ----------
+function maybePredict(){
+  if(hist.length<20||sigMin==null)return;
+  const last=hist[hist.length-1];                    // latest closed minute
+  const madeMin=last.t;                              // seconds
+  if(model.pending.some(p=>p.made===madeMin))return; // already predicted this minute
+  const closes=hist.map(h=>h.close);
+  const f=buildFeatures(closes,closes.length-1,sigMin);   // captures live order-flow now
+  const z=predictZ(f);
+  model.pending.push({made:madeMin,target:madeMin+H*60,price:last.close,f,z,sig:sigMin});
+}
+function resolvePending(){
+  const map=candleMap(), nowSec=hist.length?hist[hist.length-1].t:0;
+  const keep=[];
+  for(const p of model.pending){
+    if(p.target>nowSec){keep.push(p);continue;}      // not matured yet
+    const actual=map[p.target];
+    if(actual==null){                                // matured but candle unavailable
+      if(nowSec-p.target<6*3600)keep.push(p);        // wait; drop only if very old
+      continue;
+    }
+    // score + learn (standardized return space)
+    const zAct=clip(Math.log(actual/p.price)/(p.sig*Math.sqrt(H)),6);
+    const err=p.z-zAct;                              // gradient of 0.5*(z-zAct)^2
+    for(let i=0;i<model.w.length;i++)
+      model.w[i]=model.w[i]*(1-LR*L2)-LR*err*p.f[i];
+    model.mUpdates++;
+    // metrics
+    model.n++;
+    model.sMSE+=(p.z-zAct)**2; model.bMSE+=zAct**2;                 // model vs baseline(z=0)
+    const predRet=p.z*p.sig*Math.sqrt(H), predPx=p.price*(1+predRet);
+    model.sMAE+=Math.abs(predPx-actual); model.bMAE+=Math.abs(p.price-actual);
+    if(Math.abs(p.z)>1e-6){model.dir++;if(Math.sign(p.z)===Math.sign(zAct))model.hits++;}
+  }
+  model.pending=keep;
+}
+
+// ---------- live price ----------
+function connect(){
+  if(ws){try{ws.onclose=null;ws.close()}catch(e){}}
+  otrades=[]; obid=new Map(); oask=new Map(); obookReady=false;
+  ws=new WebSocket('wss://ws-feed.exchange.coinbase.com');
+  ws.onopen=()=>{setStat('live · '+SYM,'on');
+    ws.send(JSON.stringify({type:'subscribe',product_ids:[SYM],channels:['ticker','matches','level2_batch']}));};
+  ws.onerror=()=>setStat('connection error','err');
+  ws.onclose=()=>{setStat('reconnecting…','err');setTimeout(connect,1500);};
+  ws.onmessage=ev=>{
+    const d=JSON.parse(ev.data);
+    switch(d.type){
+      case 'ticker': onTicker(d); break;
+      case 'match': case 'last_match':                 // aggressor: sell-maker => taker bought
+        otrades.push({t:Date.now(),q:+d.size,buy:d.side==='sell'}); break;
+      case 'snapshot':
+        obid=new Map(); oask=new Map();
+        d.bids.forEach(([p,s])=>obid.set(+p,+s)); d.asks.forEach(([p,s])=>oask.set(+p,+s));
+        obookReady=true; break;
+      case 'l2update':
+        d.changes.forEach(([side,p,s])=>{const m=side==='buy'?obid:oask,pr=+p,sz=+s;
+          if(sz===0)m.delete(pr);else m.set(pr,sz);}); break;
+    }
+  };
+}
+function onTicker(d){
+  priceNow=+d.price;
+  const o=+d.open_24h,chg=o?(priceNow-o)/o*100:0;
+  $('hpx').textContent='$'+fmt(priceNow,2);
+  const el=$('hchg');el.textContent=(chg>=0?'▲ +':'▼ ')+fmt(chg,2)+'%  ·  24h';el.className='chg '+(chg>=0?'up':'down');
+  updateCards();draw();
+}
+
+// ---------- render: cards ----------
+function bands(k){const s=sigMin*Math.sqrt(k);return{lo68:Math.exp(-s),hi68:Math.exp(s),lo95:Math.exp(-1.96*s),hi95:Math.exp(1.96*s)};}
+function updateCards(){
+  if(priceNow==null||sigMin==null)return;
+  const b=bands(H),fc=currentForecast();
+  $('c_now').textContent='$'+fmt(priceNow,2);
+  if(fc){$('c_exp').textContent='$'+fmt(fc.price,2);
+    $('c_drift').textContent=`model drift ${fc.ret>=0?'+':''}${fmt(fc.ret*100,3)}%`;
+    $('c_drift').className='sub '+(fc.ret>=0?'up':'down');}
+  $('c_68').textContent=`$${fmt(priceNow*b.lo68,0)} – $${fmt(priceNow*b.hi68,0)}`;
+  $('c_95').textContent=`$${fmt(priceNow*b.lo95,0)} – $${fmt(priceNow*b.hi95,0)}`;
+  $('c_68p').textContent=`± ${fmt((b.hi68-1)*100,2)}%`;
+  $('c_95p').textContent=`± ${fmt((b.hi95-1)*100,2)}%`;
+  const of=liveOFI(),bi=liveBookImb(),col=v=>v>=0?'var(--up)':'var(--down)';
+  $('micro').innerHTML=`live features → order-flow imb `+
+    `<b style="color:${col(of)}">${(of>=0?'+':'')+fmt(of*100,1)}%</b> · book imb `+
+    `<b style="color:${col(bi)}">${(bi>=0?'+':'')+fmt(bi*100,1)}%</b> · `+
+    `${otrades.length} trades/60s · book ${obookReady?'live':'…'}`;
+}
+
+// ---------- render: scoreboard ----------
+function renderBoard(){
+  $('s_n').textContent=model.n;
+  $('s_pending').textContent=model.pending.length+' pending';
+  $('s_lr').textContent='updates: '+model.mUpdates;
+  if(model.n>0){
+    const skill=1-(model.sMSE/Math.max(model.bMSE,1e-9));
+    const hit=model.dir?model.hits/model.dir*100:null;
+    const el=$('s_skill');el.textContent=(skill>=0?'+':'')+fmt(skill,3);
+    el.className='v '+(skill>0?'up':'down');
+    const eh=$('s_hit');eh.textContent=hit==null?'—':fmt(hit,1)+'%';
+    eh.className='v '+(hit!=null&&hit>50?'up':(hit!=null&&hit<50?'down':''));
+    $('s_mae').textContent='$'+fmt(model.sMAE/model.n,2);
+    $('s_base').textContent='baseline $'+fmt(model.bMAE/model.n,2);
+    const beating=skill>0;
+    $('s_stat').textContent=model.n<20?'learning':(beating?'edge?':'no edge');
+    $('s_stat').className='v '+(model.n<20?'':(beating?'up':'down'));
+  }else{$('s_skill').textContent='—';$('s_hit').textContent='—';$('s_mae').textContent='—';}
+  // weights
+  const maxw=Math.max(0.05,...model.w.map(Math.abs));
+  $('weights').innerHTML=model.w.map((w,i)=>{
+    const pct=Math.min(50,Math.abs(w)/maxw*50);
+    const style=`left:${w>=0?50:50-pct}%;width:${pct}%;background:${w>=0?'var(--up)':'var(--down)'}`;
+    return `<div class="wrow"><span class="name">${FEATS[i]}</span>`+
+      `<span class="wbar"><span class="mid"></span><span class="fill" style="${style}"></span></span>`+
+      `<span class="num">${w>=0?'+':''}${fmt(w,4)}</span></div>`;
+  }).join('');
+}
+
+// ---------- render: chart ----------
+function draw(){
+  const c=$('chart'),dpr=window.devicePixelRatio||1,W=c.clientWidth,Ht=360;
+  c.width=W*dpr;c.height=Ht*dpr;const g=c.getContext('2d');g.scale(dpr,dpr);
+  g.clearRect(0,0,W,Ht);
+  if(hist.length<2||priceNow==null||sigMin==null)return;
+  const H60=hist.slice(-60), n=H60.length, padL=8,padR=60,padT=14,padB=22, totalMin=(n-1)+H;
+  const b=bands(H);let lo=priceNow*b.lo95,hi=priceNow*b.hi95;
+  H60.forEach(p=>{lo=Math.min(lo,p.close);hi=Math.max(hi,p.close);});
+  const fc=currentForecast();if(fc){lo=Math.min(lo,fc.price);hi=Math.max(hi,fc.price);}
+  const pad=(hi-lo)*0.08||1;lo-=pad;hi+=pad;
+  const X=m=>padL+(m/totalMin)*(W-padL-padR), Y=v=>padT+(1-(v-lo)/(hi-lo))*(Ht-padT-padB);
+
+  g.strokeStyle='#1a2030';g.fillStyle='#5a6675';g.font='10px monospace';g.lineWidth=1;
+  for(let i=0;i<=4;i++){const v=lo+(hi-lo)*i/4,y=Y(v);g.beginPath();g.moveTo(padL,y);g.lineTo(W-padR,y);g.stroke();g.fillText('$'+fmt(v,0),W-padR+4,y+3);}
+  const nowX=X(n-1);
+  const cone=(k1,k2,fill)=>{g.beginPath();for(let k=0;k<=H;k++){const bb=bands(k);g.lineTo(X(n-1+k),Y(priceNow*bb[k1]));}for(let k=H;k>=0;k--){const bb=bands(k);g.lineTo(X(n-1+k),Y(priceNow*bb[k2]));}g.closePath();g.fillStyle=fill;g.fill();};
+  cone('hi95','lo95','rgba(14,203,129,.13)');cone('hi68','lo68','rgba(14,203,129,.28)');
+
+  g.beginPath();H60.forEach((p,i)=>{const x=X(i),y=Y(p.close);i?g.lineTo(x,y):g.moveTo(x,y);});g.lineTo(nowX,Y(priceNow));
+  g.strokeStyle='#3b6ef0';g.lineWidth=1.6;g.stroke();
+  g.lineTo(nowX,Y(lo));g.lineTo(padL,Y(lo));g.closePath();g.fillStyle='rgba(59,110,240,.10)';g.fill();
+
+  // random-walk baseline (flat, dashed grey)
+  g.strokeStyle='rgba(139,152,169,.7)';g.setLineDash([4,4]);g.lineWidth=1.3;
+  g.beginPath();g.moveTo(nowX,Y(priceNow));g.lineTo(X(n-1+H),Y(priceNow));g.stroke();
+  // model forecast line (gold solid) to point estimate
+  if(fc){g.setLineDash([]);g.strokeStyle=getComputedStyle(document.documentElement).getPropertyValue('--accent').trim()||'#f0b90b';g.lineWidth=1.8;
+    g.beginPath();g.moveTo(nowX,Y(priceNow));g.lineTo(X(n-1+H),Y(fc.price));g.stroke();
+    g.fillStyle='#f0b90b';g.beginPath();g.arc(X(n-1+H),Y(fc.price),3,0,7);g.fill();}
+  g.setLineDash([]);
+  g.strokeStyle='#2a3346';g.lineWidth=1;g.beginPath();g.moveTo(nowX,padT);g.lineTo(nowX,Ht-padB);g.stroke();
+  g.fillStyle='#8b98a9';g.fillText('now',nowX-8,Ht-8);g.fillText('+15m',X(n-1+H)-22,Ht-8);g.fillText('-60m',padL,Ht-8);
+  g.fillStyle='#f0b90b';g.beginPath();g.arc(nowX,Y(priceNow),3,0,7);g.fill();
+}
+
+// ---------- controls ----------
+$('sym').onchange=()=>{SYM=$('sym').value;priceNow=null;model=loadModel();setStat('loading…','');loadHistory();connect();};
+$('reset').onclick=()=>{if(confirm('Reset all learned weights and scores for '+SYM+'?')){localStorage.removeItem(KEY(SYM));model=loadModel();renderBoard();draw();}};
+window.addEventListener('resize',draw);
+
+model=loadModel();
+loadHistory();connect();
+setInterval(loadHistory,60000);      // every minute: predict, resolve, learn
+</script>

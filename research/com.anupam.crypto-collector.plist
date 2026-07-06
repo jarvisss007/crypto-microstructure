@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Optional: make the collector start automatically at login and stay running.
+  Enable:   cp com.anupam.crypto-collector.plist ~/Library/LaunchAgents/
+            launchctl load ~/Library/LaunchAgents/com.anupam.crypto-collector.plist
+  Disable:  launchctl unload ~/Library/LaunchAgents/com.anupam.crypto-collector.plist
+            rm ~/Library/LaunchAgents/com.anupam.crypto-collector.plist
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key><string>com.anupam.crypto-collector</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/opt/anaconda3/bin/python</string>
+    <string>/Users/anupampatil/crypto-microstructure/research/collector.py</string>
+    <string>--backtest-every</string><string>3600</string>
+    <string>--cost-bps</string><string>60</string>
+  </array>
+  <key>WorkingDirectory</key><string>/Users/anupampatil/crypto-microstructure/research</string>
+  <key>RunAtLoad</key><true/>
+  <key>KeepAlive</key><true/>
+  <key>StandardOutPath</key><string>/Users/anupampatil/crypto-microstructure/research/data/collector.log</string>
+  <key>StandardErrorPath</key><string>/Users/anupampatil/crypto-microstructure/research/data/collector.log</string>
+</dict>
+</plist>

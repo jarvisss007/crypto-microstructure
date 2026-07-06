@@ -1,0 +1,11 @@
+# recorded data, logs, runtime — never commit
+research/data/
+*.log
+*.pid
+
+# regenerable sample datasets (make with: python research/make_sample.py)
+research/sample_*.csv
+
+# local tooling / OS cruft
+.claude/
+.DS_Store
