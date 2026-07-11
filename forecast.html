@@ -103,6 +103,7 @@
       <div class="stat"><div class="lbl">Learning status</div><div class="v" id="s_stat">warming up</div><div class="s" id="s_lr">updates: 0</div></div>
     </div>
     <div class="weights" id="weights"></div>
+    <div id="warmnote" style="margin-top:6px;font-size:11px;color:var(--dim)"></div>
     <div id="micro" style="margin-top:10px;font-size:11px;color:var(--dim)">order-flow feed warming up…</div>
     <div class="board-actions">
       <button id="reset">Reset learning</button>
@@ -141,7 +142,12 @@
 const $=id=>document.getElementById(id);
 const fmt=(n,d=2)=>n==null||isNaN(n)?'—':n.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
 const H=15;                          // horizon (minutes)
-const LR=0.02, L2=0.002;             // learning rate, L2 shrinkage
+// LR was 0.02 originally; research/backtest_all.py replayed this exact algorithm over
+// a full week of continuously-recorded data and found 0.02 lets the model wander into
+// a confidently WRONG state (skill -0.60, some days <30% hit-rate) instead of shrinking
+// toward zero as intended. LR=0.002 tracks that "no edge" expectation faithfully
+// (skill -0.03). See research/README.md "cumulative backtest".
+const LR=0.002, L2=0.002;            // learning rate, L2 shrinkage
 const FEATS=['bias','1-min mom','5-min mom','15-min revert','order-flow imb','book imb'];
 const NF=FEATS.length;
 let SYM=$('sym').value, ws=null, hist=[], priceNow=null, sigMin=null;
@@ -160,6 +166,28 @@ function loadModel(){
   return {w:Array(NF).fill(0),n:0,mUpdates:0,sMSE:0,bMSE:0,sMAE:0,bMAE:0,hits:0,dir:0,pending:[]};
 }
 function saveModel(){try{localStorage.setItem(KEY(SYM),JSON.stringify(model));}catch(e){}}
+
+// Warm-start a genuinely fresh session (no local learning yet) from
+// research/backtest_all.py's cumulative, walk-forward-validated weights — a
+// browser tab benefits from every day the 24/7 collector has recorded, instead
+// of starting at literal zero. Only for BTC-USD (the only symbol recorded);
+// only when nothing has been learned locally yet; fails silently (e.g. under
+// file:// where local fetch is blocked) and leaves zero-init untouched.
+async function warmStartIfFresh(){
+  if(SYM!=='BTC-USD'||model.n>0||model.mUpdates>0)return;
+  try{
+    const r=await fetch('research/learned_weights.json');
+    if(!r.ok)return;
+    const d=await r.json();
+    const w=FEATS.map(name=>d.weights&&typeof d.weights[name]==='number'?d.weights[name]:0);
+    model.w=w; saveModel();
+    const note=$('warmnote');
+    if(note)note.textContent=`warm-started from ${d.generated_from_days.length}-day cumulative backtest `+
+      `(${d.n_resolved_predictions.toLocaleString()} predictions, skill ${d.overall_skill_vs_random_walk.toFixed(3)}) — `+
+      (d.edge_found?'see research/README.md':'no edge found, as expected; see research/README.md');
+    renderBoard();
+  }catch(e){/* file:// or offline — keep zero-init */}
+}
 
 // ---------- live microstructure features ----------
 // order-flow imbalance over trailing 60s: (buyVol - sellVol) / totalVol  ∈ [-1,1]
@@ -382,11 +410,12 @@ function draw(){
 }
 
 // ---------- controls ----------
-$('sym').onchange=()=>{SYM=$('sym').value;priceNow=null;model=loadModel();setStat('loading…','');loadHistory();connect();};
-$('reset').onclick=()=>{if(confirm('Reset all learned weights and scores for '+SYM+'?')){localStorage.removeItem(KEY(SYM));model=loadModel();renderBoard();draw();}};
+$('sym').onchange=()=>{SYM=$('sym').value;priceNow=null;model=loadModel();$('warmnote').textContent='';warmStartIfFresh();setStat('loading…','');loadHistory();connect();};
+$('reset').onclick=()=>{if(confirm('Reset all learned weights and scores for '+SYM+'?')){localStorage.removeItem(KEY(SYM));model=loadModel();$('warmnote').textContent='';warmStartIfFresh();renderBoard();draw();}};
 window.addEventListener('resize',draw);
 
 model=loadModel();
+warmStartIfFresh();
 loadHistory();connect();
 setInterval(loadHistory,60000);      // every minute: predict, resolve, learn
 </script>

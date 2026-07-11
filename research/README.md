@@ -41,6 +41,36 @@ while the Mac sleeps and won't survive a reboot — restart if that happens.)
    Options: `--horizons 5,15,30,60` (seconds), `--ofi-window 10`, `--cost-bps 60`,
    `--permutations 500`.
 
+## Cumulative backtest — validating the *live* forecast.html model itself
+
+`backtest.py` grades raw signals (OFI, book imbalance) one day at a time. `backtest_all.py`
+is different: it replays **forecast.html's actual online-learning algorithm** — identical
+features, identical SGD update rule — over *every* recorded day in chronological order.
+Because online SGD only ever updates from pairs resolved strictly in the past, this single
+sequential pass is walk-forward / out-of-sample at every prediction by construction — no
+train/test split bookkeeping needed.
+
+```
+/opt/anaconda3/bin/python backtest_all.py --cost-bps 60
+```
+
+Writes `research/learned_weights.json` (small, **git-tracked** — unlike `data/`, this one
+publishes to GitHub Pages) with the fully-trained weight vector plus per-day and overall
+skill/hit-rate/net-bps. `forecast.html` fetches this on any genuinely fresh session (nothing
+learned locally yet, BTC-USD only) and **warm-starts** from it instead of zero — so a brand
+new browser tab benefits from every day the 24/7 collector has recorded, instead of starting
+blind. A scheduled task (`crypto-cumulative-backtest`) reruns this daily as more data lands.
+
+**A real finding from the first week of continuous data (2026-07-05 → 07-11, 8,079 resolved
+15-min predictions):** the original `LR=0.02` did NOT reliably shrink toward zero as the
+README's own honest-expectation section predicted — it let the model wander into a
+confidently *wrong* state (skill **-0.60** vs random walk, some days under 30% hit-rate).
+Testing `LR=0.002` (10× lower) tracked the intended "no edge" behavior far more faithfully
+(skill **-0.03**, much closer to the honest null). **Fixed in both `backtest_all.py` and
+`forecast.html`** — this wasn't a fabricated edge, it was the safety mechanism itself not
+holding up under continuous real-world operation. Stronger L2 alone (tested up to 150×)
+barely helped; the learning rate was the actual lever.
+
 ## What it reports (per signal × horizon)
 
 | Column | Meaning |
