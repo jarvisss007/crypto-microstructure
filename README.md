@@ -112,6 +112,17 @@ Correct workflow: **record data → mine for a candidate signal → validate it 
 proper backtest before risking a dollar** — the same discipline the `~/spy-trading`
 verdict came from. Don't skip the backtest gate.
 
+## Self-learning agent
+
+`agent/` holds a self-calibrating flow agent (same pattern as `~/stock-radar`):
+it reads the latest recorded session, and only when session order-flow imbalance
+clears a fixed threshold logs one falsifiable next-day direction call to
+`agent/ledger.csv`, scored the next day from Coinbase daily candles with no
+excuses; blunt takeaways accumulate in `agent/lessons.md`. **Honesty note:**
+calibration, not trades — no claim of edge; a coin-flip hit rate would confirm
+this README's own expectation, and the ledger exists to find out. Procedure:
+`agent/AGENT.md`.
+
 ## Why Coinbase
 
 Binance.US trade streams are effectively dead (thin liquidity — 0 trades in
