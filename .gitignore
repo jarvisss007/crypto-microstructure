@@ -9,3 +9,4 @@ research/sample_*.csv
 # local tooling / OS cruft
 .claude/
 .DS_Store
+__pycache__/
