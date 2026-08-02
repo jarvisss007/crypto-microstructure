@@ -76,3 +76,41 @@ negative → price is higher/lower one day later." Direction call `up` or
   report it as a result, not a failure.
 - Crypto trades 7 days a week; date math is calendar days, UTC.
 - Keep the brief under ~20 lines.
+
+
+---
+
+## MANDATORY forecast — exactly one, every run, no exceptions
+
+Append one row to `agent/forecasts.csv`. **This is not a trade call and not
+advice.** Skipping a trade is free; skipping a forecast destroys the only
+record that can ever prove whether your reads are worth anything. There is no
+"no forecast today". If nothing is interesting, forecast the dull thing at 55%.
+
+Why this is mandatory when trade calls are not: a hit-rate test needs tens of
+thousands of observations to detect a real edge. A *probabilistic* forecast
+carries information on every observation, so calibration becomes measurable in
+hundreds. Abstention is correct risk management and fatal data policy — the
+distinction is the whole point.
+
+Format: `date,instrument,horizon_days,question,p,check_date,outcome,notes`
+
+- `instrument` — BTC or ETH.
+- `question` — a **binary that resolves mechanically** from this lab's own
+  refreshed data files, with zero judgement at check time. Good: "closes above
+  today's close on <check_date>". Bad: "looks constructive".
+- `p` — honest probability the question resolves YES, in (0,1). Never exactly
+  0 or 1. Genuinely no view? Write 0.5; that is real information about your
+  uncertainty and it scores fine.
+- Prefer questions you are actually unsure about. Forecasting 0.99 on a
+  near-certainty scores well and teaches nothing.
+
+**Scoring:** on each run, resolve every row whose `check_date <= today` by
+setting `outcome` to 1 (YES) or 0 (NO), mechanically. Then run:
+
+```
+/opt/anaconda3/bin/python ~/bin/score_forecasts.py --lab crypto-microstructure
+```
+
+You are graded on **calibration, not on being right.** Saying 60% and being
+wrong is fine. Saying 90% and being wrong repeatedly is not.
