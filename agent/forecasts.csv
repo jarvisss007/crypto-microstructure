@@ -1,1 +1,2 @@
 date,instrument,horizon_days,question,p,check_date,outcome,notes
+2026-08-03,BTC,3,"BTC-USD UTC daily close above 63466.51 on 2026-08-06",0.50,2026-08-06,,"[flow] Last two complete sessions have OFI -0.07 and -0.07, both below the 0.10 call threshold, and the honest gate says flow carries nothing at any tradeable horizon. There is no information here — 0.50 is the honest number."

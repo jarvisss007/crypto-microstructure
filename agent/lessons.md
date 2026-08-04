@@ -38,3 +38,23 @@ Empty sections mean no scored history yet — earn the opinions.
   `value_at_call` is the price at logging time from the in-progress file. Using
   the partial day's own close would leak 8 hours of already-known move into
   the call. Threshold stays fixed at |OFI| >= 0.10.
+
+## 2026-08-03 — second scored call, and the coin landed tails
+- [flow] 1/2 (50%, n=2). BTC-USD `up` from OFI +0.20 logged 07-31 at 63834.93;
+  08-01 UTC close 62764.20 — lower, so WRONG. Exactly the shape the standing
+  prior predicts: the flow-follows hypothesis is 1-for-1 in each direction and
+  is currently a coin flip, which is what the project expects to find.
+- [flow] Note the symmetry worth watching: the `down` call from OFI −0.17 was
+  right and the `up` call from OFI +0.20 was wrong. If a directional asymmetry
+  is real it will take dozens of calls to see; naming it now would be exactly
+  the pattern-invention this ledger exists to catch. Recording it as a thing to
+  check later, not as a finding.
+- [flow] COLLECTOR OUTAGE: trade data stops at 2026-08-03 04:55 UTC and does
+  not resume until 2026-08-04 03:18 UTC — a ~22.4-hour hole. Today's file is a
+  16-minute stub (4,857 trades). Its OFI is +0.18, above the 0.10 threshold,
+  and it was NOT used: the falsifiable unit is a session-wide imbalance, and
+  16 minutes of tape dressed up as a session would be a fabricated call. The
+  threshold stays fixed; the fix is the collector, not the rule.
+- [flow] Last two COMPLETE sessions: 08-01 OFI −0.0706 (298,423 trades, full
+  24h), 08-02 OFI −0.0660 (90,883 trades, 21.9h — truncated by the outage).
+  Both below threshold, so no call today on the honest reading either.
