@@ -80,3 +80,40 @@ Empty sections mean no scored history yet — earn the opinions.
   gross is ~0.08 bps against 60 bps of cost. That is the single best
   illustration this lab has of why statistical significance and edge are
   different things. A signal can be real and worthless at the same time.
+
+2026-08-05 [flow] — Nothing scored (ledger 0 pending; forecasts check 08-06 and 08-08).
+Abstention logged against the named 0.10 OFI bar: last COMPLETE session (08-04) OFI
++0.0644, below threshold, no call.
+
+RECORDING THE TEMPTATION, BECAUSE IT WAS REAL. Two OFI numbers were available this run:
+the complete 08-04 session at +0.0644 (no call) and the in-progress 08-05 session at
++0.1217 (clears the bar). Choosing the second would have been threshold-fishing by the
+back door — not tuning the 0.10 number, which AGENT.md explicitly forbids, but quietly
+changing the WINDOW the number is computed over until one of them crosses. Same violation,
+harder to spot in a diff. Rule for future runs: the window is the last COMPLETE session,
+full stop, and if two candidate windows disagree that fact goes in the brief rather than
+being resolved in favour of a call.
+
+FOUND A MISALIGNMENT IN THE FALSIFIABLE UNIT ITSELF. `BTC-USD_2026-08-04.csv` spans
+07:00 UTC to 06:59 UTC the next day. The collector names files by LOCAL date
+(research/collector.py `_ensure_file`, timestamps from `time.time()`), so a "session" file
+is a PDT day. But AGENT.md specifies UTC calendar days for date math, and step 2 scores
+against Coinbase UTC daily candles. So the OFI window is offset ~7 hours from the return
+window it is supposed to predict: roughly a third of the flow being measured happens
+during the return period rather than before it. At n=2 this has not cost anything yet, but
+it is a lookahead leak baked into the unit, and it would flatter the flow-follows
+hypothesis rather than hurt it. Needs an `[anupam]`/`[coach]` decision — either the
+collector rolls files at UTC midnight, or scoring uses PDT-day returns. Do not paper over
+it by continuing to log calls as if the windows lined up.
+
+Third, on forecast design: the previous two forecast rows both used a completed daily
+close as reference and were written mid-session, which imports a few hours of known tape.
+Today's row is framed as "08-06 UTC close above 08-05 UTC close" — both endpoints unknown
+at write time — so it is uncontaminated, and it happens to test the ledger's actual 1-day
+flow-follows hypothesis rather than a drift prior. Cheap fix, worth keeping.
+
+Unchanged and worth restating: the hourly honest gate re-ran at 08:15 with 145,237 trades
+and again returned no net-positive signal at any horizon after 60bps, with real
+associations (ofi IC 0.089 at 5s, p=0.002) that die entirely on costs. Association is not
+edge. This ledger tests only whether anything survives to a 1-day horizon; it does not get
+to overrule that.
