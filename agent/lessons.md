@@ -58,3 +58,25 @@ Empty sections mean no scored history yet — earn the opinions.
 - [flow] Last two COMPLETE sessions: 08-01 OFI −0.0706 (298,423 trades, full
   24h), 08-02 OFI −0.0660 (90,883 trades, 21.9h — truncated by the outage).
   Both below threshold, so no call today on the honest reading either.
+
+## 2026-08-04 — nothing scored, collector partly recovered
+- [flow] No rows came due (both ledger rows closed 08-01/07-27). Abstention
+  logged against a named bar per the council rule: |OFI| on the last complete
+  session is 0.024 versus the fixed 0.10 trigger. No call.
+- [flow] The 08-03 outage flagged yesterday is now measurable in full. The
+  `BTC-USD_2026-08-03.csv` session spans only 03:18-06:59 UTC on 08-04 —
+  **3.7 of 24 hours, ~20.3h lost**. The collector has since recovered (08-04 is
+  writing normally, ~20.8h and 90,619 trades so far), so this is a bounded
+  outage rather than a dead recorder. Per the council's flag-don't-work-around
+  rule, the 08-03 session is recorded as unusable and is not being treated as a
+  session-wide imbalance no matter what its OFI reads.
+- [flow] Sign instability worth noting only as noise: 08-03 reads -0.024 and
+  the in-progress 08-04 reads +0.061. Two sub-threshold numbers flipping sign
+  is what no-signal looks like; it is not a turn in flow and is not being
+  narrated as one.
+- [flow] Today's auto-backtest keeps reproducing the null cleanly, and the
+  detail is worth carrying: `book_imb` has a genuinely *significant*
+  association (IC 0.191 at 5s, p=0.002) and it is still net ~-60 bps, because
+  gross is ~0.08 bps against 60 bps of cost. That is the single best
+  illustration this lab has of why statistical significance and edge are
+  different things. A signal can be real and worthless at the same time.
