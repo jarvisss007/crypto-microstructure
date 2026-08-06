@@ -117,3 +117,40 @@ and again returned no net-positive signal at any horizon after 60bps, with real
 associations (ofi IC 0.089 at 5s, p=0.002) that die entirely on costs. Association is not
 edge. This ledger tests only whether anything survives to a 1-day horizon; it does not get
 to overrule that.
+
+2026-08-06 [flow] — Nothing scored. Both existing ledger rows closed long ago (1/2, and
+n=2 is not a hit rate). One new call logged: the 08-05 session OFI came in at +0.1247,
+which clears the 0.10 trigger, so `up` on BTC-USD, value_at_call 64,796.79, checks 08-07.
+The threshold fired mechanically and I did not touch it.
+
+Two findings, and the first one is a defect in this lab's own falsifiable unit.
+
+(1) THE SESSION FILES ARE NOT UTC DAYS, AND THE LEDGER SCORES THEM AS IF THEY WERE.
+Checked the timestamps directly instead of trusting the filename: every
+`BTC-USD_<date>.csv` spans **07:00 UTC → 06:59 UTC the next day**. That is a local
+midnight-to-midnight PDT day, not a UTC day. AGENT.md then says `value_at_call` = the last
+trade price in that CSV — a **06:59 UTC** print — while step 2 scores `value_at_check`
+off Coinbase's **UTC daily candle**, which closes at 00:00 UTC. So every row in this ledger
+compares a price taken at 06:59 UTC against a close taken at 00:00 UTC: a seven-hour
+mismatch baked into the unit. On a 1-day direction call, seven hours is not a rounding
+error. Both prior rows (07-26 right, 07-31 wrong) carry it. I logged today's row to the
+existing spec anyway rather than silently redefining the unit mid-stream — per AGENT.md,
+a rule change is a [coach]/Anupam decision. Flagging it for that decision. The clean fix is
+to take `value_at_call` from the same Coinbase daily-candle series used for scoring, so
+both endpoints come from one clock.
+
+(2) DID NOT RESOLVE TWO DUE FORECASTS, ON PURPOSE. The 08-03 and 08-05 rows both check
+2026-08-06 and both need the **08-06 UTC daily close**. This run fired at 15:33 UTC — the
+UTC day has ~8.5 hours left. Coinbase does return an 08-06 candle, and its `close` field
+reads 64,782.39, which is exactly the trap: volume on that candle is 2,948.8 against
+6,227-7,086 on the last four complete days, so the field is a live price wearing a close's
+name. Marking those rows 1/0 off it would have been the same class of error the council
+has now logged three times on this desk. Both rows carry a dated deferral note and resolve
+on the next run off the completed candle. Nothing is lost; the alternative was a fabricated
+observation in the only record this lab is graded on.
+
+Senior study unchanged, and it re-ran today at 08:11 on 35,556 trades: **no signal is
+net-positive after costs at any horizon**. Best net was -59.83 bps at 60s. OFI's IC decays
+from 0.066 at 5s to 0.008 (p=0.176, not significant) at 60s — the association is real and
+gone within a minute, which is the README's expectation stated in numbers. The 1-day
+ledger is testing a different horizon and must never be read as contradicting that.
