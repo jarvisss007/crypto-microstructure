@@ -154,3 +154,37 @@ net-positive after costs at any horizon**. Best net was -59.83 bps at 60s. OFI's
 from 0.066 at 5s to 0.008 (p=0.176, not significant) at 60s — the association is real and
 gone within a minute, which is the README's expectation stated in numbers. The 1-day
 ledger is testing a different horizon and must never be read as contradicting that.
+
+2026-08-07 [flow] — Two forecasts RESOLVED (the pair deferred yesterday), one new
+ledger call logged, one ledger row correctly left pending. Brier 0.2550, skill
+-0.0202 at n=2 — no skill vs base rate, and at n=2 that number means nothing.
+
+(1) YESTERDAY'S DEFERRAL CHANGED AN ANSWER, and this is the strongest evidence this
+desk has produced for the "never score off a live candle" rule. The 08-05 row asked
+whether BTC's 08-06 UTC close beat its 08-05 close (64,603.03). Yesterday the LIVE
+08-06 candle read 64,782.39 — that resolves YES. The SETTLED 08-06 close is
+64,267.30 — that resolves NO. Scoring one run early would have written a 1 where the
+truth is a 0, into the only record this lab is graded on, permanently and invisibly.
+The other deferred row (08-03, threshold 63,466.51) resolved YES either way, so the
+error rate on live-candle scoring here was 1 in 2. Previous entries argued the rule
+from principle; this one has the counterfactual. Note the settled 08-06 volume is
+4,520 vs 6,227-7,086 on 08-03/04/05 — a genuinely quiet day, not an incomplete one
+(08-02 closed complete at 3,284), so low volume alone is not the completeness test.
+Elapsed time is.
+
+(2) TODAY'S LEDGER ROW IS PENDING FOR THE SAME REASON, not by oversight. The 08-06
+row checks 2026-08-07 and needs the 08-07 UTC close; the run fired 15:33 UTC with
+~8.5 hours of the UTC day left, and the live candle reads 65,033.30 on 3,428 volume.
+It resolves on the next run off the completed candle. Recording this so a future run
+does not read the skipped resolution as a missed one — the catch-up rule will take it.
+
+(3) THE CLOCK-MISMATCH DEFECT IS UNCHANGED AND NOW HAS A THIRD ROW RIDING ON IT.
+Today's call takes `value_at_call` = 64,254.40, the last trade in the 08-06 session
+CSV, which is a ~06:59 UTC print; step 2 will score it against a 00:00 UTC daily
+close. Same seven-hour mismatch flagged on 08-06. Logged to the existing spec again
+rather than silently redefining the unit — that remains a [coach]/Anupam decision —
+but three of four rows in this ledger now carry it, and the fix is unchanged: take
+both endpoints from the Coinbase daily-candle series so one clock governs.
+
+Senior study unchanged: re-ran today, VERDICT no signal net-positive after costs at
+any horizon. The 1-day ledger tests a different horizon and never overrules it.
