@@ -188,3 +188,34 @@ both endpoints from the Coinbase daily-candle series so one clock governs.
 
 Senior study unchanged: re-ran today, VERDICT no signal net-positive after costs at
 any horizon. The 1-day ledger tests a different horizon and never overrules it.
+
+2026-08-10 [flow] — Scored 2 overdue ledger rows (both `right`) and resolved 2
+overdue forecasts (both YES). Running ledger record 3/1 = 75%, n=4, 0 pending. No
+new call: 08-09 session OFI +0.0939, below the 0.10 trigger.
+Four findings:
+(1) THE CATCH-UP RULE JUST PAID FOR ITSELF, TWICE OVER. Four rows were sitting
+overdue — the 08-06 and 08-07 ledger calls (check 08-07 and 08-08) and the 08-04
+and 08-06 forecasts (both check 08-08) — because crypto trades 7 days a week while
+this sweep runs weekdays only. Every weekend will silently strand two days of
+scoreable rows in this lab specifically. That is a structural property of a
+7-day market on a 5-day scoring schedule, not an incident, and it is the one lab
+where "score everything due or overdue" is load-bearing rather than a safety net.
+(2) 75% AT n=4 IS NOISE AND I AM WRITING IT DOWN BEFORE ANYONE QUOTES IT. A fair
+coin produces 3-or-better out of 4 about 31% of the time. Both today's wins came
+from calls following buy-heavy flow into a market that drifted up anyway, which is
+the `up`-bias the lab should be watching for: 3 of the 4 closed calls were `up`.
+The AGENT.md bar is 20+ scored calls, the senior sub-second study already says any
+association here is arbitraged away, and nothing in a 4-row sample touches either.
+(3) THE THRESHOLD HELD UNDER GENUINE TEMPTATION. +0.0939 rounds to +0.09, sits 6%
+short of the trigger, and would have been trivially reportable as "+0.10, call
+logged". It is not logged. Recording the near-miss explicitly so a future run sees
+that the boundary was tested and respected rather than quietly moved — a threshold
+that only binds when it is far away is not a threshold.
+(4) TWO DATA CAVEATS WORTH KNOWING BEFORE ANYONE TRUSTS THE OFI NUMBER. First, the
+session files are NOT UTC-aligned: the 08-09 file spans 07:46 UTC to 06:59 UTC the
+following day, i.e. the collector's day starts around 07:00 UTC. The ledger scores
+against UTC daily closes, so the flow window and the scoring window are offset by
+~7 hours. Second, the CSV schema is POSITIONAL (type,ts_ms,px_or_mid,qty_or_spread,
+extra1,extra2,extra3) with isBuy living in `extra1` — AGENT.md's "trade rows carry
+price, qty, isBuy" reads like named columns and a literal reading returns zero
+trades and an undefined OFI. Both are documentation defects, not data defects.
