@@ -219,3 +219,30 @@ against UTC daily closes, so the flow window and the scoring window are offset b
 extra1,extra2,extra3) with isBuy living in `extra1` — AGENT.md's "trade rows carry
 price, qty, isBuy" reads like named columns and a literal reading returns zero
 trades and an undefined OFI. Both are documentation defects, not data defects.
+
+2026-08-11 [flow] — Scored 1 overdue forecast (the 08-07 BTC row deliberately left
+pending on 08-10 because the UTC day had not closed): 08-10 settled at 63,911.88
+against the 08-07 close 64,891.61 -> lower -> NO, outcome 0. Forecast record 5
+resolved, Brier skill **-0.0588, no skill vs base rate**, reliability 0.0085 on
+n=5 — which is exactly the honest expectation and not a number to react to.
+Ledger: no call. Deterministic no-trigger, not a judgement call.
+Two findings.
+(1) LEAVING THE ROW PENDING ON 08-10 WAS RIGHT, AND TODAY PROVES THE COST OF
+GETTING IT WRONG WAS ZERO. The 08-10 run could see the in-progress candle at
+64,322.57 and could have resolved NO a day early with the same verdict. It didn't,
+and the settled close came in 410 points lower at 63,911.88 — same answer,
+different number. The verdict was never in doubt; the discipline is that "the
+in-progress candle already says NO" and "the candle closed NO" are different
+claims, and only one of them is a resolution. Recording this because the temptation
+recurs every time a check_date equals the run date in a 7-day market.
+(2) THE INCOMPLETE SESSION CLEARS THE TRIGGER AND THE COMPLETE ONE DOES NOT — THE
+CLEANEST THRESHOLD-SHOPPING TRAP THIS LAB HAS SEEN. Latest COMPLETE session 08-10
+(333,851 trades, 07:00 UTC -> 06:59 UTC next day) ran **OFI -0.0805**, below the
+0.10 trigger, so no call. The in-progress 08-11 file (138,044 trades, 8.6 of 24
+hours) runs **OFI -0.1564**, which clears the trigger comfortably and would have
+produced a tidy `down` call. Using it would have been wrong twice over: it is a
+partial window, and picking the window that fires the trigger is the definition of
+tuning a threshold on the fly, which AGENT.md reserves for a [coach]/Anupam
+decision. Logged explicitly so a future run sees that the two numbers were both
+computed and the complete one was the one that counted. The 07:00 UTC session
+boundary noted on 08-10 still stands and is visible in the span above.
