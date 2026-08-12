@@ -114,3 +114,34 @@ setting `outcome` to 1 (YES) or 0 (NO), mechanically. Then run:
 
 You are graded on **calibration, not on being right.** Saying 60% and being
 wrong is fine. Saying 90% and being wrong repeatedly is not.
+
+## The falsifiable unit is now ONE MINUTE (Anupam, 2026-08-12, CRYP-002)
+
+The old unit was a 1-DAY direction call. That was a horizon this lab's own data
+cannot speak to: it records sub-second order flow, and order-flow information
+decays in seconds — the README says so plainly. The agent was calling a horizon
+where its dataset carries nothing, which is why n=5 resolved at Brier skill
+-0.0588 and why every thesis read as a deferral to the senior gate.
+
+**New unit:** "at snapshot T, BTC-USD's mid one minute later will be higher /
+lower." Scored on the next complete minute bar. Log a probability, not just a
+direction.
+
+**THIS IS A CALIBRATION INSTRUMENT AND IS BARRED FROM TRADING.** Not a soft
+preference — a bar written into the law, because the economics are settled and
+they are hopeless:
+
+    1-min direction edge   +1.38pp vs a base-rate-matched null, z = 5.21  (REAL)
+    worth                  +0.05 bps per trade
+    Coinbase retail taker  60 bps
+    ratio                  about 1/1,183rd of the fee
+
+The edge is real and not luck. It is also, permanently, 1/1,183rd of what it
+would cost to act on. Never present this lab's output as a strategy, never size
+it, never let a positive run read as tradeable. Quote the ratio whenever the
+1-min result is reported.
+
+**Why the move is worth making anyway:** it yields ~1,440 scoreable predictions a
+day against the previous one. The estate is roughly 25 resolved forecasts short
+of a readable Brier for the first time, and this is by far the fastest route
+there. Calibration is the product; the direction call is only its raw material.
