@@ -14,6 +14,13 @@ to come back "coin flip", and finding that out cleanly is the point.
 negative → price is higher/lower one day later." Direction call `up` or
 `down`, scored at the next day's check.
 
+> **SUPERSEDED 2026-08-12 by CRYP-002 (Anupam).** The unit above is a 1-DAY call
+> and this lab's data cannot speak to that horizon — order-flow information decays
+> in seconds. Read "The falsifiable unit is now ONE MINUTE" at the end of this file;
+> it governs. The 1-day procedure is retained below only until the 1-minute runner
+> exists, and the two must never be run as if they agreed. NOT YET IMPLEMENTED —
+> the runner still executes the 1-day steps.
+
 ## Run order (do all steps, in order)
 
 1. **Refresh data**: find the most recent recorded session CSV in
@@ -62,7 +69,8 @@ negative → price is higher/lower one day later." Direction call `up` or
    - **Data state** (2 lines): latest recorded session, rows, collector alive?
    - **Flow read**: session OFI, and the latest verdict line from
      `backtest_log.txt` — the sub-second honest gate is the senior study;
-     never contradict it, this ledger only tests the 1-day horizon.
+     never contradict it. NOTE: this ledger tested only the 1-day horizon; under
+     CRYP-002 the unit becomes 1 minute once the runner is rewired.
    - **Today's call** (or "no call" and why).
    - **Scorecard line**: hit rate so far and pending count.
 
