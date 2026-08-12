@@ -18,7 +18,7 @@ Usage:
     python backtest_all.py                      # all data/*.csv, cost 60bps
     python backtest_all.py --cost-bps 60 --data-dir data
 """
-import argparse, glob, json, os, sys
+import argparse, glob, json, math, os, sys
 import numpy as np
 import pandas as pd
 
@@ -121,9 +121,25 @@ def run_online_pass(m, cost_bps):
             act_ret_bps = (actual / price - 1) * 1e4
             pred_ret_bps = pred_ret * 1e4
             net_bps = np.sign(pred_ret_bps) * act_ret_bps - cost_bps if pred_ret_bps != 0 else 0.0
+            # A bar is SCORABLE for direction only if a position was actually
+            # taken (pred != 0) and the outcome was not flat (act != 0).
+            #
+            # Until 2026-08-12 `hit` was int(sign(pred) == sign(act)), which
+            # made every unchanged minute bar a forced miss: sign(act) is 0 and
+            # no nonzero prediction can equal it. A third of 1-min BTC bars
+            # close unchanged, so that alone dragged the reported hit rate to
+            # 34% and produced a spurious z of -73 — and because flat bars
+            # thin out as the horizon lengthens (17,808 at 1m vs 7,709 at 15m),
+            # it manufactured a clean 34%->42% "trend" across horizons that was
+            # pure tie density. It also disagreed with net_bps one line up,
+            # which already treats pred==0 as no-trade rather than as wrong.
+            scorable = pred_ret_bps != 0 and act_ret_bps != 0
             rows.append(dict(day=m['day'].values[i], z=z, z_act=z_act,
                               sq_err=(z - z_act) ** 2, sq_base=z_act ** 2,
-                              hit=int(np.sign(pred_ret_bps) == np.sign(act_ret_bps)) if pred_ret_bps != 0 else 0,
+                              scorable=int(scorable),
+                              hit=int(np.sign(pred_ret_bps) == np.sign(act_ret_bps)) if scorable else 0,
+                              up=int(act_ret_bps > 0) if scorable else 0,
+                              long=int(pred_ret_bps > 0) if scorable else 0,
                               net_bps=net_bps))
 
         if i < 20:
@@ -171,15 +187,37 @@ def main():
         sys.exit('not enough data to resolve any 15-min predictions yet')
 
     overall_skill = 1 - results['sq_err'].sum() / results['sq_base'].sum()
-    overall_hit = results['hit'].mean()
     overall_net = results['net_bps'].mean()
+
+    # Direction is scored ONLY over scorable bars, and ONLY against the base
+    # rate of that same subset. A model that is simply long more often than
+    # short earns the up-move base rate with no skill at all; comparing its
+    # hit rate to a flat 50% would bank that as an edge. `naive` is what a
+    # skill-free model with this model's exact long/short mix would score, so
+    # edge_pp is the only number here that can support a claim.
+    sc = results[results['scorable'] == 1]
+    n_sc = len(sc)
+    n_tie = len(results) - n_sc
+    overall_hit = sc['hit'].mean() if n_sc else float('nan')
+    base_up = sc['up'].mean() if n_sc else float('nan')
+    long_share = sc['long'].mean() if n_sc else float('nan')
+    naive = long_share * base_up + (1 - long_share) * (1 - base_up)
+    edge_pp = (overall_hit - naive) * 100
+    edge_z = (overall_hit - naive) / math.sqrt(0.25 / n_sc) if n_sc else float('nan')
+    gross_bps = overall_net + args.cost_bps
 
     per_day = results.groupby('day').agg(
         n=('z', 'size'),
         skill=('sq_err', lambda s: 1 - s.sum() / results.loc[s.index, 'sq_base'].sum()),
-        hit=('hit', 'mean'),
+        # hit over that day's SCORABLE bars only — same tie rule as the overall
+        # figure. Averaging the raw flag would divide by every bar including
+        # ties, which is what made quiet days look catastrophic (2026-08-09
+        # read 27.4% purely because it was a flat tape).
+        hit=('hit', 'sum'),
+        n_scorable=('scorable', 'sum'),
         net_bps=('net_bps', 'mean'),
     ).reset_index()
+    per_day['hit'] = per_day['hit'] / per_day['n_scorable'].replace(0, np.nan)
 
     print(f'\n  {len(results):,} resolved 15-min predictions, walk-forward (online, no lookahead)\n')
     print(f'  {"day":>12} {"n":>6} {"skill":>8} {"hit%":>6} {"net_bps":>8}')
@@ -187,6 +225,17 @@ def main():
         print(f'  {r.day:>12} {int(r.n):>6} {r.skill:>8.4f} {r.hit*100:>5.1f} {r.net_bps:>8.2f}')
     print(f'\n  {"OVERALL":>12} {len(results):>6} {overall_skill:>8.4f} {overall_hit*100:>5.1f} {overall_net:>8.2f}\n')
 
+    print(f'  direction scored on {n_sc:,} bars; {n_tie:,} dropped as ties '
+          f'(outcome exactly flat — a tie predicted nothing either way)')
+    print(f'  hit {overall_hit*100:.1f}%  vs base-rate-matched naive '
+          f'{naive*100:.1f}%  (up-moves {base_up*100:.1f}%, model long '
+          f'{long_share*100:.1f}% of the time)')
+    print(f'  EDGE {edge_pp:+.2f}pp  z={edge_z:+.2f}   '
+          f'gross {gross_bps:+.2f} bps/trade before costs\n')
+
+    # Both tests must hold. Significance without economics is the trap this
+    # account's tooling exists to catch: at 1-min the direction edge is real
+    # at z>5 and worth 0.07 bps against a 60 bps cost.
     edge = overall_skill > 0.01 and overall_net > 0
     verdict = ('a genuine edge survives — skill beats random walk AND clears '
                f'{args.cost_bps:.0f}bps costs. Validate further before trusting it.') if edge else \
@@ -202,6 +251,14 @@ def main():
         weights=dict(zip(FEATS, [float(x) for x in w])),
         overall_skill_vs_random_walk=float(overall_skill),
         overall_hit_rate=float(overall_hit),
+        n_scorable=int(n_sc),
+        n_ties_dropped=int(n_tie),
+        base_rate_up=float(base_up),
+        model_long_share=float(long_share),
+        naive_hit_rate=float(naive),
+        edge_pp_vs_base=float(edge_pp),
+        edge_z=float(edge_z),
+        gross_bps_per_trade=float(gross_bps),
         overall_net_bps=float(overall_net),
         per_day=per_day.to_dict(orient='records'),
         verdict=verdict,
