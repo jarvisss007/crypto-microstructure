@@ -17,9 +17,11 @@ negative → price is higher/lower one day later." Direction call `up` or
 > **SUPERSEDED 2026-08-12 by CRYP-002 (Anupam).** The unit above is a 1-DAY call
 > and this lab's data cannot speak to that horizon — order-flow information decays
 > in seconds. Read "The falsifiable unit is now ONE MINUTE" at the end of this file;
-> it governs. The 1-day procedure is retained below only until the 1-minute runner
-> exists, and the two must never be run as if they agreed. NOT YET IMPLEMENTED —
-> the runner still executes the 1-day steps.
+> it governs. IMPLEMENTED 2026-08-12: `agent/minute_forecaster.py`, looped by
+> `~/bin/crypto-minute.sh`, writes a forecast before each minute elapses and scores
+> it after. The 1-day procedure below is RETIRED — do not run it, and do not blend
+> its rows with minute rows. It is retained only as the record of what this ledger
+> used to test.
 
 ## Run order (do all steps, in order)
 
