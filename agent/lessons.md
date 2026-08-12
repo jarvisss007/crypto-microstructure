@@ -246,3 +246,41 @@ tuning a threshold on the fly, which AGENT.md reserves for a [coach]/Anupam
 decision. Logged explicitly so a future run sees that the two numbers were both
 computed and the complete one was the one that counted. The 07:00 UTC session
 boundary noted on 08-10 still stands and is visible in the span above.
+
+## 2026-08-12 [flow]
+First run since CRYP-002 with the minute forecaster actually live. 91 minute
+forecasts resolved today; the 1-day ledger has no open rows left and is closed.
+
+(1) THE MINUTE UNIT IS PRODUCING DATA AND ITS FIRST NUMBER IS A COIN FLIP.
+n=91 resolved, **46 right / 45 wrong = 50.5%**, up-rate 0.473, Brier 0.2533 against
+a climatology of 0.2492 — **Brier skill -0.0162**. Negative, i.e. worse than just
+predicting the base rate, and at n=91 that is noise, not a verdict. What matters is
+that it took ONE morning to get 91 resolved observations; the old 1-day unit took
+17 days to get 5. CRYP-002's entire justification was throughput and the throughput
+is real.
+(2) THE FORECASTER'S PROBABILITIES ARE ALMOST FLAT AND THAT IS THE HONEST SHAPE.
+p_up spans 0.4145-0.5478 with a mean of 0.4846 — it never claims more than a 5pp
+tilt off the coin. Given the standing economics (edge worth +0.05 bps against a
+60 bps taker fee, about 1/1,183rd of the cost), a model that stayed near 0.5 is
+the correct-looking model. Any future run where p_up starts printing 0.7s should
+be treated as a bug before it is treated as a discovery.
+(3) THE LOOP HAD A 335-MINUTE HOLE THIS MORNING AND IT WAS NOT A FAILURE.
+Forecasts run 08:25 UTC (one row, written when the script was built at 01:25 PDT),
+then nothing until 14:01 UTC, then continuously ~1/minute to 15:30. The gap is the
+window before `crypto-minute.sh` was actually launched — PID 19507 started 07:01
+PDT and has held since. Recording it so a future reader does not diagnose a dead
+loop from the gap. What IS worth watching: at ~1,440 possible minutes a day the
+lab is currently capturing whatever fraction the loop is up for, and the honest
+denominator for any future rate is minutes-loop-was-alive, not minutes-in-the-day.
+(4) TODAY'S FLOW WOULD HAVE TRIGGERED A RETIRED CALL. Partial UTC session OFI is
+**-0.163** on 168,988 trade rows, sell-heavy and past the old 0.10 threshold — under
+the retired procedure that is an automatic `down` row. Not logged. The horizon was
+retired because this lab's data cannot speak to it, and the first session where the
+old rule would have fired is exactly the session to prove the retirement is real
+rather than nominal.
+(5) THE COUNCIL'S TAG-INTO-LEDGER FIX HAS NOWHERE TO LAND HERE. The directive is
+that `[flow] [tech]` must reach `ledger.csv` because the Observatory reads that
+file. This lab's `ledger.csv` is now CLOSED — 4 rows, all scored, unit retired — so
+there will never be another row to carry the tag. The live record is
+`minute_forecasts.csv` plus `forecasts.csv`. Whatever the Observatory reads for
+this lab needs to point somewhere other than a retired file.
