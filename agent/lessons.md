@@ -324,3 +324,46 @@ written within a minute). So the process was wedged, not blocked on the exchange
 clears it. That makes the fix a heartbeat watchdog: if the last row's target minute is more
 than ~3 minutes old, kickstart. Roughly 3.5 hours (~200 forecasts) were lost tonight before
 anyone looked.
+
+## 2026-08-14 [flow] The minute book is now large enough to argue with CRYP-002's own headline number
+
+Nothing was due in either the retired 1-day ledger (4 rows, closed) or the daily
+forecast book. The minute book, however, has crossed 1,797 scored rows, and that is
+the first time it can say anything back. Three findings.
+
+(1) THE FORWARD RECORD IS RUNNING AT ABOUT A THIRD OF THE CLAIMED EDGE, WITH NEGATIVE
+BRIER SKILL. CRYP-002 is written into AGENT.md on "1-min direction edge +1.38pp vs a
+base-rate-matched null, z = 5.21 (REAL)". Live: 50.47% directional (907/1797) against
+a 49.58% up base rate = +0.47pp. Brier 0.25281 vs climatology 0.24998, SKILL -0.0113.
+Stating carefully what this does and does not establish, because the temptation to
+overclaim runs in both directions. It does NOT convict the +1.38pp figure: the SE on a
+hit rate at n=1797 is about 1.2pp, so 50.47% and 51.38% are roughly one SE apart and
+not cleanly separated. It DOES establish that the number in AGENT.md is backtested and
+the forward record is currently below it — so it must stop being quoted as a live
+result, and the ratio sentence ("1/1,183rd of the fee") should be understood as
+generous to the strategy, not conservative.
+
+(2) THE CALIBRATION TABLE LOCATES THE PROBLEM, AND THE PROBLEM IS ZERO RESOLUTION, NOT
+BAD CALIBRATION. Every bucket resolves at roughly the base rate: said 0.374 -> happened
+0.493 (n=75); said 0.463 -> 0.493 (n=952); said 0.535 -> 0.491 (n=700); said 0.625 ->
+0.574 (n=68). The 700-row 0.5-0.6 bucket is INVERTED — it says up and gets 0.491. A
+forecaster whose every confidence level produces the same outcome frequency has not
+learned to discriminate; it has learned the unconditional rate and is jittering around
+it. That is a different failure from being miscalibrated, and it is the one the
+asia-radar reliability curve was praised for finding on 08-13. Same instrument, same
+result: the curve did not just score the book, it said WHERE the loss is. n_updates is
+1797, so this is an early-learner statement, not a verdict.
+
+(3) THE SENIOR GATE IS UNCHANGED AND STILL SENIOR. Today's auto-backtest on 156,964
+trades: ofi IC 0.105 -> 0.023 and book_imb IC 0.166 -> 0.034 across 5s-60s, every
+horizon significant at p=0.002, every horizon net -59.7 to -60.0 bps against 60 bps
+costs. Association real, expectancy hopeless. Nothing in finding (1) or (2) touches
+this, and nothing in this lab is ever allowed to contradict it.
+
+Today's forecast is the first in this book to ask the lab's own question instead of a
+BTC/ETH daily close: "minute forecaster directional hit rate on 2026-08-18 UTC scored
+rows exceeds 50.0%", p=0.54. Deliberately not 0.86, which is what the +1.38pp claim
+would imply — writing the claim's own p would have been assuming the answer.
+
+Standing bar, quoted as AGENT.md requires: calibration instrument, BARRED from trading,
++0.05 bps per trade against a 60 bps taker fee = 1/1,183rd of the cost of acting on it.
