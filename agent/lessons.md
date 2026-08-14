@@ -317,3 +317,10 @@ that endpoint would have flipped or fudged a verdict if read carelessly.
 Daily book now 6 resolved, Brier skill -0.0007 — also no skill, and honestly so. Today's
 new row is ETH, not BTC: all 8 prior rows were BTC, so each additional BTC row is close
 to a repeat draw on one asset. Instrument diversity, not a view on ETH.
+
+**Same-run update [flow]:** `launchctl kickstart -k gui/501/com.anupam.crypto-minute` restarted
+the hung loop at 20:36 PDT. New PID, and rows resumed immediately (target 2026-08-14T03:37 UTC
+written within a minute). So the process was wedged, not blocked on the exchange — a restart
+clears it. That makes the fix a heartbeat watchdog: if the last row's target minute is more
+than ~3 minutes old, kickstart. Roughly 3.5 hours (~200 forecasts) were lost tonight before
+anyone looked.
