@@ -58,8 +58,12 @@ PRODUCT = "BTC-USD"
 LR, L2 = 0.02, 0.001            # identical to research/backtest_all.py
 FEATS = ["bias", "r1", "r5", "rev", "ofi", "book_imb"]
 STALE_SEC = 180                 # a book older than this is not a live book
+# `up` is 1/0 for "the minute closed higher", which is what a calibration scorer
+# needs — `outcome` records whether the CALL was right, which is a different
+# question and cannot be paired with p. A tie leaves `up` blank rather than 0:
+# a minute that did not move did not happen either way.
 COLS = ["made_at_utc", "target_minute_utc", "product", "p_up", "px_at_call",
-        "px_at_target", "outcome", "note"]
+        "px_at_target", "up", "outcome", "note"]
 
 
 def minute_closes(path, n=400):
@@ -148,8 +152,10 @@ def tick():
         r["px_at_target"] = f"{px1:.2f}"
         if px1 == px0:
             r["outcome"] = "tie"                  # CRYP-001: never a miss
+            r["up"] = ""
         else:
             up = px1 > px0
+            r["up"] = "1" if up else "0"
             r["outcome"] = "right" if (float(r["p_up"]) > 0.5) == up else "wrong"
             # online SGD update, same rule as backtest_all
             f = json.loads(r["note"])["f"]
@@ -173,7 +179,7 @@ def tick():
                 "made_at_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S"),
                 "target_minute_utc": target, "product": PRODUCT,
                 "p_up": f"{p_up:.4f}", "px_at_call": f"{last_px:.2f}",
-                "px_at_target": "", "outcome": "",
+                "px_at_target": "", "up": "", "outcome": "",
                 "note": json.dumps({"f": f, "sig": round(sig, 8)}),
             })
             wrote = 1
