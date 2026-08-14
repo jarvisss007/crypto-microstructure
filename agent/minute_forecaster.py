@@ -19,10 +19,22 @@ permanently smaller than the cost of acting on it. Never present this output as 
 strategy, never size it, never let a good run read as tradeable. The ratio above is
 printed on every run so it cannot quietly fall out of the story.
 
-WHY IT IS WORTH RUNNING ANYWAY: ~1,440 scoreable predictions a day against the
-previous one. The estate is roughly 25 resolved forecasts short of a readable Brier
-for the first time, and this is by far the fastest route there. Calibration is the
-product; the direction call is raw material.
+WHY IT IS WORTH RUNNING ANYWAY — with the authorising arithmetic CORRECTED.
+
+CRYP-002 was ruled on "~1,440 scoreable predictions a day". Observed: 589 on
+08-12 and 542 on 08-13. The shortfall is NOT gaps — while the process runs,
+coverage is 99.0% with no gap over 3 minutes. It is that the job only runs about
+9 hours of 24, because com.anupam.crypto-minute.plist is KeepAlive and the laptop
+sleeps. That is the same sleep constraint the 0DTE cloud leg exists for, and I
+should have priced it in rather than quoting the theoretical maximum.
+
+The honest figure is ~550/day, not 1,440. The decision still holds — 550 is about
+100x the unit it replaced, and the estate was ~25 resolved forecasts short — but
+it holds on a number 2.6x smaller than the one that authorised it, and a decision
+argued on an inflated figure deserves to have the real one written where the
+claim was made.
+
+Calibration is the product; the direction call is raw material.
 
 HOW IT STAYS HONEST
   · A forecast is written BEFORE its minute elapses and is never edited afterwards.
@@ -121,10 +133,20 @@ def main():
 
 
 def tick():
-    day = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-    path = os.path.join(DATA, f"{PRODUCT}_{day}.csv")
-    if not os.path.exists(path):
-        print(f"no recording for {day} — collector down. Nothing written.")
+    # collector.py names its file with datetime.date.today() — the LOCAL date.
+    # This looked for the UTC date, so between 17:00 PT and midnight (00:00-07:00
+    # UTC) the two disagree, the file "did not exist", and the run reported
+    # "collector down" while the collector was demonstrably alive. Seven hours a
+    # day of silence from a timezone mismatch, on top of the laptop sleep that
+    # CRYP-003 correctly identified. Local first, UTC as a fallback so a machine
+    # set to UTC still works.
+    cands = [datetime.now().strftime("%Y-%m-%d"),
+             datetime.now(timezone.utc).strftime("%Y-%m-%d")]
+    path = next((q for q in (os.path.join(DATA, f"{PRODUCT}_{d}.csv") for d in cands)
+                 if os.path.exists(q)), None)
+    if path is None:
+        print(f"no recording for {cands[0]} (or {cands[1]} UTC) — collector down. "
+              f"Nothing written.")
         return
     closes = minute_closes(path)
     if not closes:
@@ -198,8 +220,12 @@ def tick():
     print(f"{wrote} forecast written, {scored} scored · book {len(rows)} rows "
           f"({len(done)} scoreable, {ties} ties excluded)")
     if done:
-        print(f"  hit {hit:.1f}%  Brier {brier:.4f}  n={len(done)} "
-              f"— provisional below n=100")
+        days = len({r["target_minute_utc"][:10] for r in done})
+        prov = " — PROVISIONAL" if days < 30 else ""
+        print(f"  hit {hit:.1f}%  Brier {brier:.4f}  n={len(done)} over {days} day(s){prov}")
+        if days < 30:
+            print(f"  effective sample is nearer {days} than {len(done)}: minutes inside "
+                  f"one session share a regime.")
     print("  NOT TRADEABLE: the 1-min edge is worth ~+0.05 bps against a 60 bps "
           "retail fee, about 1/1,183rd of cost.")
 
