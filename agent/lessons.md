@@ -284,3 +284,36 @@ file. This lab's `ledger.csv` is now CLOSED — 4 rows, all scored, unit retired
 there will never be another row to carry the tag. The live record is
 `minute_forecasts.csv` plus `forecasts.csv`. Whatever the Observatory reads for
 this lab needs to point somewhere other than a retired file.
+
+## 2026-08-13 [flow] The minute forecaster is readable at last, and it says nothing
+
+Three findings, one of them the most important number this lab has produced.
+
+(1) 1,120 RESOLVED MINUTE FORECASTS, BRIER SKILL -0.0122, HIT RATE 0.4991. CRYP-002 was
+adopted on 08-12 to get the estate to a readable n fast, and it worked — two days later
+this lab has more resolved forecasts than every other lab combined by two orders of
+magnitude. The answer is a coin flip. Base rate 0.5054, Brier 0.2530 against climatology
+0.2500. **AGENT.md's +1.38pp / z=5.21 direction edge does not reproduce in forward
+prediction.** That is not a contradiction to explain away: the claimed edge came from a
+research study, and the forward book is the test, and the test says no. Report it as a
+result, which is exactly what the README expected. The 1/1,183rd-of-fee ratio is quoted
+anyway and is now doubly moot — an edge of zero is untradeable at any fee.
+
+(2) THE LOOP IS HUNG, AND IT IS THE FAILURE MODE launchd CANNOT SEE. Last row targets
+2026-08-14T00:00 UTC (17:00 PDT); the run at 03:25 UTC found nothing written for ~3.4
+hours, and a 75-second watch showed the file flat. PID 19507 is alive and
+`com.anupam.crypto-minute` shows status 0, so every liveness check the desk has says
+healthy. `crypto-minute.sh` deliberately removed its pgrep guard because "singleton is
+launchd's job" — correct, but launchd only guarantees ONE instance, never a WORKING one.
+At ~200 forecasts/hour this is the estate's fastest route to a readable Brier, and it
+has been silently off since 17:00. Needs a heartbeat check (row count advancing), not a
+process check.
+
+(3) THE SETTLED-BAR DISCIPLINE HELD AGAIN. Coinbase's candles endpoint returns the
+in-progress 08-14 bar (63,504) first; the 08-10 forecast was resolved off the DATED
+08-13 close (63,425.35) -> NO. This is the third consecutive run where the ordering of
+that endpoint would have flipped or fudged a verdict if read carelessly.
+
+Daily book now 6 resolved, Brier skill -0.0007 — also no skill, and honestly so. Today's
+new row is ETH, not BTC: all 8 prior rows were BTC, so each additional BTC row is close
+to a repeat draw on one asset. Instrument diversity, not a view on ETH.
