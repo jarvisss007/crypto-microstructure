@@ -49,6 +49,39 @@
   .legend i{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-2px;margin-right:5px}
   .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px}
   @media(max-width:760px){.cards{grid-template-columns:1fr 1fr}}
+  /* ---- horizon ladder: +5 / +10 / +15, each labelled with the clock time ---- */
+  .nowbar{display:flex;align-items:baseline;gap:10px;margin-top:16px;flex-wrap:wrap}
+  .nowbar .k{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--dim);font-weight:700}
+  .nowbar .clock{font-size:22px;font-weight:800;font-variant-numeric:tabular-nums}
+  .nowbar .px{font-size:22px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--accent)}
+  .ladder{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:10px}
+  @media(max-width:760px){.ladder{grid-template-columns:1fr}}
+  .rung{position:relative;background:linear-gradient(180deg,var(--panel),var(--panel2));
+    border:1px solid var(--line);border-radius:12px;padding:14px 15px 13px;overflow:hidden}
+  .rung::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--blue);opacity:.55}
+  .rung.h15::before{background:var(--accent);opacity:.9}
+  .rung .hz{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--dim);font-weight:700}
+  .rung .at{font-size:26px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:.5px;margin-top:2px}
+  .rung .pt{font-size:15px;font-weight:700;font-variant-numeric:tabular-nums;margin-top:6px}
+  .rung .pt .delta{font-size:11px;font-weight:700;margin-left:6px}
+  /* the range is the answer, so it is drawn, not just printed */
+  .rng{margin-top:11px}
+  .rng .lbl{display:flex;justify-content:space-between;font-size:10px;color:var(--dimmer);
+    font-variant-numeric:tabular-nums;margin-bottom:4px}
+  .track{position:relative;height:22px;border-radius:6px;background:var(--panel2);
+    border:1px solid var(--line);overflow:hidden}
+  .track .b95{position:absolute;top:0;bottom:0;background:rgba(0,255,163,.10)}
+  .track .b68{position:absolute;top:0;bottom:0;background:rgba(0,255,163,.24)}
+  .track .mid{position:absolute;top:0;bottom:0;width:1px;background:var(--dimmer);opacity:.7}
+  .track .pin{position:absolute;top:3px;bottom:3px;width:2px;background:var(--accent);
+    box-shadow:0 0 7px rgba(255,196,0,.85);border-radius:1px}
+  .rng .cap{font-size:10.5px;color:var(--dimmer);margin-top:6px;line-height:1.5}
+  .rng .cap b{color:var(--dim)}
+  .ratio{margin-top:12px;padding:11px 13px;border-radius:10px;
+    background:rgba(255,46,99,.06);border:1px solid rgba(255,46,99,.22);
+    font-size:11.5px;line-height:1.6;color:var(--dim)}
+  .ratio b{color:var(--down)}
+  .ratio .num{color:var(--txt);font-weight:700}
   .card{background:var(--panel2);border:1px solid var(--line);border-left:3px solid var(--line);
     border-radius:10px;padding:12px 14px;transition:transform .15s,border-color .15s}
   .card:hover{transform:translateY(-2px);border-left-color:var(--blue)}
@@ -104,19 +137,20 @@
     <canvas id="chart" height="360"></canvas>
     <div class="legend">
       <span><i style="background:#3b6ef0"></i>Last 60 min</span>
-      <span><i style="background:var(--accent)"></i>Model forecast (15m)</span>
+      <span><i style="background:var(--accent)"></i>Model forecast · +5 / +10 / +15m</span>
       <span><i style="border:1px dashed #8b98a9;background:transparent"></i>Random-walk baseline</span>
       <span><i style="background:rgba(14,203,129,.35)"></i>68% range</span>
       <span><i style="background:rgba(14,203,129,.15)"></i>95% range</span>
     </div>
   </div>
 
-  <div class="cards">
-    <div class="card"><div class="lbl">Price now</div><div class="val" id="c_now">—</div><div class="sub">live</div></div>
-    <div class="card hl"><div class="lbl">Approx price in 15 min</div><div class="val" id="c_exp">—</div><div class="sub" id="c_drift">model drift —</div></div>
-    <div class="card"><div class="lbl">68% likely range</div><div class="val" id="c_68">—</div><div class="sub" id="c_68p">±—</div></div>
-    <div class="card"><div class="lbl">95% likely range</div><div class="val" id="c_95">—</div><div class="sub" id="c_95p">±—</div></div>
+  <div class="nowbar">
+    <span class="k">now</span><span class="clock" id="c_clock">—</span>
+    <span class="px" id="c_now">—</span>
+    <span class="k" id="c_asof">live</span>
   </div>
+  <div class="ladder" id="ladder"></div>
+  <div class="ratio" id="c_ratio">—</div>
 
   <div class="panel board">
     <h2>Self-Learning Scoreboard — is the model beating a coin flip?</h2>
@@ -137,8 +171,16 @@
   </div>
 
   <div class="note">
+    <b>How to read the ladder.</b> Each rung is a wall-clock time, not an abstract horizon:
+    at 11:30 the rungs answer 11:35, 11:40 and 11:45. The gold pin is the model's point
+    guess; the green band behind it is where price actually lands 95% (light) and 68%
+    (solid) of the time. The pin sits almost exactly on the centre line, and that is the
+    honest result, not a rendering bug. <b>Only the 15-minute rung is scored below</b> — the
+    5 and 10 minute rungs pro-rate the same drift by time (drift ∝ h) while the band grows
+    as σ√h, so the shorter rungs are arithmetic on one forecast, not three independent ones.
+    <br><br>
     <b>What "self-learning" means here.</b> Every minute the model makes a real point
-    forecast — the <b>Approx price in 15 min</b> card — as current price plus a small drift
+    forecast — the <b>+15 min</b> rung — as current price plus a small drift
     from an <b>online linear model</b>. Its features are price momentum &amp; mean-reversion
     <i>plus live microstructure</i>: <b>order-flow imbalance</b> (buy vs sell volume) and
     <b>book imbalance</b> (bid vs ask depth), streamed from Coinbase trades and the order book.
@@ -166,7 +208,8 @@
 <script>
 const $=id=>document.getElementById(id);
 const fmt=(n,d=2)=>n==null||isNaN(n)?'—':n.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
-const H=15;                          // horizon (minutes)
+const H=15;                          // horizon the model is TRAINED and SCORED on
+const HORIZONS=[5,10,15];            // horizons the page reads out, in clock time
 // LR was 0.02 originally; research/backtest_all.py replayed this exact algorithm over
 // a full week of continuously-recorded data and found 0.02 lets the model wander into
 // a confidently WRONG state (skill -0.60, some days <30% hit-rate) instead of shrinking
@@ -357,17 +400,69 @@ function onTicker(d){
 
 // ---------- render: cards ----------
 function bands(k){const s=sigMin*Math.sqrt(k);return{lo68:Math.exp(-s),hi68:Math.exp(s),lo95:Math.exp(-1.96*s),hi95:Math.exp(1.96*s)};}
+// The drift the model predicts is for H minutes. Over a shorter horizon it is
+// pro-rated by TIME (drift ∝ h), while the uncertainty band grows with the SQUARE
+// ROOT of time (σ√h) — bands() already does that. Those two different exponents
+// are the whole story of this page: halve the horizon and the prediction halves,
+// but the band only shrinks by 1/√2. The shorter the horizon, the more the drift
+// is buried by the noise, not less.
+function forecastAt(h){
+  const fc=currentForecast();
+  if(!fc)return null;
+  const ret=fc.ret*(h/H);
+  return {ret,price:priceNow*(1+ret)};
+}
+const clockAt=mins=>new Date(Date.now()+mins*60000)
+  .toLocaleTimeString([],{hour:'numeric',minute:'2-digit'});
+// Chart axis only: the +10 and +15 ticks are five minutes apart on a 75-minute
+// axis, which is not enough room for "11:47 PM" twice without them colliding.
+// The meridiem lives on the ladder, where there is space for it.
+const clockTick=mins=>clockAt(mins).replace(/\s*[AP]M$/i,'');
+
 function updateCards(){
   if(priceNow==null||sigMin==null)return;
-  const b=bands(H),fc=currentForecast();
+  $('c_clock').textContent=clockAt(0);
   $('c_now').textContent='$'+fmt(priceNow,2);
-  if(fc){$('c_exp').textContent='$'+fmt(fc.price,2);
-    $('c_drift').textContent=`model drift ${fc.ret>=0?'+':''}${fmt(fc.ret*100,3)}%`;
-    $('c_drift').className='sub '+(fc.ret>=0?'up':'down');}
-  $('c_68').textContent=`$${fmt(priceNow*b.lo68,0)} – $${fmt(priceNow*b.hi68,0)}`;
-  $('c_95').textContent=`$${fmt(priceNow*b.lo95,0)} – $${fmt(priceNow*b.hi95,0)}`;
-  $('c_68p').textContent=`± ${fmt((b.hi68-1)*100,2)}%`;
-  $('c_95p').textContent=`± ${fmt((b.hi95-1)*100,2)}%`;
+
+  // ---- the ladder: one rung per horizon, each headed by the wall-clock time ----
+  $('ladder').innerHTML=HORIZONS.map(h=>{
+    const b=bands(h), f=forecastAt(h);
+    const lo95=priceNow*b.lo95, hi95=priceNow*b.hi95;
+    const lo68=priceNow*b.lo68, hi68=priceNow*b.hi68;
+    const span=hi95-lo95||1;
+    const pos=v=>Math.max(0,Math.min(100,(v-lo95)/span*100));
+    const pt=f?f.price:priceNow, d=pt-priceNow;
+    const dcls=d>=0?'up':'down';
+    return `<div class="rung ${h===H?'h15':''}">
+      <div class="hz">+${h} min</div>
+      <div class="at">${clockAt(h)}</div>
+      <div class="pt">$${fmt(pt,2)}<span class="delta ${dcls}">${d>=0?'+':'−'}$${fmt(Math.abs(d),2)}</span></div>
+      <div class="rng">
+        <div class="lbl"><span>$${fmt(lo95,0)}</span><span>95% range</span><span>$${fmt(hi95,0)}</span></div>
+        <div class="track">
+          <span class="b95" style="left:0;width:100%"></span>
+          <span class="b68" style="left:${pos(lo68)}%;width:${pos(hi68)-pos(lo68)}%"></span>
+          <span class="mid" style="left:${pos(priceNow)}%"></span>
+          <span class="pin" style="left:${pos(pt)}%"></span>
+        </div>
+        <div class="cap"><b>68%:</b> $${fmt(lo68,0)} – $${fmt(hi68,0)}
+          · <b>±${fmt((b.hi68-1)*100,2)}%</b> · gold pin = the model's guess</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // ---- how big is the guess next to the noise it lives in? ----
+  const bH=bands(H), fH=forecastAt(H);
+  const width=priceNow*(bH.hi95-bH.lo95), drift=fH?Math.abs(fH.price-priceNow):0;
+  const at=clockAt(H);
+  $('c_ratio').innerHTML = drift<0.005
+    ? `At <span class="num">${at}</span> the 95% band spans <span class="num">$${fmt(width,0)}</span>
+       and the model's drift is <b>effectively zero</b> — it has learned to forecast "no change",
+       which is what an honest model does at this horizon. <b>The band is the forecast. The line is decoration.</b>`
+    : `At <span class="num">${at}</span> the 95% band spans <span class="num">$${fmt(width,0)}</span>
+       while the model's drift is <span class="num">$${fmt(drift,2)}</span> —
+       the band is <b>${fmt(width/drift,0)}× the prediction</b>.
+       <b>The band is the forecast. The line is decoration.</b>`;
   const of=liveOFI(),bi=liveBookImb(),col=v=>v>=0?'var(--up)':'var(--down)';
   $('micro').innerHTML=`live features → order-flow imb `+
     `<b style="color:${col(of)}">${(of>=0?'+':'')+fmt(of*100,1)}%</b> · book imb `+
@@ -438,7 +533,25 @@ function draw(){
     g.fillStyle='#ffc400';g.beginPath();g.arc(X(n-1+H),Y(fc.price),3.5,0,7);g.fill();g.restore();}
   g.setLineDash([]);
   g.strokeStyle='#2a3346';g.lineWidth=1;g.beginPath();g.moveTo(nowX,padT);g.lineTo(nowX,Ht-padB);g.stroke();
-  g.fillStyle='#8b98a9';g.fillText('now',nowX-8,Ht-8);g.fillText('+15m',X(n-1+H)-22,Ht-8);g.fillText('-60m',padL,Ht-8);
+
+  // horizon rungs: a tick and a clock time at each readout horizon, so the chart
+  // answers "what about 11:40?" without the reader counting minutes off the axis
+  HORIZONS.forEach(h=>{
+    const x=X(n-1+h), f=forecastAt(h), last=h===H;
+    g.strokeStyle=last?'rgba(255,196,0,.35)':'rgba(139,152,169,.20)';
+    g.setLineDash(last?[]:[3,4]);g.lineWidth=1;
+    g.beginPath();g.moveTo(x,padT);g.lineTo(x,Ht-padB);g.stroke();g.setLineDash([]);
+    if(f){g.fillStyle=last?'#ffc400':'rgba(255,196,0,.55)';
+      g.beginPath();g.arc(x,Y(f.price),last?3.5:2.6,0,7);g.fill();}
+    // the +15m tick sits exactly on the plot's right edge, so its labels are
+    // right-aligned to stay off the price gutter instead of centred over it
+    g.fillStyle=last?'#ffc400':'#8b98a9';g.font='10px monospace';
+    g.textAlign=last?'right':'center';
+    g.fillText(clockTick(h),x,Ht-8);
+    g.fillText('+'+h+'m',x,padT+9);
+  });
+  g.textAlign='left';
+  g.fillStyle='#8b98a9';g.fillText('now',nowX-8,Ht-8);g.fillText('-60m',padL,Ht-8);
   g.save();g.shadowColor='rgba(255,196,0,.8)';g.shadowBlur=8;
   g.fillStyle='#ffc400';g.beginPath();g.arc(nowX,Y(priceNow),3.5,0,7);g.fill();g.restore();
 }
