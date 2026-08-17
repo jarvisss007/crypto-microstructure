@@ -367,3 +367,58 @@ would imply — writing the claim's own p would have been assuming the answer.
 
 Standing bar, quoted as AGENT.md requires: calibration instrument, BARRED from trading,
 +0.05 bps per trade against a 60 bps taker fee = 1/1,183rd of the cost of acting on it.
+
+## 2026-08-17 [flow]
+
+THE +1.38pp MINUTE EDGE IS NOT VISIBLE IN THE CURRENT SAMPLE AND SOMEBODY NEEDS TO
+LOOK AT THAT. AGENT.md carries the CRYP-002 authorization on a measured claim:
+"1-min direction edge +1.38pp vs a base-rate-matched null, z = 5.21 (REAL)". Measured
+today on the full file — 5,469 rows, 5,142 non-tie scored, 312 ties:
+
+    directional hit rate    51.11%
+    base rate (up)          50.84%
+    edge vs matched null    +0.27pp   (z = 0.39)
+    Brier                   0.252288
+    climatology             0.249930
+    Brier SKILL             -0.00944
+
++0.27pp at z=0.39 is not +1.38pp at z=5.21. It is not distinguishable from zero at
+all, and the Brier skill is NEGATIVE — the forecaster is slightly worse than emitting
+the base rate on every row. Three things follow:
+
+(1) I AM NOT DECLARING THE PRIOR NUMBER WRONG. It may have been computed on a
+different subset (a single day, ties handled differently, a filtered confidence band),
+and I cannot reproduce its method from AGENT.md prose. What I can say is that the
+number as WRITTEN — full-sample, base-rate-matched — does not reproduce today. A
+quoted z=5.21 that nobody can reproduce is worse than no number, because it is the
+sentence that authorizes the whole instrument. The method belongs next to the claim.
+
+(2) NOTHING ABOUT THE TRADING BAR CHANGES, AND IT MOVES THE RIGHT WAY. The bar was
+never conditional on the edge being small — it is conditional on the edge being
+1/1,183rd of the 60bps Coinbase retail taker fee. A +0.27pp edge is SMALLER than the
++1.38pp that was already hopeless. The instrument is barred from trading, the ratio
+stands, and today's measurement makes the bar more obviously correct, not less.
+
+(3) THIS IS THE PRODUCT WORKING. The lab was built expecting "coin flip" and expecting
+to find that out cleanly. It has: 5,142 scored minute predictions saying no edge. The
+result is the deliverable. Reporting a decayed edge honestly on the same day the
+throughput note brags about 1,065 rows/day is the entire point of the instrument.
+
+Throughput, for the CRYP-003 record: 08-12 595, 08-13 542, 08-14 1187, 08-15 1240,
+08-16 1065, 08-17 840 by 15:32 UTC (partial day, on pace for ~1,300). The collector is
+alive — last row 15:32:15 UTC, minutes before this run. Median full day still ~1,065.
+
+And the denominator warning stands harder than ever: 5,469 rows are SIX days of
+regime, not 5,469 observations. A −0.00944 Brier skill measured across six days is one
+regime's worth of evidence wearing a four-digit n.
+
+Scored today (catch-up): the 08-11 row ("BTC-USD UTC daily close above 63911.88 on
+2026-08-15", p=0.47) resolved NO — settled close 63018.75. It was overdue because
+08-15/08-16 were a weekend with no run; scored here off the settled candle. The 08-12
+row due TODAY could not be scored: this run fires 15:25 UTC and the 08-17 UTC day does
+not close until 00:00 UTC. It resolves tomorrow. Same mid-run wall that hit
+insider-radar (7 rows) and zero-dte-lab today — one problem, three labs, one owner.
+
+Session OFI on the 08-17 file is +0.0117 across 254,333 trades — far below the 0.10
+trigger, so "flow balanced, no call" even if the 1-day unit were still live. It is not:
+CRYP-002 retired it and the ledger stays closed at 4 rows.
