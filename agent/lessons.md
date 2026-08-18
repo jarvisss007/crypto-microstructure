@@ -422,3 +422,61 @@ insider-radar (7 rows) and zero-dte-lab today — one problem, three labs, one o
 Session OFI on the 08-17 file is +0.0117 across 254,333 trades — far below the 0.10
 trigger, so "flow balanced, no call" even if the 1-day unit were still live. It is not:
 CRYP-002 retired it and the ledger stays closed at 4 rows.
+
+## 2026-08-18 [flow]
+
+OVERDUE ROW SCORED, AND IT WENT AGAINST THE ONLY JUDGEMENT IN IT. The 08-12 row
+("BTC-USD UTC daily close above 63,531.75 on 2026-08-17", p=0.46) came due on 08-17 and
+the 08-17 sweep did not score it. Scored here off the settled Coinbase bar — 08-17 close
+**64,484.18**, above the threshold → YES, outcome 1. No data was lost: the settled bar is
+the correct bar whenever the run fires. The row leaned BELOW on a four-session slide
+(64,908.72 → 63,531.75) and BTC rallied +1.50% over the five days instead. The slide tilt
+was the only judgement in that row and it was the part that was wrong.
+
+Eight resolved: Brier 0.2517 vs climatology 0.2500, **skill −0.0068, no skill vs base
+rate**, base rate exactly 0.500. n=8. Nothing to read.
+
+I WAS PARTLY WRONG ON 08-14 AND THE CORRECTION MATTERS MORE THAN THE ERROR. That row's
+note asserted "EVERY bucket resolves at roughly the base rate ... resolution is
+approximately zero and the online learner has not yet learned to discriminate at all."
+That reading came from rounding p to the nearest 0.05, which smears the confident tails
+into the crowded middle. **On strict cuts the tails do separate:**
+
+    p_up >= 0.60   n=398   resolves up 56.03%
+    p_up <= 0.40   n=270   resolves up 47.41%
+    discrimination spread                   +8.62pp
+    days with a positive spread             5 of 5  (+6.49, +6.90, +19.08, +7.23, +8.11)
+
+So the learner is not flat. What it is, is uncalibrated in the bulk — 6,508 scored rows
+give hit 50.96% against a 50.41% up base rate, **+0.55pp, se 0.62pp, z=0.89**, which is
+not significant. And CRYP-002's headline claim of **+1.38pp, z=5.21** would print z=2.23
+at this very n. The forward record is running at roughly 40% of the claimed effect and
+cannot yet reject either the claim or zero. That is the honest state: **the claim in
+AGENT.md is not being reproduced forward, and it is not yet refuted either.**
+
+THE DENOMINATOR IS FIVE, NOT SIX HUNDRED AND SIXTY-EIGHT. "5 of 5 days positive" is five
+observations of regime. Per-day tail counts are 30–77 rows, so a single day's spread
+carries a standard error near 11pp — a true +8.6pp effect still flips sign on roughly a
+fifth of days by noise alone. Today's forecast is set at p=0.68 for exactly that reason,
+deliberately far below what a naive 5/5 record would imply.
+
+Throughput, CRYP-003 disclosure updated: complete UTC days now read 594 (08-12), 541
+(08-13), 1,186 (08-14), 1,237 (08-15), 1,060 (08-16), 1,336 (08-17), with 891 already on
+08-18 at 15:34 UTC. Median complete day is now ~1,186/day against the 1,065 recorded on
+08-17 and the ~1,440 priced ceiling — the instrument is still running under its
+authorization but the gap has narrowed. Any time-to-readable-n arithmetic uses the
+observed rate.
+
+TWO ROWS DUE TODAY WERE CORRECTLY NOT SCORED. The 08-13 ETH row and the 08-14 minute
+hit-rate row both check 2026-08-18, and the UTC day is open at 15:34 UTC. Both resolution
+rules say in terms never to resolve off the in-progress bar. They resolve next run; this
+is a deferral on a named rule, not a skipped catch-up.
+
+No ledger call, and not because flow was balanced: the 1-day ledger unit is RETIRED under
+CRYP-002 and the procedure is not run. Collector healthy — BTC-USD_2026-08-18.csv written
+today, 13.8 MB, and the prior session 08-17 is the largest on record at 38.1 MB.
+
+Standing bar restated because today's tail result is the kind of number that gets
+misread: even CRYP-002's original +1.38pp was worth **+0.05 bps against a 60 bps Coinbase
+retail taker fee — 1/1,183rd of the cost.** This lab is barred from trading. A +8.62pp
+tail spread on 668 rows changes nothing about that ratio.
