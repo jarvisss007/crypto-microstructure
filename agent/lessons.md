@@ -480,3 +480,70 @@ Standing bar restated because today's tail result is the kind of number that get
 misread: even CRYP-002's original +1.38pp was worth **+0.05 bps against a 60 bps Coinbase
 retail taker fee — 1/1,183rd of the cost.** This lab is barred from trading. A +8.62pp
 tail spread on 668 rows changes nothing about that ratio.
+
+## 2026-08-19 [flow]
+
+TWO OVERDUE FORECASTS RESOLVED, BOTH YES, AND ONE OF THEM WAS A CLEAN MISS.
+
+(1) The 08-13 ETH row — "ETH-USD UTC daily close above 1884.61 on 2026-08-18", p=0.48.
+Coinbase settled UTC bar for 08-18: open 1911.94, close **1916.72**. That is above the
+threshold, so YES, outcome 1, and the row leaned NO. Wrong by 1.70%, not a whisker. The
+row said "more likely below" about an asset that closed 1.7% above, and it deserves to be
+read as a miss rather than as noise.
+
+(2) The 08-14 row — "minute forecaster directional hit rate on 2026-08-18 UTC exceeds
+50.0%", p=0.54. Computed straight off minute_forecasts.csv: **1,352 scored rows, 710
+right = 52.51%** → YES, outcome 1, leaning the right way.
+
+Both were a day late for the same structural reason and it is not a catch-up failure: a
+UTC day does not close until 00:00 UTC, and this sweep fires at ~15:30 UTC. **No daily
+row in this book can ever be resolved on its own check date.** It is the same wall the
+0DTE lab hits at 11:29 ET, with a different clock.
+
+TEN RESOLVED. Base rate 0.600, Brier 0.2495 vs climatology 0.2400, skill **−0.0398, NO
+SKILL vs base rate.** State that plainly: across ten forecasts this lab has not beaten
+simply predicting the base rate. The 0.50–0.60 bin reads "+0.153 underconfident" on n=6,
+which at this sample size is the same sign artifact every lab on the desk keeps recording.
+
+**RETRACTING NOTHING, BUT DISCLOSING A DRIFT: AGENT.md's step 1 describes a schema this
+lab no longer writes.** It says trade rows carry `price, qty, isBuy`. The actual header is
+`type,ts_ms,px_or_mid,qty_or_spread,extra1,extra2,extra3` — which the project README
+documents correctly at line 95, so the README is right and AGENT.md's shorthand is stale.
+Read literally, AGENT.md's OFI recipe computes **zero trades and OFI 0.0000** on a file
+with 747,478 trades in it, i.e. it silently returns "flow balanced, no call" forever. A
+recipe that fails to a quiet abstention rather than an error is the most dangerous kind.
+Logged for whoever owns AGENT.md; the numbers below are computed off the real schema.
+
+SESSION FLOW, observation only. 2026-08-18, the last COMPLETE session: 747,478 trades,
+buy 2,601.12 vs sell 2,172.35 BTC, **OFI +0.0898** — under the 0.10 trigger, so under the
+old rules it would have been "flow balanced, no call" anyway. Today's partial 08-19:
+314,804 trades so far, **OFI +0.1763**, on a session where BTC has run **+5.9%**
+(64,681.33 → 68,523.40 at the live candle). Strong buy-side flow on a strong day is the
+least surprising joint observation in this dataset and is worth exactly nothing.
+
+NO LEDGER CALL, and that is a RULING, not an abstention: the 1-day direction unit is
+RETIRED under CRYP-002. Four historical rows stand, none open, and none may be blended
+with minute rows.
+
+THE SENIOR GATE HAS NOT MOVED, and it is the one that governs. Today's auto-backtest on
+312,390 trades / 30,020 book snapshots: every `ofi` and `book_imb` horizon is
+significant on IC (p≈0.002) and every single one is **net −59 to −60 bps after a 60 bps
+cost**. Best gross of the whole table is `book_imb` at 60s: 0.91 bps gross, 57.5% hit —
+against 60 bps of fee. **VERDICT: no signal is net-positive after costs.** Nothing in the
+minute instrument's calibration record is permitted to contradict that.
+
+Today's forecast is deliberately self-referential — the minute forecaster's own hit rate
+on 2026-08-20 UTC against a **frozen** 51.10% bar (its all-time rate over 7,853 scored
+rows), so the threshold cannot drift at check time. Per-day record vs that bar is 4 of 7
+complete days, base rate 0.571 **on n=7 DAYS, not 7,853 rows** (independence.py). p=0.53,
+barely above a coin flip and well below the raw 4-of-7, because the bar is essentially the
+instrument's own mean and beating your own mean is close to a coin flip by construction.
+Recorded and NOT priced: today is running 50.86% on a +5.9% BTC day, so high realised vol
+may hurt the forecaster — there is no validated vol-conditioning study here, so that
+observation gets written down and given no vote.
+
+Watch item for tomorrow, not acted on: the open 08-18 row bets p_up≥0.60 rows resolve up
+more often than p_up≤0.40 rows on 08-19 UTC, at p=0.68. Today's partial has it INVERTED —
+0.582 up in the high bucket against 0.630 in the low bucket. It resolves tomorrow off the
+complete UTC day. If it resolves NO, that is the most informative row this lab has, because
+p=0.68 was the most confident thing it has ever said.
