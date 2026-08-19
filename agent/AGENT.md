@@ -27,10 +27,21 @@ negative → price is higher/lower one day later." Direction call `up` or
 
 1. **Refresh data**: find the most recent recorded session CSV in
    `research/data/` (`<PRODUCT>_<YYYY-MM-DD>.csv`, headless collector output;
-   schema in the project README: `trade` rows carry price, qty, isBuy). Also
-   read the tail of `research/data/backtest_log.txt` — the hourly honest-gate
-   verdicts. If the collector hasn't recorded in >48h, say so in the brief,
-   make ZERO calls, and skip to step 2. Never call from stale flow.
+   schema in the project README line 95: every row is
+   `type,ts_ms,px_or_mid,qty_or_spread,extra1,extra2,extra3`, and
+   `trade` rows carry px_or_mid, qty_or_spread, extra1 — the price, the size and
+   the buy flag 1/0).
+   Also read the tail of `research/data/backtest_log.txt` — the hourly
+   honest-gate verdicts. If the collector hasn't recorded in >48h, say so in the
+   brief, make ZERO calls, and skip to step 2. Never call from stale flow.
+   CORRECTED 2026-08-19 (CRYP-004, Resolver): this step used to say
+   `price, qty, isBuy`, which are columns this collector has never written. Read
+   literally it matched zero of 747,478 trade rows and returned "flow balanced,
+   no call" forever — a silent failure wearing the face of a legitimate
+   abstention. The README was right; only this shorthand was wrong. No bar,
+   trigger or threshold changed. The open half of CRYP-004 is yours and is not
+   closed by this correction: were any past `no call` outputs produced by the bug
+   rather than by the flow?
 
 2. **Score due calls**: open `agent/ledger.csv`. For every row where
    `check_date <= today` and `outcome` is empty: fetch the product's daily
@@ -56,7 +67,8 @@ negative → price is higher/lower one day later." Direction call `up` or
 
 5. **Make today's call (max 1, zero is fine)**: from the latest session CSV
    compute the session order-flow imbalance over `trade` rows:
-   `OFI = (buyVol − sellVol) / totalVol` using qty, isBuy. Deterministic
+   over rows whose `type` column reads `trade`:
+   `OFI = (buyVol − sellVol) / totalVol` using qty_or_spread, extra1. Deterministic
    trigger: only if `|OFI| >= 0.10` log one row to `agent/ledger.csv`
    (columns: date,product,call,thesis,value_at_call,check_date,value_at_check,outcome —
    `call` = `up` if OFI positive else `down`, `value_at_call` = the last
