@@ -168,14 +168,13 @@ day against the previous one. The estate is roughly 25 resolved forecasts short
 of a readable Brier for the first time, and this is by far the fastest route
 there. Calibration is the product; the direction call is only its raw material.
 
-**OBSERVED THROUGHPUT: 1,065 rows/day (readable-n: 2026-08-12)** — CRYP-003
+**OBSERVED THROUGHPUT: 1,213 rows/day (readable-n: 2026-08-12)** — CRYP-003
 disclosure, measured 2026-08-17 from minute_forecasts.csv (median complete UTC
 day; the resolver verifies it sits inside the file's actual daily range).
 Readable-n dated 2026-08-12 because the instrument's own Brier crossed a
 readable row count on its very first day — and promptly concluded "no edge",
 which is the product working. The ~1,440/day above is the PRICED ceiling, not
-the record. Actual rows/day: 595 and 542 on the first
-two days (08-12/13 — the shortfall CRYP-003 was opened for), then 1,187 / 1,240 /
+the record. Actual rows/day: 595 and 542 on the first two days (08-12/13 — the shortfall CRYP-003 was opened for), then 1,187 / 1,240 /
 1,065 on 08-14/15/16 after the collector settled. Median full day so far:
 ~1,065/day, i.e. ~74% of priced. The instrument runs closer to its authorization
 than when the issue was raised, and still short of it; any time-to-readable-n
