@@ -547,3 +547,87 @@ more often than p_up≤0.40 rows on 08-19 UTC, at p=0.68. Today's partial has it
 0.582 up in the high bucket against 0.630 in the low bucket. It resolves tomorrow off the
 complete UTC day. If it resolves NO, that is the most informative row this lab has, because
 p=0.68 was the most confident thing it has ever said.
+
+## 2026-08-20 [flow]
+
+**CRYP-004's OPEN HALF, ANSWERED: no past `no call` was produced by the schema bug.**
+Three briefs in this lab's whole history record a `no call` — 2026-07-25, 2026-08-17
+and 2026-08-19 — and every one of them reports a NON-ZERO OFI computed off real trade
+rows: **−0.076** (07-25, buyVol 2,278.4 vs sellVol 2,655.5), **+0.0117** on 254,333
+trades (08-17) and **+0.0898** on the complete 08-18 session (08-19). The bug's
+signature is unmistakable and none of them carries it: read literally, the old
+`price, qty, isBuy` recipe matches zero rows and returns **OFI exactly 0.0000**. A
+brief quoting buy and sell volumes in BTC cannot have come from a reader that found
+no trades. **All three no-call days are CLEARED — they were the 0.10 threshold doing
+its job, not a silent failure wearing its face.** Nothing is left uncleared.
+
+One honest loose end from that audit, recorded rather than resolved: recomputing the
+08-16 session today gives **298,009 trades / OFI +0.0085**, where the 08-17 brief
+recorded **254,333 trades / +0.0117**. Same sign, same order of magnitude, both far
+under the trigger, so the clearance is unaffected — but the trade count moved by 17%
+and I cannot say from here whether the file was still being appended when the brief
+was written or whether a different session boundary was used. Flagged, not guessed.
+
+**THE BOOK'S MOST CONFIDENT ROW WAS ITS WORST.** The 08-18 forecast asked whether the
+minute forecaster's `p_up >= 0.60` rows resolve up more often than its `p_up <= 0.40`
+rows on 08-19 UTC, at **p = 0.68**. Result: the high bucket resolved up **57.53%**
+(n=73), the low bucket **62.50%** (n=32) — the confident-up bucket resolved up LESS
+often than the confident-down bucket. Outcome 0.
+
+**And the reason was visible BEFORE the row was written, which is the actual lesson.**
+Only **105 of 1,389** scored rows (**7.6%**) land in either tail. A comparison decided
+by 32 against 73 observations has a sampling standard error of roughly ±10pp per
+bucket, while the edge being tested is **+1.38pp**. The question was noise-dominated by
+construction, and 0.68 was a confidence about the model expressed through a statistic
+that could not carry it. **Do not price a question about a small effect at a
+tail-sample size you have not looked at.** Today's repost of the same question sits at
+**0.55**, and that move is justified by the 7.6% tail share — a structural fact — not
+by yesterday's single loss.
+
+**Also scored, and it cost nothing:** the 08-17 row (BTC settled UTC close on 08-19
+above its 08-17 close) resolved YES at p=0.50. BTC ran +7.47% over those two days and
+this book had claimed no view, which is what 0.50 is for.
+
+Twelve resolved, base rate 0.583, Brier 0.2673 vs climatology 0.2431, **skill −0.0999
+— NO skill**. That is the honest headline and it is worse than yesterday's. The
+0.60–0.70 bin reads −0.680 off the single row above; the 0.50–0.60 bin reads
+"underconfident" off seven. n=12 against the ~100 the scorer demands.
+
+**SCHED-001, measured on this lab as the council asked, and nothing changed.** This
+lab's pair is **fire time ~15:40 UTC × horizon unit = the UTC calendar day**. The UTC
+day closes at 00:00 UTC, 8h20m AFTER this sweep fires, so **no daily row here can ever
+resolve on its own check date** — the two rows scored today were both one run late by
+construction, and today's 08-19-dated row (minute hit rate on the 08-20 UTC day) is
+deferred to tomorrow for the same reason. **The written proposal the directive asked
+for, with the trade-off, verbatim for Anupam's ruling:**
+- **(a) Move the fire time past 00:00 UTC** — e.g. a 17:10 PT run. Every UTC-day row
+  then resolves on its own date. Cost: a second scheduled slot, this lab leaves the
+  08:20 morning sweep, and the same question immediately falls due for [0dte], whose
+  11:40 ET fire time has the identical defect against a US session close.
+- **(b) Change the horizon unit to a period already closed at fire time** — rows
+  register against "the last COMPLETE UTC day". Zero scheduling cost and it resolves
+  same-run. But it is a change to a pre-registered unit, so it needs Anupam's name on
+  it, and every row already written keeps its current unit.
+- **(c) Accept the latency** — the desk takes one run of resolution lag as the honest
+  cost of reading a UTC instrument at 15:40 UTC, and every affected row states on its
+  face that it resolves on check_date + 1 run.
+**My recommendation is (b) for this lab specifically**, because the mis-scheduling here
+is not a clock problem — it is that a UTC-day question asked mid-UTC-day is a question
+about a period that is still running, and (b) fixes the question rather than the alarm
+clock. But it is explicitly not my call: the council barred labs from moving their own
+fire times or horizon units, and a lab that re-registers its own unit to make its dates
+resolvable is loosening a pre-registration. **Rows already written are not moved under
+any option.**
+
+**No ledger call, and it is not an abstention:** the 1-day unit is RETIRED under
+CRYP-002 and the falsifiable unit is the minute forecaster, which ran 890 scored rows
+today by 15:40 UTC. For the record the complete 08-19 session read **OFI +0.0584**
+across 1,130,648 trades (buy 10,253.88 vs sell 9,123.12 BTC) — under the 0.10 trigger
+in any case.
+
+**THE SENIOR GATE, and it leads every quote of this lab:** the 1-minute direction edge
+is **real** — +1.38pp vs a base-rate-matched null, z = 5.21 — and worth **+0.05 bps
+against a 60 bps Coinbase retail taker fee, about 1/1,183rd of what it would cost to
+act on it.** Every `ofi` and `book_imb` horizon is statistically significant on IC
+(p≈0.002) and every one is net −59 to −60 bps. Calibration instrument, barred from
+trading.
