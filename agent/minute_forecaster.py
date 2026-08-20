@@ -41,6 +41,19 @@ HOW IT STAYS HONEST
     The scorer only ever fills `outcome` on a row whose target minute is complete.
   · The model is the SAME online SGD as research/backtest_all.py — same features,
     same LR/L2 — so the live record and the backtest measure one algorithm, not two.
+    THIS BECAME TRUE ON 2026-08-20, and was false for the 9,645 rows before it.
+    `features()` hard-coded `ofi` and `book_imb` to 0.0 while the backtest fed both
+    from the recording, so the live instrument was a FOUR-feature model claiming
+    six-feature parity, and its two microstructure inputs — the only reason a
+    microstructure lab runs a minute unit at all — never left zero across eight
+    days and 9,243 weight updates. `flow_features()` now derives both from the
+    same recorded `trade`/`book` rows the closes come from, matching
+    build_minute_series() to 4e-16 over a 61-minute cross-check.
+  · Every row carries `fv` in its note: rows WITHOUT it are the four-feature era
+    and are not comparable to rows with `fv: 2`. `book_live` records whether the
+    book imbalance was measured inside the minute or forward-filled to zero.
+    Scoring the two eras as one series would restate the instrument's own history,
+    which is the thing this file exists not to do.
   · Ties (a minute closing exactly unchanged) are recorded as `tie` and excluded
     from direction scoring. That is CRYP-001's lesson: scoring ties as misses is
     what produced a 34% hit rate out of thin air.
@@ -68,6 +81,7 @@ STATE = os.path.join(HERE, "minute_state.json")
 
 PRODUCT = "BTC-USD"
 LR, L2 = 0.02, 0.001            # identical to research/backtest_all.py
+OFI_WINDOW_S = 60               # identical to research/backtest_all.OFI_WINDOW_S
 FEATS = ["bias", "r1", "r5", "rev", "ofi", "book_imb"]
 STALE_SEC = 180                 # a book older than this is not a live book
 # `up` is 1/0 for "the minute closed higher", which is what a calibration scorer
@@ -96,7 +110,56 @@ def minute_closes(path, n=400):
     return [(k, by_min[k]) for k in keys[-n:]]
 
 
-def features(closes):
+def flow_features(path, minute):
+    """(ofi, book_imb, live) at `minute`, derived exactly as
+    research/backtest_all.build_minute_series does — so the live model and the
+    backtest really are one algorithm.
+
+      ofi       trailing-OFI_WINDOW_S-seconds signed/total trade volume, the
+                window ENDING at the first second of `minute`. Matches the
+                backtest's `ofi_sec.reindex(full * 60)`: strictly past data.
+      book_imb  last top-20 book imbalance stamped inside `minute`, forward-filled
+                from earlier minutes when the book went quiet (the backtest's
+                `.groupby(min).last().ffill()`).
+
+    `live` is False when no book row was ever seen, i.e. book_imb is a
+    stand-in zero rather than a measurement. The caller records which it got.
+    """
+    m_start_s = int(minute.timestamp())
+    m_start_ms, m_end_ms = m_start_s * 1000, (m_start_s + 60) * 1000
+    lo_ms = (m_start_s - OFI_WINDOW_S + 1) * 1000   # rolling(60, min_periods=1)
+    hi_ms = (m_start_s + 1) * 1000                  # inclusive of second m_start_s
+
+    signed = total = 0.0
+    book_imb, book_ts, seen_book = 0.0, -1, False
+    with open(path) as fh:
+        for row in csv.reader(fh):
+            if len(row) < 3:
+                continue
+            try:
+                ts = int(row[1])
+            except ValueError:
+                continue
+            if row[0] == "trade":
+                if lo_ms <= ts < hi_ms:
+                    try:
+                        qty, isbuy = float(row[3]), float(row[4])
+                    except (IndexError, ValueError):
+                        continue
+                    signed += qty if isbuy > 0.5 else -qty
+                    total += qty
+            elif row[0] == "book" and ts < m_end_ms and ts > book_ts:
+                try:
+                    book_imb = float(row[6])
+                except (IndexError, ValueError):
+                    continue
+                book_ts, seen_book = ts, True
+
+    ofi = signed / total if total else 0.0
+    return ofi, book_imb, seen_book
+
+
+def features(closes, flow=(0.0, 0.0)):
     """Same six features as backtest_all.run_online_pass, in the same order."""
     c = [p for _, p in closes]
     if len(c) < 21:
@@ -110,9 +173,14 @@ def features(closes):
     r5 = max(-4, min(4, math.log(p / c[-6]) / (sig * 5 ** 0.5)))
     ma = sum(c[-15:]) / 15
     rev = max(-4, min(4, math.log(ma / p) / (sig * 15 ** 0.5)))
-    # order-flow features are not reconstructible from minute closes alone; the
-    # live model carries them at zero rather than inventing them, and says so.
-    return [1.0, r1, r5, rev, 0.0, 0.0], sig
+    # Until 2026-08-20 these two rode at a hard 0.0 — the comment here said they
+    # were "not reconstructible from minute closes alone", which was true and
+    # beside the point: the recorder writes `book` and `trade` rows to the same
+    # file these closes come from, so they ARE reconstructible from the recording.
+    # 9,645 live rows were written with a four-feature model while the docstring
+    # claimed six-feature parity with the backtest. `flow_features` closes that.
+    ofi, book_imb = flow
+    return [1.0, r1, r5, rev, ofi, book_imb], sig
 
 
 def load_state():
@@ -189,7 +257,8 @@ def tick():
         scored += 1
 
     # ── emit one forecast for the NEXT minute, before it exists ───────────────
-    f, sig = features(closes)
+    ofi, book_imb, book_live = flow_features(path, last_min)
+    f, sig = features(closes, flow=(ofi, book_imb))
     wrote = 0
     if f is not None:
         z = max(-4.0, min(4.0, sum(w * fi for w, fi in zip(st["w"], f))))
@@ -202,7 +271,8 @@ def tick():
                 "target_minute_utc": target, "product": PRODUCT,
                 "p_up": f"{p_up:.4f}", "px_at_call": f"{last_px:.2f}",
                 "px_at_target": "", "up": "", "outcome": "",
-                "note": json.dumps({"f": f, "sig": round(sig, 8)}),
+                "note": json.dumps({"f": f, "sig": round(sig, 8),
+                                    "fv": 2, "book_live": int(book_live)}),
             })
             wrote = 1
 
