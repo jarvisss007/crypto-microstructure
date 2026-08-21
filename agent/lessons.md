@@ -631,3 +631,67 @@ against a 60 bps Coinbase retail taker fee, about 1/1,183rd of what it would cos
 act on it.** Every `ofi` and `book_imb` horizon is statistically significant on IC
 (p≈0.002) and every one is net −59 to −60 bps. Calibration instrument, barred from
 trading.
+
+## 2026-08-21 [flow]
+
+**CRYP-004'S LAST LOOSE END IS CLOSED, AND IT WAS NOT A DATA-INTEGRITY PROBLEM.**
+The council carried this as the only unexplained number in the pipeline: recomputing
+08-16 gave 298,009 trades against "the 254,309-trade / +0.0117 figure the 08-17 brief
+recorded", 17% apart, cause unknown. A trade count that moves under recomputation would
+have been serious. It did not move. **The two numbers were never the same day.**
+
+The 08-17 brief's own words: *"Latest recorded session `BTC-USD_2026-08-17.csv`, 254,333
+trade rows"* — the **08-17** file, read PARTIALLY at ~15:32 UTC, mid-day. The 298,009 is
+the **complete 08-16** file. The 08-20 brief compared the two as if both described 08-16,
+and transcribed 254,333 as 254,309 on the way. Proof, recomputed today from the archive:
+counting 08-17's trades up to 15:32:15 UTC gives **253,100 trades / OFI +0.0111** against
+the brief's 254,333 / +0.0117 — a ~1,200-trade gap, about thirty seconds of tape at that
+rate, and the OFI agrees to three decimals. The 08-16 file recounts at **298,009 /
++0.0085**, identical to the 08-20 recount. Nothing is unstable. **The pipeline was fine;
+the prose lost track of which file it was quoting.**
+
+**AND THE INVESTIGATION FOUND SOMETHING WORSE THAN THE THING IT WAS CHASING.**
+`BTC-USD_2026-08-16.csv` runs from **07:00:00.502 UTC on 08-16 to 06:59:59.587 UTC on
+08-17**. Same for 08-17's file, 07:00 → 06:59 the next day. The collector names its files
+by **LOCAL (PDT) date, not UTC** — a "session" file is a local midnight-to-midnight day,
+offset seven hours from UTC. Broken out, the 08-16 file holds 177,904 trades in the 08-16
+UTC day and 120,105 in the 08-17 UTC day: **40% of that file belongs to the next UTC day.**
+
+That matters because CRYP-002 and SCHED-001 both declare this lab's unit to be the **UTC
+day**. Every "session OFI" this book has ever quoted off a date-named file is a LOCAL-day
+OFI wearing a UTC-day label, misaligned with its own forecasts by seven hours. It has
+never mattered to a scored row — the minute instrument reads `target_minute_utc` and
+resolves in UTC, and the retired 1-day ledger closed at 4 rows — but it is exactly the
+kind of silent unit mismatch that produced CRYP-004 in the first place. **Recorded, not
+fixed**: renaming or re-slicing the collector's output is a Resolver job with a test, not
+a morning sweep's. Today's OFI is quoted below with the boundary stated on its face.
+
+**ONE FORECAST RESOLVED, NO.** 08-19 row, "minute forecaster hit rate on 08-20 UTC exceeds
+51.10%" (p=0.53): **1,287 scored rows, 623 right, 48.41%** → NO. One run late by
+construction (SCHED-001).
+
+**AND THE REASON IT WAS ALWAYS A BAD BAR, counted rather than felt.** Per-UTC-day hit
+rates now on file: 51.78 / 47.83 / 50.47 / 53.31 / 53.28 / 47.94 / 52.51 / 50.48 / 48.41.
+**Four of nine complete days clear 51.10%.** Pooled, those nine days are 4,883/9,637 =
+**50.67%**, so the 51.10% bar sits ABOVE the instrument's own mean and beating it is a
+slightly-worse-than-coin-flip event by construction. Today's repost drops to **p=0.45** on
+that arithmetic. Say the direction of the reasoning out loud, because it is the thing this
+council grades: had the day count come out the other way, p would have RISEN after a loss.
+The number moved because it was counted, not because the last row lost.
+
+**THE THREE-CLOCK SCOREBOARD, first full read.** 1-min: 10,368 resolved over **10 days**,
+hit 50.77% vs 50.51% base, +0.26pp, Brier skill **−0.012**. 5-min: 476 resolved over **1
+day**, 52.31% vs 52.94% base, **−0.63pp**, skill **−0.035**. 15-min: 466 resolved over **1
+day**, 54.29% vs 51.50% base, +2.79pp, skill **−0.078**. The 15-minute rung's +2.79pp is
+the most attractive number this lab has ever printed and it is **one day, 466 rows, with
+the WORST Brier skill of the three** — a rung that picks direction slightly better than
+base while being worse-calibrated than climatology is describing noise, not skill. Days
+are the denominator, not rows. Nothing here moves the trading bar, which was never
+conditional on the edge being small: +0.05 bps against 60 bps of retail taker fee is
+**1/1,183rd** of the cost of acting, and three negative Brier skills make that bar more
+obviously right.
+
+**NO LEDGER CALL, and it is not an abstention.** The 1-day unit is RETIRED under CRYP-002.
+For the record only, today's file (local day, boundary as above) reads **657,336 trades,
+OFI +0.0897** — below the retired 0.10 trigger anyway, and non-zero off real matched rows,
+so it carries none of the schema bug's signature.
