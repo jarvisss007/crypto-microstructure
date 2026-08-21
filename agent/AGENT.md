@@ -182,3 +182,15 @@ arithmetic must use the observed rate, not the priced one. And one number the
 throughput does not change: rows accrue by the thousand, but DAYS are the
 denominator that matters — 5,400 rows over 6 days is 6 observations of regime,
 not 5,400 (see independence.py).
+
+## CALIBRATION (2026-08-20) — read your own scorecard before you file
+Before filing any probabilistic forecast, read `~/command-center/council/calibration_table.json`
+and find this lab's entry. It is written by `~/bin/score_forecasts.py` (Brier skill + Murphy
+decomposition: reliability, resolution) from your own resolved forecasts.
+- If your probability falls in a bin marked `actionable: true` (n≥30 AND |gap|>0.10), say so in
+  the forecast note ("my 0.6–0.7 bin has run 0.55") and move the filed probability **halfway**
+  toward what actually happened in that bin. That is the only adjustment permitted.
+- Below n=30 in a bin, file as usual. Do not tune on noise — that is curve-fitting with extra steps.
+- Spread forecasts across days. Ten forecasts stacked on one morning are one observation.
+- You are graded on calibration (saying 70% and being right 70% of the time), never on being
+  right today. A well-calibrated 0.55 beats a lucky 0.90.
