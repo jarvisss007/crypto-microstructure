@@ -1,5 +1,8 @@
 # recorded data, logs, runtime — never commit
-research/data/
+research/data/*
+# ...except the one file that says what the data in there MEANS (CRYP-005).
+# 861MB of ticks cannot go to GitHub; the declaration of their day boundary must.
+!research/data/DAY_BOUNDARY.md
 *.log
 *.pid
 

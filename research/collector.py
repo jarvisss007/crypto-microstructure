@@ -41,7 +41,19 @@ class Collector:
 
     # ---- file management (daily rotation) ----
     def _ensure_file(self):
-        d = datetime.date.today().isoformat()
+        # CRYP-005 (Resolver, 2026-08-21; self-reported by the lab the same morning).
+        # This was `datetime.date.today()` -- the LOCAL day -- while CRYP-002 and
+        # SCHED-001 both define this lab's unit as the UTC DAY. The lab measured one
+        # date-named file as splitting roughly 60/40 across two UTC days, so every
+        # "session OFI" ever quoted off a date-named file was a local-day slice wearing
+        # a UTC-day label, misaligned with its own forecasts by seven hours. It never
+        # touched a scored row -- the minute instrument reads target_minute_utc and
+        # resolves in UTC -- but it is CRYP-004's class: a documented unit the writer
+        # does not produce. Rotation is now on the UTC day, which is the unit the
+        # filename claims. Files already on disk stay LOCAL-day slices forever and are
+        # declared as such in research/data/DAY_BOUNDARY.md; that half is a permanent
+        # loss, not a fix.
+        d = datetime.datetime.now(datetime.timezone.utc).date().isoformat()
         if d != self.cur_date:
             if self.fh:
                 self.fh.close()
