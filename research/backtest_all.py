@@ -39,7 +39,10 @@ BOOK_LEVELS = 20     # mirrors liveBookImb()'s top-20-level depth
 
 
 def load_all(data_dir):
-    files = sorted(glob.glob(os.path.join(data_dir, 'BTC-USD_*.csv')))
+    # 2026-08-21 (rotate.py): days older than today are stored gzipped; pandas reads
+    # .csv.gz transparently, so both forms are one dataset here.
+    files = sorted(glob.glob(os.path.join(data_dir, 'BTC-USD_*.csv'))
+                   + glob.glob(os.path.join(data_dir, 'BTC-USD_*.csv.gz')))
     if not files:
         sys.exit(f'no BTC-USD_*.csv files in {data_dir}')
     frames = []
@@ -47,7 +50,7 @@ def load_all(data_dir):
         df = pd.read_csv(f, header=0, names=['type', 'ts', 'a', 'b', 'c', 'd', 'e'])
         df['ts'] = pd.to_numeric(df['ts'], errors='coerce')
         df = df.dropna(subset=['ts'])
-        df['day'] = os.path.basename(f).split('_', 1)[1].removesuffix('.csv')
+        df['day'] = os.path.basename(f).split('_', 1)[1].removesuffix('.gz').removesuffix('.csv')
         frames.append(df)
     return pd.concat(frames, ignore_index=True).sort_values('ts').reset_index(drop=True)
 

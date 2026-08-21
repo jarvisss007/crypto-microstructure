@@ -141,3 +141,22 @@ scoreboard is [`scoreboard.html`](scoreboard.html) (rebuilt every ~10 minutes by
 job) with per-horizon hit rate vs base rate, Brier skill and a reliability table, n and day
 count said out loud. **Calibration instrument, barred from trading** — see
 `research/NULL_RESULT.md` for why the only real short-horizon edge is ~1/1,183rd of the fee.
+
+
+## How the tape is stored (2026-08-21)
+
+The collector records every trade and a book snapshot per second (~50 MB/day raw). The
+research runs on the 1-minute series it derives from that tape, so — like the stock desk —
+the derived series is what we keep and the raw feed is a rolling buffer:
+
+- `research/minutes/BTC-USD_<day>.csv` — nightly, per complete UTC day: the research's own
+  minute series (`close`, `book_imb`, `ofi`, from `backtest_all.build_minute_series`) plus
+  trades, volume, buy share, high, low. ~150 KB/day, tracked in git.
+- `research/data/BTC-USD_<day>.csv.gz` — raw days older than today, gzipped (~5×) after a
+  row-count check; the readers open `.gz` transparently. Kept 30 days locally.
+- GitHub Releases `data-YYYY-MM` — each complete month's gz files, tarred, as a release
+  asset (public Coinbase data). `research/archive_manifest.json` is the record; a local gz is
+  pruned only after its month is in that manifest.
+
+`research/rotate.py` does all four steps (launchd `com.anupam.crypto-rotate`, daily 00:40 UTC)
+and never touches the day the collector is writing.
