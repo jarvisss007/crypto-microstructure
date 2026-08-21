@@ -1,0 +1,36 @@
+{
+ "2026-07": {
+  "tag": "data-2026-07",
+  "files": [
+   "BTC-USD_2026-07-05.csv.gz",
+   "BTC-USD_2026-07-06.csv.gz",
+   "BTC-USD_2026-07-07.csv.gz",
+   "BTC-USD_2026-07-08.csv.gz",
+   "BTC-USD_2026-07-09.csv.gz",
+   "BTC-USD_2026-07-10.csv.gz",
+   "BTC-USD_2026-07-11.csv.gz",
+   "BTC-USD_2026-07-12.csv.gz",
+   "BTC-USD_2026-07-13.csv.gz",
+   "BTC-USD_2026-07-14.csv.gz",
+   "BTC-USD_2026-07-15.csv.gz",
+   "BTC-USD_2026-07-16.csv.gz",
+   "BTC-USD_2026-07-17.csv.gz",
+   "BTC-USD_2026-07-18.csv.gz",
+   "BTC-USD_2026-07-19.csv.gz",
+   "BTC-USD_2026-07-20.csv.gz",
+   "BTC-USD_2026-07-21.csv.gz",
+   "BTC-USD_2026-07-22.csv.gz",
+   "BTC-USD_2026-07-23.csv.gz",
+   "BTC-USD_2026-07-24.csv.gz",
+   "BTC-USD_2026-07-25.csv.gz",
+   "BTC-USD_2026-07-26.csv.gz",
+   "BTC-USD_2026-07-27.csv.gz",
+   "BTC-USD_2026-07-28.csv.gz",
+   "BTC-USD_2026-07-29.csv.gz",
+   "BTC-USD_2026-07-30.csv.gz",
+   "BTC-USD_2026-07-31.csv.gz"
+  ],
+  "mb": 96,
+  "released": "2026-08-21T07:39+00:00"
+ }
+}
