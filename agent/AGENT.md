@@ -203,3 +203,14 @@ the pre-registered horizon unit. Therefore: every daily row states on its face, 
 `resolves check_date+1 (standing, SCHED-001)`. This is a permanent condition, not a
 deferral — never file it as a deferral, and the council grades it PASS by design. Rows
 already written are not moved.
+
+## THE 1 / 5 / 15-MINUTE INSTRUMENT (2026-08-21) — one scoreboard, three clocks
+Anupam's brief: "a prediction for 1, 5 and 15 minutes ahead that is frozen when made; at the
+target time, did the price obey it — win or loss." The 1-minute rung is `minute_forecaster.py`
+(since 08-12). The 5- and 15-minute rungs are `horizon_forecaster.py` (launchd
+`com.anupam.crypto-horizons`, books `forecasts_5m.csv` / `forecasts_15m.csv`): same features,
+same SGD, same never-edit-a-row rule, same tie exclusion. `scoreboard.py` publishes all three
+to `scoreboard.json` and `../scoreboard.html` (Pages). Read `scoreboard.json` in every run and
+quote the per-horizon hit rate vs up-base-rate, Brier skill and DAY count in the brief. It is
+a calibration instrument and is BARRED FROM TRADING — the lab's published null result stands
+until the scoreboard says otherwise over 30+ days, and even then the fee arithmetic applies.

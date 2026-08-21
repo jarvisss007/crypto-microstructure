@@ -129,3 +129,15 @@ Binance.US trade streams are effectively dead (thin liquidity — 0 trades in
 testing). Kraken's book is great but its tape is sparse (~3 trades / 13s).
 Coinbase has real US-legal volume *and* a public `level2_batch` depth feed, so a
 single venue powers every panel with no API key.
+
+
+## The 1 / 5 / 15-minute scoreboard (2026-08-21)
+
+One instrument, three clocks. Every minute a row is frozen stating p(up) for the price 1, 5
+and 15 minutes ahead; at the target minute the real last trade decides; direction obeyed =
+right; rows are never edited; unchanged minutes are ties and excluded. The three books are
+`agent/minute_forecasts.csv`, `agent/forecasts_5m.csv`, `agent/forecasts_15m.csv`; the
+scoreboard is [`scoreboard.html`](scoreboard.html) (rebuilt every ~10 minutes by the running
+job) with per-horizon hit rate vs base rate, Brier skill and a reliability table, n and day
+count said out loud. **Calibration instrument, barred from trading** — see
+`research/NULL_RESULT.md` for why the only real short-horizon edge is ~1/1,183rd of the fee.
