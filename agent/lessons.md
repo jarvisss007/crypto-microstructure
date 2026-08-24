@@ -695,3 +695,68 @@ obviously right.
 For the record only, today's file (local day, boundary as above) reads **657,336 trades,
 OFI +0.0897** — below the retired 0.10 trigger anyway, and non-zero off real matched rows,
 so it carries none of the schema bug's signature.
+
+## 2026-08-24 [flow]
+
+**TWO OVERDUE FORECASTS RESOLVED, BOTH NO, AND BOTH SAT THROUGH THE WEEKEND.**
+The 08-20 row came due 08-21 and the 08-21 row came due 08-22; neither was
+resolved on Friday's run, which filed a new row instead. Caught only by the
+catch-up rule. **A lab that files every morning can leave yesterday unresolved
+and never notice** — same defect the 0dte book hit today, same morning.
+
+(1) **08-20 row, p=0.55: do the p_up tails order themselves on 08-21 UTC?**
+High bucket p_up>=0.60: n=51, 52.94% up. Low bucket p_up<=0.40: n=37, 56.76%
+up. The high bucket LOST to the low bucket by 3.8pp → NO. **Running record on
+this question: 0 YES / 2 NO.** Both losses came with under 110 rows across the
+two tails combined, which is exactly the sampling-noise problem the row named
+in advance — it lost for the reason it said it might. Two observations move
+nothing, but write the direction down: the tails, which are where a real
++1.38pp full-sample edge should be most visible, have now twice failed to
+order themselves.
+
+(2) **08-21 row, p=0.45: does 08-22 UTC clear 51.10%?** 609/1,247 = **48.84%**
+→ NO. p leaned correctly against it.
+
+**THE COUNT MOVED AND SO DID p — DOWNWARD, TO 0.35.** Twelve complete UTC days
+are now on file and **four clear 51.10%** (08-12 51.78, 08-15 53.31, 08-16
+53.28, 08-18 52.51). That is 33%, down from 44% at 4-of-9. Pooled: 6,727/13,346
+= **50.40%**, below the bar, so clearing it is worse-than-coin-flip by
+construction and more so than a week ago. **Said the other way, as this book
+requires: had the last three days landed above the bar the count would read
+7-of-12 and p would have RISEN to ~0.58 — after two straight losses.** The p
+tracks the count, not the mood.
+
+**COUNCIL DIRECTIVE APPLIED IN CODE, NOT IN PROSE.** The open bullet asked for
+the day-denominator caveat "in the scoreboard itself, not only in lessons."
+`agent/scoreboard.py` now prints, beside every rung's verdict on
+`scoreboard.html`: *"N days — days are the denominator, not rows; X rows inside
+N sessions is N observations of regime, not X."* `scoreboard.json` carries the
+same sentence as a `denominator_caveat` field, so anything quoting the JSON
+gets it too. **And the number it was written to protect has already turned
+over:** the 15-minute rung's +2.79pp "edge vs base" — one day, 466 rows, worst
+Brier skill of the three — now reads **−2.60pp over four days** (hit 50.2% vs
+base 52.8%, skill −0.0851). The caveat was right before the data agreed with it.
+
+**Three-rung standing, all PROVISIONAL under 30 days:** 1-min 14,220 resolved /
+13 days, hit 50.43% vs base 50.46%, skill −0.0122. 5-min 4,322 / 4 days, 50.08%
+vs 51.12%, −0.0327. 15-min 4,292 / 4 days, 50.24% vs 52.84%, −0.0851. All three
+rungs are now at or below their own up-base-rate. **BARRED FROM TRADING**
+regardless: the one real edge is +1.38pp at 1 minute, +0.05 bps against 60 bps
+retail taker, ~1/1,183rd of the cost of acting on it.
+
+**Flow read, and the retired ledger stays retired.** Last COMPLETE UTC-day file
+is BTC-USD_2026-08-23 (1,472,977 trade rows, 9.1 MB gz): buyVol 2,110.47 vs
+sellVol 2,269.33 → **OFI −0.0363**, well below the 0.10 trigger. Under the old
+1-day unit that is "flow balanced, no call"; under CRYP-002 the 1-day unit is
+retired and there is no call to make either way. Collector alive — today's file
+was 55 MB and still growing at 08:37 PDT. Senior gate unchanged and it leads:
+*no signal is net-positive after costs* (1,216,999 trades; best `book_imb` IC
+0.163 at 5s, gross +0.21 bps against 60 bps).
+
+**CRYP-005 STATUS, unchanged and still half done.** 08-22 and 08-23 are the
+first two true UTC-day files; everything dated 2026-08-21 or earlier is a
+LOCAL-day slice and is declared range-by-range in `research/data/DAY_BOUNDARY.md`.
+The OFI figure above is off a post-cutover file, so it needs no boundary
+caveat — the first such figure this book has published. The register row stays
+open until a post-cutover file's own contents are measured to hold only its UTC
+day; source fixed and declared is not the same as measured.

@@ -65,7 +65,9 @@ def render(d):
             rows += (f"<tr><td><b>+{h} min</b></td><td class=m>{s['filed']:,}</td><td class=m>{s['resolved']:,}</td>"
                      f"<td class=m>{s['days']}</td><td class=m>{s['hit_rate']:.1f}%</td><td class=m>{s['up_base_rate']:.1f}%</td>"
                      f"<td class=m>{s['edge_vs_base_pp']:+.2f}pp</td><td class=m>{s['brier']:.4f}</td><td class=m>{s['climatology']:.4f}</td>"
-                     f"<td class='m {'ok' if s['brier_skill']>0 else 'bad'}'>{s['brier_skill']:+.4f}</td><td>{s['verdict']}</td></tr>")
+                     f"<td class='m {'ok' if s['brier_skill']>0 else 'bad'}'>{s['brier_skill']:+.4f}</td>"
+                     f"<td>{s['verdict']}<br><span class=den>{s['days']} day{'' if s['days']==1 else 's'} — <b>days are the denominator, not rows</b>; "
+                     f"{s['resolved']:,} rows inside {s['days']} session{'' if s['days']==1 else 's'} is {s['days']} observation{'' if s['days']==1 else 's'} of regime, not {s['resolved']:,}.</span></td></tr>")
         else:
             rows += f"<tr><td><b>+{h} min</b></td><td class=m>{s.get('filed',0):,}</td><td class=m>0</td><td colspan=8 style='text-align:left;opacity:.7'>{s.get('note','filed, nothing resolved yet')} — {s.get('pending',0)} pending</td></tr>"
     cal = ""
@@ -84,7 +86,7 @@ def render(d):
 body{{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}}.wrap{{max-width:1000px;margin:0 auto;padding:28px 20px 60px}}
 h1{{font-size:22px;margin:0 0 6px}}h3{{font-size:14px;margin:22px 0 6px}}p{{max-width:80ch;color:var(--muted)}}.m{{font-family:ui-monospace,Menlo,monospace;font-variant-numeric:tabular-nums;text-align:right}}
 table{{border-collapse:collapse;width:100%;background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden;font-size:13px}}th,td{{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left}}th{{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}}
-.ok{{color:var(--ok)}}.bad{{color:var(--bad)}}.law{{border-left:3px solid var(--accent);background:rgba(88,166,255,.08);padding:10px 14px;border-radius:0 8px 8px 0;margin:14px 0}}.tscroll{{overflow-x:auto}}</style></head><body><div class=wrap>
+.den{{display:block;font-size:11px;color:var(--muted);margin-top:3px}}.ok{{color:var(--ok)}}.bad{{color:var(--bad)}}.law{{border-left:3px solid var(--accent);background:rgba(88,166,255,.08);padding:10px 14px;border-radius:0 8px 8px 0;margin:14px 0}}.tscroll{{overflow-x:auto}}</style></head><body><div class=wrap>
 <h1>BTC-USD · 1 / 5 / 15-minute forecast scoreboard</h1>
 <p>Generated {d['generated']}. One instrument, three clocks: at time T a row is frozen saying p(up) for T+H; at T+H the real last trade of that minute decides. Direction obeyed = right. Rows are never edited. Ties (unchanged minute) are excluded, never counted as misses.</p>
 <div class=law><b>Read this first.</b> This is a calibration instrument and is barred from trading. The lab's published result is a null: short-horizon BTC direction is not forecastable from these features, and the only real edge found (1 minute, +1.38pp, z=5.2) is worth ~+0.05 bps against a 60 bps retail fee — about 1/1,183rd of the cost of acting on it. A good run here is calibration, not money.</div>
@@ -97,6 +99,10 @@ table{{border-collapse:collapse;width:100%;background:var(--panel);border:1px so
 def main():
     d = {"generated": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
          "win_rule": "row frozen at T states p_up for T+H; real last trade at T+H decides; direction obeyed = right; ties excluded",
+         "denominator_caveat": ("DAYS ARE THE DENOMINATOR, NOT ROWS. Minutes inside one UTC day share a regime, so "
+                                "N rows over D days is D observations, not N. Any hit_rate, edge_vs_base_pp or "
+                                "brier_skill quoted from this file MUST be quoted with its `days` count beside it "
+                                "(council directive, crypto-microstructure, 2026-08-21)."),
          "horizons": {str(h): stats(p) for h, p in BOOKS.items()}}
     json.dump(d, open(os.path.join(HERE, "scoreboard.json"), "w"), indent=1)
     open(os.path.join(ROOT, "scoreboard.html"), "w").write(render(d))
