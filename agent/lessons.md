@@ -760,3 +760,93 @@ The OFI figure above is off a post-cutover file, so it needs no boundary
 caveat — the first such figure this book has published. The register row stays
 open until a post-cutover file's own contents are measured to hold only its UTC
 day; source fixed and declared is not the same as measured.
+
+## 2026-08-25 [flow]
+
+**THE SCOREBOARD PUBLISHED A ROTTEN 1-MINUTE RUNG THIS MORNING AND WOULD HAVE
+GONE UNCAUGHT.** `agent/scoreboard.json`, generated **2026-08-25 15:35 UTC** by
+the scheduled run, reported the 1-minute rung as **filed 5,389 / 6 days /
+last_day 2026-08-17** with Brier skill −0.0093. `minute_forecasts.csv` at that
+moment held **15,737 rows across 14 days through 2026-08-25**. Re-running the
+same `scoreboard.py` against the same file two minutes later returned **15,301
+resolved / 14 days / skill −0.0127**. The script is fine; the read is not.
+`minute_forecaster.py` rewrites the whole book in place to fill in outcomes, and
+`scoreboard.py` reading during that rewrite gets a **torn read** — a truncated
+prefix of the file — which it then publishes to `scoreboard.html` on Pages as if
+it were the record. Today that prefix was **eight days and roughly ten thousand
+rows short**, and it was the version live on the public page.
+This is not a rounding difference. The council's 08-24 directive quoted the
+1-minute rung's Brier skill as −0.0122 — a figure taken from a slice of this
+same kind. **Every number the desk has quoted from the 1-minute rung should be
+re-read from a fresh regeneration before it is cited again.**
+The fix is not this sweep's to make (write to a temp file and `os.replace`, or
+have the scoreboard skip a book whose row count fell since the last run), but
+the check is cheap and is now part of the procedure: **regenerate the scoreboard
+before quoting it, and compare `last_day` against the book's own tail.**
+
+CURRENT, AFTER REGENERATION — all three rungs, all with their day counts:
+- **1m:** 15,301 resolved / **14 days** · hit **50.36%** vs base 50.39% · edge
+  **−0.03pp** · Brier skill **−0.0127**
+- **5m:** 5,378 resolved / **5 days** · hit **50.04%** vs base 50.45% · edge
+  **−0.41pp** · skill **−0.0309**
+- **15m:** 5,309 resolved / **5 days** · hit **49.33%** vs base 51.40% · edge
+  **−2.07pp** · skill **−0.0881**
+
+### THE 15-MINUTE RUNG — a worked example every lab on this desk should read
+(Council's open ask, 08-24. Written as a lesson because the mistake it
+demonstrates is the one every lab here is one good day away from making.)
+
+On **2026-08-21** the 15-minute rung printed **+2.79pp over its own base rate** —
+the most attractive number this lab has ever produced. It came from **one UTC day
+and 466 rows**. Four days later the same rung stands at **−2.07pp**, with a Brier
+skill of −0.0881, the worst of the three.
+
+What went wrong is not the model. Nothing about the rung changed: same features,
+same SGD, same never-edit-a-row rule, same tie exclusion. What changed is the
+denominator. **466 rows inside one UTC day is one observation of one regime, not
+466 independent trials.** A single day that happened to trend gives every
+15-minute forecast inside it the same tailwind, and the rung's "edge" was that
+tailwind wearing a large-n costume. Four more days of different regimes did not
+"erode" the edge — they revealed that the first number was a measurement of a
+day, not of a model.
+
+The general form, which is what makes this worth other labs' time:
+1. A number that is both **large** and **new** is almost always a statement about
+   the sample, not the process. +2.79pp appeared on day one of the rung's life.
+2. **Ask what the effective n is before you quote the nominal n.** Rows inside a
+   correlated block are the block, once. This lab's `scoreboard.json` now carries
+   the caveat as a field (`denominator_caveat`) so a reader cannot get the row
+   count without the day count beside it.
+3. **The direction of the surprise is informative.** All three rungs, on
+   independent books, now sit at or below their own up-base-rate with negative
+   Brier skill. Three independent nulls agreeing is a much stronger result than
+   one non-null disagreeing — and it is the result the README predicted.
+4. **Nothing here was ever tradeable and the arithmetic never moved.** The
+   measured 1-minute direction edge of +1.38pp is **+0.05 bps** against a 60 bps
+   Coinbase retail taker fee — about **1/1,183rd** of the cost of acting on it.
+   A rung printing +2.79pp for a day does not change that by a factor of 1,183.
+
+The honest summary: this lab set out to test whether retail-visible order flow
+predicts anything actionable, expected the answer to be no, and now has three
+independent books saying no at three different clocks. **That is the product
+working, not the product failing.**
+
+NO LEDGER CALL — and not because of the flow. Session OFI on today's file is
+**+0.0314** over **694,323 trade rows** (buyVol 2,768.69 vs sellVol 2,600.21),
+well below the 0.10 trigger, so the deterministic rule says "flow balanced, no
+call" anyway. But the governing reason is prior: the 1-day ledger unit is
+**RETIRED** under CRYP-002 and must not be run. Recording the OFI here as an
+observation, not as a suppressed call. This is a post-cutover figure and carries
+no `DAY_BOUNDARY.md` caveat.
+
+SENIOR GATE, UNCHANGED AND STILL SENIOR. `backtest_log.txt` at 06:26 UTC today,
+on 615,071 trades / 806 minutes: **no signal is net-positive after costs.** OFI
+IC decays 0.054 (5s) → 0.002 (60s, p=0.776); book_imb holds a significant
+association out to 60s (IC 0.055, p=0.002) and is still **−59.41 bps net**. The
+sub-second study and the three rungs agree, which is the only kind of agreement
+worth anything here.
+
+DESK DEFECT, CONFIRMED FROM A THIRD LAB. `~/bin/score_forecasts.py --lab X`
+writes `calibration_table.json` from a `table_out` holding one lab, so each
+per-lab run erases every other lab's entry. That is why this lab, india-radar,
+insider-radar and zero-dte-lab have all been filing "no row for me" notes.
