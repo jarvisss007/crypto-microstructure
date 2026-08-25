@@ -284,18 +284,34 @@ def tick():
 
     done = [r for r in rows if r["outcome"] in ("right", "wrong")]
     ties = sum(1 for r in rows if r["outcome"] == "tie")
-    hit = (100 * sum(1 for r in done if r["outcome"] == "right") / len(done)) if done else float("nan")
-    brier = (sum((float(r["p_up"]) - (1.0 if r["outcome"] == "right" else 0.0)) ** 2
-                 for r in done) / len(done)) if done else float("nan")
     print(f"{wrote} forecast written, {scored} scored · book {len(rows)} rows "
           f"({len(done)} scoreable, {ties} ties excluded)")
-    if done:
-        days = len({r["target_minute_utc"][:10] for r in done})
+
+    # Report BY FEATURE ERA and never pooled. Rows without `fv` were written by
+    # the four-feature model (ofi and book_imb hard zero); rows with fv:2 by the
+    # six-feature one. Pooling them reports a hit rate for an algorithm that
+    # never existed, and the fv:2 record would be buried under 9,645 rows of a
+    # different model for months.
+    eras = {}
+    for r in done:
+        try:
+            fv = json.loads(r["note"]).get("fv", 1)
+        except Exception:
+            fv = 1
+        eras.setdefault(fv, []).append(r)
+    for fv in sorted(eras):
+        g = eras[fv]
+        hit = 100 * sum(1 for r in g if r["outcome"] == "right") / len(g)
+        brier = sum((float(r["p_up"]) - (1.0 if r["outcome"] == "right" else 0.0)) ** 2
+                    for r in g) / len(g)
+        days = len({r["target_minute_utc"][:10] for r in g})
+        tag = "4-feature (ofi/book pinned at 0)" if fv == 1 else "6-feature (live flow)"
         prov = " — PROVISIONAL" if days < 30 else ""
-        print(f"  hit {hit:.1f}%  Brier {brier:.4f}  n={len(done)} over {days} day(s){prov}")
+        print(f"  fv{fv} {tag}: hit {hit:.2f}%  Brier {brier:.4f}  "
+              f"n={len(g)} over {days} day(s){prov}")
         if days < 30:
-            print(f"  effective sample is nearer {days} than {len(done)}: minutes inside "
-                  f"one session share a regime.")
+            print(f"       effective sample is nearer {days} than {len(g)}: minutes "
+                  f"inside one session share a regime.")
     print("  NOT TRADEABLE: the 1-min edge is worth ~+0.05 bps against a 60 bps "
           "retail fee, about 1/1,183rd of cost.")
 
