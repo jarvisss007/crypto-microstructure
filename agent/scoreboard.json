@@ -1,22 +1,22 @@
 {
- "generated": "2026-08-26 03:07 UTC",
+ "generated": "2026-08-26 15:40 UTC",
  "win_rule": "row frozen at T states p_up for T+H; real last trade at T+H decides; direction obeyed = right; ties excluded",
  "denominator_caveat": "DAYS ARE THE DENOMINATOR, NOT ROWS. Minutes inside one UTC day share a regime, so N rows over D days is D observations, not N. Any hit_rate, edge_vs_base_pp or brier_skill quoted from this file MUST be quoted with its `days` count beside it (council directive, crypto-microstructure, 2026-08-21).",
  "horizons": {
   "1": {
-   "filed": 15885,
-   "resolved": 15448,
-   "ties_excluded": 395,
-   "pending": 42,
-   "hit_rate": 50.35,
-   "up_base_rate": 50.39,
-   "edge_vs_base_pp": -0.04,
-   "brier": 0.2532,
+   "filed": 16164,
+   "resolved": 15721,
+   "ties_excluded": 396,
+   "pending": 47,
+   "hit_rate": 50.29,
+   "up_base_rate": 50.36,
+   "edge_vs_base_pp": -0.07,
+   "brier": 0.2531,
    "climatology": 0.25,
-   "brier_skill": -0.0127,
-   "days": 14,
+   "brier_skill": -0.0126,
+   "days": 15,
    "first_day": "2026-08-12",
-   "last_day": "2026-08-25",
+   "last_day": "2026-08-26",
    "bins": [
     {
      "lo": 0.1,
@@ -35,30 +35,30 @@
     {
      "lo": 0.3,
      "hi": 0.4,
-     "n": 506,
+     "n": 514,
      "said": 0.371,
-     "happened": 0.506
+     "happened": 0.508
     },
     {
      "lo": 0.4,
      "hi": 0.5,
-     "n": 6784,
+     "n": 6897,
      "said": 0.464,
-     "happened": 0.5
+     "happened": 0.501
     },
     {
      "lo": 0.5,
      "hi": 0.6,
-     "n": 7394,
+     "n": 7541,
      "said": 0.537,
-     "happened": 0.503
+     "happened": 0.502
     },
     {
      "lo": 0.6,
      "hi": 0.7,
-     "n": 653,
+     "n": 658,
      "said": 0.63,
-     "happened": 0.541
+     "happened": 0.543
     },
     {
      "lo": 0.7,
@@ -78,19 +78,19 @@
    "verdict": "no skill vs base rate \u2014 PROVISIONAL, <30 days"
   },
   "5": {
-   "filed": 5580,
-   "resolved": 5525,
+   "filed": 5859,
+   "resolved": 5792,
    "ties_excluded": 3,
-   "pending": 52,
-   "hit_rate": 49.79,
-   "up_base_rate": 50.41,
-   "edge_vs_base_pp": -0.62,
-   "brier": 0.2581,
+   "pending": 64,
+   "hit_rate": 49.88,
+   "up_base_rate": 50.29,
+   "edge_vs_base_pp": -0.41,
+   "brier": 0.2579,
    "climatology": 0.25,
-   "brier_skill": -0.0325,
-   "days": 5,
+   "brier_skill": -0.0318,
+   "days": 6,
    "first_day": "2026-08-21",
-   "last_day": "2026-08-25",
+   "last_day": "2026-08-26",
    "bins": [
     {
      "lo": 0.0,
@@ -102,51 +102,51 @@
     {
      "lo": 0.1,
      "hi": 0.2,
-     "n": 19,
+     "n": 21,
      "said": 0.161,
-     "happened": 0.579
+     "happened": 0.524
     },
     {
      "lo": 0.2,
      "hi": 0.3,
-     "n": 100,
-     "said": 0.268,
-     "happened": 0.56
+     "n": 106,
+     "said": 0.267,
+     "happened": 0.557
     },
     {
      "lo": 0.3,
      "hi": 0.4,
-     "n": 576,
-     "said": 0.362,
-     "happened": 0.483
+     "n": 603,
+     "said": 0.361,
+     "happened": 0.488
     },
     {
      "lo": 0.4,
      "hi": 0.5,
-     "n": 1924,
-     "said": 0.455,
-     "happened": 0.51
+     "n": 2018,
+     "said": 0.456,
+     "happened": 0.506
     },
     {
      "lo": 0.5,
      "hi": 0.6,
-     "n": 2103,
+     "n": 2228,
      "said": 0.545,
-     "happened": 0.489
+     "happened": 0.488
     },
     {
      "lo": 0.6,
      "hi": 0.7,
-     "n": 678,
+     "n": 690,
      "said": 0.637,
-     "happened": 0.524
+     "happened": 0.526
     },
     {
      "lo": 0.7,
      "hi": 0.8,
-     "n": 101,
+     "n": 102,
      "said": 0.742,
-     "happened": 0.574
+     "happened": 0.578
     },
     {
      "lo": 0.8,
@@ -166,19 +166,19 @@
    "verdict": "no skill vs base rate \u2014 PROVISIONAL, <30 days"
   },
   "15": {
-   "filed": 5580,
-   "resolved": 5455,
+   "filed": 5859,
+   "resolved": 5702,
    "ties_excluded": 1,
-   "pending": 124,
-   "hit_rate": 48.96,
-   "up_base_rate": 51.48,
-   "edge_vs_base_pp": -2.51,
-   "brier": 0.2725,
+   "pending": 156,
+   "hit_rate": 48.12,
+   "up_base_rate": 51.26,
+   "edge_vs_base_pp": -3.14,
+   "brier": 0.2737,
    "climatology": 0.2498,
-   "brier_skill": -0.0908,
-   "days": 5,
+   "brier_skill": -0.0956,
+   "days": 6,
    "first_day": "2026-08-21",
-   "last_day": "2026-08-25",
+   "last_day": "2026-08-26",
    "bins": [
     {
      "lo": 0.0,
@@ -197,37 +197,37 @@
     {
      "lo": 0.2,
      "hi": 0.3,
-     "n": 257,
+     "n": 264,
      "said": 0.261,
-     "happened": 0.56
+     "happened": 0.572
     },
     {
      "lo": 0.3,
      "hi": 0.4,
-     "n": 828,
-     "said": 0.357,
-     "happened": 0.528
+     "n": 872,
+     "said": 0.358,
+     "happened": 0.546
     },
     {
      "lo": 0.4,
      "hi": 0.5,
-     "n": 1471,
+     "n": 1550,
      "said": 0.451,
      "happened": 0.512
     },
     {
      "lo": 0.5,
      "hi": 0.6,
-     "n": 1373,
+     "n": 1474,
      "said": 0.547,
-     "happened": 0.489
+     "happened": 0.474
     },
     {
      "lo": 0.6,
      "hi": 0.7,
-     "n": 986,
-     "said": 0.646,
-     "happened": 0.544
+     "n": 1002,
+     "said": 0.645,
+     "happened": 0.537
     },
     {
      "lo": 0.7,
