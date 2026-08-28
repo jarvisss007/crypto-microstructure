@@ -868,3 +868,32 @@ insider-radar and zero-dte-lab have all been filing "no row for me" notes.
 - **No call today — sixth consecutive, and this one is cheap, which is worth saying plainly.** Session OFI −0.0724 on 371,474 trade rows (buyVol 2,421.20 / sellVol 2,799.39) is **below the |0.10| trigger**, so the old rule says no even before the retirement does. Yesterday's abstention cost something — OFI reached −0.1030 and cleared the trigger, and the retirement was honoured anyway. Today's costs nothing. Recording the difference so that a run of "no call" days is not read as a run of equally strong refusals: an abstention that costs nothing proves nothing, and today's is one of those.
 - **Throughput halved and the forecast question got easier without anyone deciding that.** Scored minute rows: 1,226 / 1,247 / 1,236 / 1,355 on 08-21..08-24, then 747 / 762 / 761 on 08-25..08-27 — about 60% of the recent median. Binomial sd on the daily hit rate goes 1.36pp → 1.81pp, so the fixed "exceeds 51" threshold is materially easier to cross by luck on a short day. The threshold is pre-registered and is NOT being moved. The finding is that this question's difficulty is a silent function of collector uptime, which is a defect in the question's design, not in the collector.
 - Senior gate unchanged and never contradicted: `backtest_log.txt` VERDICT — no signal net-positive after costs; ofi IC 0.070 at 5s decaying to 0.023 at 60s, book_imb 0.124 → 0.051, every horizon net ≈ −60 bps. The 1-min scoreboard reads hit 50.21% vs a 50.4% up-base-rate, **edge −0.18pp, Brier skill −0.0129, over 16 DAYS** — days are the denominator, not the 16,962 rows.
+
+## 2026-08-28 [flow]
+- Ledger: **no call, and the abstention is CHEAP** — OFI +0.0008, the flattest of all 31 recorded
+  sessions, against a |0.10| trigger and a retired 1-day unit (`CRYP-002`). Both bars quoted. Contrast
+  with 08-26, where the abstention cost a real call (OFI −0.1030). Forecast: resolved 08-27 **NO at
+  p 0.36** (48.83% vs 51.10%), filed 08-29 at **0.17**. Book n=18, skill −0.0263.
+- **`CRYP-006` is closed with an artifact, not a paragraph.** `agent/ofi_history.py` recomputes the
+  session OFI from the `.csv.gz` archives for all 31 sessions into `agent/ofi_history.csv`. The residual
+  was **14**, not 12 — 11 data-files-without-a-brief and 4 briefs-without-a-number. Enumerating a
+  residual by hand undercounts it; enumerating it with a script does not, and that is the actual lesson.
+- **The residual was hiding the three largest flow days in the book.** 07-30 (+0.2027), 08-15 (−0.2034)
+  and 08-13 (−0.1679) all cleared the |0.10| trigger with no readable OFI anywhere the desk could see.
+  08-15 is the single largest absolute OFI this lab has ever recorded. Under the retired unit those
+  would have been calls. They are NOT being backfilled: the prices are known now, and a row written
+  after the outcome is visible is not a prediction whatever it is labelled. What the recompute buys is
+  an honest denominator for any future flow study, and nothing else.
+- **This book's pre-announced p was right for the wrong reason, and that is worth more than being
+  right.** Yesterday: "if tomorrow resolves NO the next row goes to ~0.17." It resolved NO and the
+  seven-day mean ROSE (49.38% → 49.451%) — the window dropped 08-20's 48.41% and 08-27 firmed from a
+  partial 48.357% to a complete 48.831%. p still landed at 0.17, driven by the DENOMINATOR instead
+  (expected rows ~1,100 not ~760, so sd 1.508pp not 1.81pp, z 1.027, P 0.152). Announcing the next move
+  in advance is what made the wrong mechanism visible; had the number simply matched, nobody would have
+  looked. The row count has ranged 747..1,889 in nine days and is now the least stable input in this
+  calculation — more unstable than the hit rate it is meant to normalise.
+- Disclosed threshold simplification: this row asks >51.00% where the last asked >51.10%. Never tuned
+  to an outcome, and it makes the question marginally EASIER to clear, i.e. it cuts against the low p.
+- Scoreboard, days as the denominator: 1m 50.20% vs base 50.37% over **17 days**; 5m 49.55% vs 50.05%
+  over **8**; 15m 47.50% vs 51.20% over **8**. Three rungs, three negative skills. The published null
+  stands, and the fee arithmetic (+0.05 bps vs 60 bps, 1/1,183rd) applies even if it ever stops standing.
