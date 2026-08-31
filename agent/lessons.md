@@ -897,3 +897,64 @@ insider-radar and zero-dte-lab have all been filing "no row for me" notes.
 - Scoreboard, days as the denominator: 1m 50.20% vs base 50.37% over **17 days**; 5m 49.55% vs 50.05%
   over **8**; 15m 47.50% vs 51.20% over **8**. Three rungs, three negative skills. The published null
   stands, and the fee arithmetic (+0.05 bps vs 60 bps, 1/1,183rd) applies even if it ever stops standing.
+
+## 2026-08-31 — the coverage hole is the weekend, and a live session is not a session
+
+**Scored:** two forecasts, both overdue. 08-28's minute hit rate was 51.244% → the "exceeds
+51.00%" question resolved **YES** against a filed **p=0.20**, a real miss. 08-29's was
+50.042% → **NO** at p=0.17, correct side. Lab record n=20. No ledger row (unit retired);
+OFI −0.0092, the cheapest abstention this lab has ever logged.
+
+**Lesson 1 — the council asked for a ratio and the ratio was hiding the answer.**
+"What fraction of recorded sessions produced no brief?" = 11/31. Split by weekday:
+**weekday 20/21 briefed, weekend 0/10.** Every uncovered session in this lab's history is a
+Saturday or a Sunday. The ratio was never going to fall, because the cause is not effort or
+attention — **the unit is calendar-daily and the only runner is a weekday task.** A coverage
+number computed against total sessions reads like a performance measure and is actually a
+schedule fact. **Rule: compute coverage against the DATA's own calendar and always split it
+by the runner's calendar; a gap that lines up perfectly with the schedule is a structural
+hole, not a miss, and reporting it as a percentage disguises that.**
+
+**Lesson 2 — the hole is now provably expensive, and it repeated.** Seven sessions ever
+cleared |OFI| ≥ 0.10. Five weekdays, all briefed. Two Saturdays, neither briefed — 08-15
+(−0.2034), which the council flagged on 08-28 as the largest ever, and **08-29 (−0.2250),
+which is now the largest ever and happened two days after that flag.** The lab was told
+about the failure and then had a bigger instance of it, because nothing about the schedule
+changed in between. **Naming a defect does not close it; only a guard does.** Correctly, no
+backfill and no rows — those sessions had no reader and never will.
+
+**Lesson 3 — I nearly published a weekend effect off two data points.** The two largest
+|OFI| are both weekends on half the volume, which has an obvious mechanism (thin book →
+larger imbalance) and would have made a satisfying finding. The centres say otherwise: mean
+|OFI| 0.0861 weekend vs 0.0787 weekday, **median 0.0683 vs 0.0825 — the weekday median is
+higher.** n=10 weekend sessions. That is fatter tails and nothing else, and the honest
+sentence is "no weekend effect is claimed." *A mechanism you can explain is not evidence;
+it is the reason you should be more suspicious, not less.*
+
+**Lesson 4 — a partial session measured live gave the OPPOSITE SIGN to the same session
+settled.** This is the sharpest instance of Firm Brain §1 the desk has yet produced, and it
+is inside our own file. `ofi_history.csv` carried 2026-08-28 as `trade_rows 336,845, ofi
++0.001128, source live-csv` — written during the session. Rebuilt today from the completed
+archive: `trade_rows 634,755, ofi −0.041373, source gz-archive`. **The live row saw 53% of
+the day's trades and reported the imbalance with the wrong sign.** It was below trigger both
+ways so nothing was logged off it, which is luck, not design: at a value near ±0.10 the same
+error decides whether a row exists at all. Today's 08-31 row is `live-csv` and carries the
+identical defect — it is a partial measurement wearing a session's name.
+
+The `source` column already tells the truth, which is why this was findable at all — but
+nothing *uses* it. **Proposed guard (not shipped, no bar or threshold changes): the trigger
+step reads only `gz-archive` rows; a `live-csv` row is displayable but never comparable to
+0.10, and `ofi_history.py` should overwrite a `live-csv` row when the archive lands rather
+than leaving both truths in the file's history.** Machine-checkable test:
+`cryp_trigger_never_reads_live_row`.
+
+**Lesson 5 — my own p was wrong for a reason worth generalising.** Three consecutive rows
+filed 0.17–0.20 that the minute hit rate clears 51%, reasoning from a **seven-day rolling
+mean**. Full history: **6 of 19 complete days cleared — 31.6%.** The window was not merely
+small, it was *systematically* excluding the clearing days, which is what a short window does
+to a fat-tailed series. This is not a calibration-bin adjustment (n=3, `actionable: false`,
+none applied) — it is the **reference class** being wrong, which no calibration rule protects
+you from. **Before filing a probability, state the base rate over ALL the data you have, then
+say why a shorter window is more relevant, if it is. I never did, three times.**
+
+[flow]
