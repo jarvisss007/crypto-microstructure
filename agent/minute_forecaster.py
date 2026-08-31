@@ -74,7 +74,7 @@ STALE_SEC = 180                 # a book older than this is not a live book
 # needs — `outcome` records whether the CALL was right, which is a different
 # question and cannot be paired with p. A tie leaves `up` blank rather than 0:
 # a minute that did not move did not happen either way.
-COLS = ["made_at_utc", "target_minute_utc", "product", "p_up", "px_at_call",
+COLS = ["made_at_utc", "target_minute_utc", "product", "p_up", "pred_px", "px_at_call",
         "px_at_target", "up", "outcome", "note"]
 
 
@@ -197,10 +197,20 @@ def tick():
         p_up = min(0.95, max(0.05, p_up))
         target = (last_min + timedelta(minutes=1)).strftime("%Y-%m-%dT%H:%M")
         if not any(r["target_minute_utc"] == target for r in rows):
+            # pred_px, added 2026-08-31 on Anupam's ask ("at 9:15 it will be at THIS
+            # price — test whether that worked"). The model was direction-only; its
+            # point forecast is now DEFINED and logged before the outcome exists:
+            #   pred_px = px_now + tanh(z) * sig * px_now
+            # i.e. the direction score scaled by the model's own volatility estimate.
+            # The random-walk null is px_at_call itself; exact_minute_study.py judges
+            # pred_px against that null at the exact :00 target minute. Definition
+            # registered here first so it cannot be tuned after results accrue.
+            pred_px = last_px * (1 + math.tanh(z) * sig)
             rows.append({
                 "made_at_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S"),
                 "target_minute_utc": target, "product": PRODUCT,
-                "p_up": f"{p_up:.4f}", "px_at_call": f"{last_px:.2f}",
+                "p_up": f"{p_up:.4f}", "pred_px": f"{pred_px:.2f}",
+                "px_at_call": f"{last_px:.2f}",
                 "px_at_target": "", "up": "", "outcome": "",
                 "note": json.dumps({"f": f, "sig": round(sig, 8)}),
             })
