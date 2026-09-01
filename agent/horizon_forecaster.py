@@ -44,7 +44,7 @@ HORIZONS = (5, 15)              # minutes; the 1-minute rung is minute_forecaste
 LR, L2 = 0.02, 0.001            # identical to research/backtest_all.py and the 1-min rung
 FEATS = ["bias", "r1", "r5", "rev", "ofi", "book_imb"]
 STALE_SEC = 180
-COLS = ["made_at_utc", "target_minute_utc", "horizon_min", "product", "p_up",
+COLS = ["made_at_utc", "target_minute_utc", "horizon_min", "product", "p_up", "pred_px",
         "px_at_call", "px_at_target", "up", "outcome", "note"]
 
 
@@ -121,10 +121,16 @@ def tick_horizon(h, closes, last_min, last_px, px_by_min):
         p_up = min(0.95, max(0.05, 1 / (1 + math.exp(-z))))
         target = (last_min + timedelta(minutes=h)).strftime("%Y-%m-%dT%H:%M")
         if not any(r["target_minute_utc"] == target for r in rows):
+            # pred_px — same frozen definition as the 1-minute book (2026-08-31), scaled
+            # by sqrt(horizon) so the point forecast carries the model's own volatility
+            # estimate at THIS horizon. His literal ask lives here: "at 9:00 it says the
+            # 9:15 price"; the study judges it against the random walk at :00 exactly.
+            pred_px = last_px * (1 + math.tanh(z) * sig * math.sqrt(h))
             rows.append({
                 "made_at_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S"),
                 "target_minute_utc": target, "horizon_min": str(h), "product": PRODUCT,
-                "p_up": f"{p_up:.4f}", "px_at_call": f"{last_px:.2f}",
+                "p_up": f"{p_up:.4f}", "pred_px": f"{pred_px:.2f}",
+                "px_at_call": f"{last_px:.2f}",
                 "px_at_target": "", "up": "", "outcome": "",
                 "note": json.dumps({"f": f, "sig": round(sig, 8)}),
             })
