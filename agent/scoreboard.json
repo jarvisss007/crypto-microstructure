@@ -1,16 +1,16 @@
 {
- "generated": "2026-09-02 02:44 UTC",
+ "generated": "2026-09-02 03:04 UTC",
  "win_rule": "row frozen at T states p_up for T+H; real last trade at T+H decides; direction obeyed = right; ties excluded",
  "denominator_caveat": "DAYS ARE THE DENOMINATOR, NOT ROWS. Minutes inside one UTC day share a regime, so N rows over D days is D observations, not N. Any hit_rate, edge_vs_base_pp or brier_skill quoted from this file MUST be quoted with its `days` count beside it (council directive, crypto-microstructure, 2026-08-21).",
  "horizons": {
   "1": {
-   "filed": 23292,
-   "resolved": 22714,
+   "filed": 23312,
+   "resolved": 22734,
    "ties_excluded": 494,
    "pending": 84,
-   "hit_rate": 50.11,
-   "up_base_rate": 50.32,
-   "edge_vs_base_pp": -0.21,
+   "hit_rate": 50.09,
+   "up_base_rate": 50.34,
+   "edge_vs_base_pp": -0.25,
    "brier": 0.2533,
    "climatology": 0.25,
    "brier_skill": -0.0132,
@@ -42,14 +42,14 @@
     {
      "lo": 0.4,
      "hi": 0.5,
-     "n": 10096,
+     "n": 10113,
      "said": 0.464,
-     "happened": 0.501
+     "happened": 0.502
     },
     {
      "lo": 0.5,
      "hi": 0.6,
-     "n": 10797,
+     "n": 10800,
      "said": 0.537,
      "happened": 0.501
     },
@@ -78,16 +78,16 @@
    "verdict": "no skill vs base rate \u2014 PROVISIONAL, <30 days"
   },
   "5": {
-   "filed": 12983,
-   "resolved": 12798,
+   "filed": 13003,
+   "resolved": 12818,
    "ties_excluded": 6,
    "pending": 179,
-   "hit_rate": 50.01,
-   "up_base_rate": 49.74,
-   "edge_vs_base_pp": -0.25,
-   "brier": 0.2591,
+   "hit_rate": 50.05,
+   "up_base_rate": 49.8,
+   "edge_vs_base_pp": -0.14,
+   "brier": 0.259,
    "climatology": 0.25,
-   "brier_skill": -0.0364,
+   "brier_skill": -0.0361,
    "days": 13,
    "first_day": "2026-08-21",
    "last_day": "2026-09-02",
@@ -123,21 +123,21 @@
     {
      "lo": 0.4,
      "hi": 0.5,
-     "n": 4629,
+     "n": 4633,
      "said": 0.454,
      "happened": 0.493
     },
     {
      "lo": 0.5,
      "hi": 0.6,
-     "n": 4678,
+     "n": 4693,
      "said": 0.544,
-     "happened": 0.488
+     "happened": 0.489
     },
     {
      "lo": 0.6,
      "hi": 0.7,
-     "n": 1434,
+     "n": 1435,
      "said": 0.636,
      "happened": 0.515
     },
@@ -166,16 +166,16 @@
    "verdict": "no skill vs base rate \u2014 PROVISIONAL, <30 days"
   },
   "15": {
-   "filed": 12983,
-   "resolved": 12613,
+   "filed": 13003,
+   "resolved": 12633,
    "ties_excluded": 4,
    "pending": 366,
-   "hit_rate": 47.84,
-   "up_base_rate": 51.41,
+   "hit_rate": 47.87,
+   "up_base_rate": 51.44,
    "edge_vs_base_pp": -3.57,
-   "brier": 0.2741,
+   "brier": 0.274,
    "climatology": 0.2498,
-   "brier_skill": -0.0972,
+   "brier_skill": -0.097,
    "days": 13,
    "first_day": "2026-08-21",
    "last_day": "2026-09-02",
@@ -211,21 +211,21 @@
     {
      "lo": 0.4,
      "hi": 0.5,
-     "n": 3280,
+     "n": 3281,
      "said": 0.452,
      "happened": 0.519
     },
     {
      "lo": 0.5,
      "hi": 0.6,
-     "n": 3579,
+     "n": 3596,
      "said": 0.548,
-     "happened": 0.493
+     "happened": 0.494
     },
     {
      "lo": 0.6,
      "hi": 0.7,
-     "n": 2307,
+     "n": 2309,
      "said": 0.645,
      "happened": 0.49
     },
