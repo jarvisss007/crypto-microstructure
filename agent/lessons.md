@@ -958,3 +958,70 @@ you from. **Before filing a probability, state the base rate over ALL the data y
 say why a shorter window is more relevant, if it is. I never did, three times.**
 
 [flow]
+
+---
+
+## 2026-09-02 — CRYP-004 closes NO, and the curve is finally on the page
+
+**Scored: 08-31 forecast NO (0).** "Minute hit rate on 2026-09-01 UTC exceeds 51.00%"
+— actual **480/968 = 49.587%**. Filed at 0.30. Book now n=21 resolved, base rate 0.381,
+Brier skill **-0.0397**.
+
+**CRYP-004's open half is CLOSED, and the answer is NO.** The question the Resolver left
+me on 08-19: were any past `no call` outputs produced by the `price,qty,isBuy` bug
+rather than by the flow? `ofi_history.csv` rebuilds OFI independently from the gz-archive,
+so it can now be checked instead of argued. The at-risk window runs from the last logged
+call (08-07) to CRYP-002 retiring the 1-day unit (08-12). Two briefs sit in it:
+
+- 08-10 brief: "Session OFI for 2026-08-09 = **+0.0939**" · independent rebuild **+0.093907**
+- 08-11 brief: "Session OFI (08-10, complete): **-0.0805**" · independent rebuild **-0.080464**
+
+Four decimals, both times, both genuinely under the 0.10 trigger. **The bug lived in the
+AGENT.md's shorthand, not in what the agent computed.** And the 08-11 brief is the better
+half of the answer: it saw the in-progress 08-11 file running -0.1564, said out loud that
+using it would be threshold-tuning, and refused — on the one day where firing would have
+been easiest to justify. Recording that as a credit, not just the null.
+
+**Firm Brain §3, and the part I want to keep.** The honest way to test "a silent zero is
+indistinguishable from a dead writer" is to go back to the days the writer COULD have been
+dead and check its output against a rebuild that does not share its code path. It was
+alive. **A §3 check that only ever gets published when it fails is itself a silent zero**,
+so this clean result goes in the brief at the same size a defect would have.
+
+**Retention gap, found in the middle of doing that, and it nearly cost the audit.**
+`ofi_history.csv` is a ROLLING window. At the start of this run it began at 2026-08-01;
+after `ofi_history.py` ran it begins at **2026-08-03** — two sessions silently gone off
+the back while 09-01 and 09-02 were added. Nothing records that they were ever there.
+The CRYP-004 closure needed this file to reach back to 08-09; it was **four days from the
+edge**. Had this audit been asked for in a fortnight, the evidence would simply not have
+existed and the honest answer would have been "unknowable" — which is exactly how a
+question stays open forever. Flagged to the council; no fix shipped unasked, but the
+shape is worth naming: **an audit trail on a rolling window is an audit trail with an
+expiry date, and nothing tells you when it passed.**
+
+**Council directive actioned: the CAL-001 curve is PUBLISHED on scoreboard.html.** The
+page now renders a named panel — every actionable bin with n, said, happened and gap; the
+direction stated plainly (**8 low bins UNDER-confident, 6 high bins OVER-confident**;
+stated probabilities compressed toward the tails while outcomes sit near the base rate);
+`minute_forecaster.py:196`'s `p_up = 1/(1+exp(-z))` named as the writer that does not read
+the table; and the sentence that nothing has been applied because the ruling is Anupam's.
+**No probability adjusted, no threshold moved, no forecaster rewired.** 14 actionable bins
+here against 1 on the rest of the desk — extremes +5min 0.1-0.2 (said 0.164, happened
+0.649) and +15min 0.8-0.9 (said 0.833, happened 0.494).
+
+**No ledger call**: the 1-day unit is retired (CRYP-002), and 09-01's OFI of **-0.1485**
+on 454,736 rows would have cleared the old trigger. Logged to `ofi_history.csv` as an
+observation and nowhere else. A retired trigger that still fires is worth writing down —
+it is the record of what the lab would have done had nobody ruled.
+
+**And the number that outranks every good run here:** +1.38pp of 1-minute edge, z=5.2,
+real — worth **+0.05 bps** against a **60 bps** retail taker fee. **1/1,183rd.** Quoted,
+as required, every time this instrument is reported.
+
+**Council directive applied** (crypto-microstructure, 2026-09-01): both KEEPs carried —
+days-as-denominator on every figure (22 days, not 23,239 rows; 21 days, not 21 rows), and
+the 180-second staleness gate with `up` recorded separately from `outcome` so a flat
+minute is excluded rather than counted as a miss. The OPEN is done: the curve is on the
+page.
+
+[flow]

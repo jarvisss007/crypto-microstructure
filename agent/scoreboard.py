@@ -70,14 +70,44 @@ def render(d):
                      f"{s['resolved']:,} rows inside {s['days']} session{'' if s['days']==1 else 's'} is {s['days']} observation{'' if s['days']==1 else 's'} of regime, not {s['resolved']:,}.</span></td></tr>")
         else:
             rows += f"<tr><td><b>+{h} min</b></td><td class=m>{s.get('filed',0):,}</td><td class=m>0</td><td colspan=8 style='text-align:left;opacity:.7'>{s.get('note','filed, nothing resolved yet')} — {s.get('pending',0)} pending</td></tr>"
+    # CAL-001 (council directive, crypto-microstructure, 2026-09-01): publish the
+    # calibration curve so the finding is VISIBLE while it waits for Anupam's ruling.
+    # This block renders a diagnostic and nothing else. It adjusts no probability, sets
+    # no threshold and is read by no forecaster — `minute_forecaster.py:196` still sets
+    # p_up from the raw logistic and has never read calibration_table.json. That gap is
+    # the finding, so it is stated on the page rather than quietly closed.
+    act = []
+    for h in (1, 5, 15):
+        s = d["horizons"][str(h)]
+        for b in s.get("bins") or []:
+            if b["n"] >= 30 and abs(b["happened"] - b["said"]) > 0.10:
+                act.append((h, b))
     cal = ""
+    if act:
+        lo_side = [b for h, b in act if b["said"] < 0.5]
+        hi_side = [b for h, b in act if b["said"] >= 0.5]
+        cal += ("<h3>Calibration finding (CAL-001) \u2014 published, not applied</h3>"
+                "<div class=law><b>" + str(len(act)) + " actionable bins</b> (n\u2265" "30 and |gap|&gt;0.10) across the three clocks: "
+                + ", ".join(f"+{h}min {b['lo']:.1f}\u2013{b['hi']:.1f} (n={b['n']:,}, said {b['said']:.3f}, happened {b['happened']:.3f}, "
+                            f"gap {b['happened']-b['said']:+.3f})" for h, b in act)
+                + ". <b>The pattern is not noise at these counts:</b> " + str(len(lo_side)) + " low bins run <b>UNDER-confident</b> "
+                  "(the market went up far more often than the row said) and " + str(len(hi_side)) + " high bins run <b>OVER-confident</b> \u2014 "
+                  "stated probabilities are compressed toward the tails while outcomes sit near the base rate. "
+                  "<b>Nothing here has been applied.</b> The desk's calibration rule says adjust an actionable bin halfway toward "
+                  "<i>happened</i>; this lab holds almost every actionable bin on the desk and its forecaster "
+                  "(<code>minute_forecaster.py:196</code>, <code>p_up = 1/(1+exp(-z))</code>) does not read the calibration table at all. "
+                  "That decision is Anupam's (CAL-001), not this lab's. The curve is published here so the cost of not applying it is "
+                  "on the record while it waits.</div>")
     for h in (1, 5, 15):
         s = d["horizons"][str(h)]
         if s.get("bins"):
-            cal += f"<h3>+{h} min reliability</h3><table><tr><th>said</th><th>n</th><th>happened</th><th>gap</th></tr>"
+            cal += f"<h3>+{h} min reliability</h3><table><tr><th>said</th><th>n</th><th>happened</th><th>gap</th><th>actionable</th></tr>"
             for b in s["bins"]:
                 gap = b["happened"] - b["said"]
-                cal += f"<tr><td class=m>{b['lo']:.1f}–{b['hi']:.1f}</td><td class=m>{b['n']:,}</td><td class=m>{b['happened']:.3f}</td><td class='m {'bad' if abs(gap)>0.1 else ''}'>{gap:+.3f}</td></tr>"
+                a = b["n"] >= 30 and abs(gap) > 0.10
+                cal += (f"<tr><td class=m>{b['lo']:.1f}\u2013{b['hi']:.1f}</td><td class=m>{b['n']:,}</td><td class=m>{b['happened']:.3f}</td>"
+                        f"<td class='m {'bad' if abs(gap)>0.1 else ''}'>{gap:+.3f}</td>"
+                        f"<td class=m>{'<b>yes</b>' if a else ('\u2014' if b['n']>=30 else 'n&lt;30')}</td></tr>")
             cal += "</table>"
     return f"""<!DOCTYPE html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1">
 <title>BTC 1 / 5 / 15-minute scoreboard</title>
