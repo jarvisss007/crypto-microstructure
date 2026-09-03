@@ -56,6 +56,8 @@ import argparse
 import csv
 import json
 import math
+import sys as _s; _s.path.insert(0, "/Users/anupampatil/command-center"); from calibrate import calibrate as _cal  # CAL-001 consumer
+
 import os
 import time
 from datetime import datetime, timedelta, timezone
@@ -74,7 +76,7 @@ STALE_SEC = 180                 # a book older than this is not a live book
 # needs — `outcome` records whether the CALL was right, which is a different
 # question and cannot be paired with p. A tie leaves `up` blank rather than 0:
 # a minute that did not move did not happen either way.
-COLS = ["made_at_utc", "target_minute_utc", "product", "p_up", "pred_px", "px_at_call",
+COLS = ["made_at_utc", "target_minute_utc", "product", "p_up", "p_cal", "pred_px", "px_at_call",
         "px_at_target", "up", "outcome", "note"]
 
 
@@ -209,7 +211,7 @@ def tick():
             rows.append({
                 "made_at_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S"),
                 "target_minute_utc": target, "product": PRODUCT,
-                "p_up": f"{p_up:.4f}", "pred_px": f"{pred_px:.2f}",
+                "p_up": f"{p_up:.4f}", "p_cal": f"{_cal('crypto-microstructure', p_up):.4f}", "pred_px": f"{pred_px:.2f}",
                 "px_at_call": f"{last_px:.2f}",
                 "px_at_target": "", "up": "", "outcome": "",
                 "note": json.dumps({"f": f, "sig": round(sig, 8)}),

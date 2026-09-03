@@ -44,7 +44,7 @@ HORIZONS = (5, 15)              # minutes; the 1-minute rung is minute_forecaste
 LR, L2 = 0.02, 0.001            # identical to research/backtest_all.py and the 1-min rung
 FEATS = ["bias", "r1", "r5", "rev", "ofi", "book_imb"]
 STALE_SEC = 180
-COLS = ["made_at_utc", "target_minute_utc", "horizon_min", "product", "p_up", "pred_px",
+COLS = ["made_at_utc", "target_minute_utc", "horizon_min", "product", "p_up", "p_cal", "pred_px",
         "px_at_call", "px_at_target", "up", "outcome", "note"]
 
 
@@ -129,7 +129,7 @@ def tick_horizon(h, closes, last_min, last_px, px_by_min):
             rows.append({
                 "made_at_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S"),
                 "target_minute_utc": target, "horizon_min": str(h), "product": PRODUCT,
-                "p_up": f"{p_up:.4f}", "pred_px": f"{pred_px:.2f}",
+                "p_up": f"{p_up:.4f}", "p_cal": f"{_cal('crypto-microstructure', p_up):.4f}", "pred_px": f"{pred_px:.2f}",
                 "px_at_call": f"{last_px:.2f}",
                 "px_at_target": "", "up": "", "outcome": "",
                 "note": json.dumps({"f": f, "sig": round(sig, 8)}),
