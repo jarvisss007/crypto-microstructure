@@ -34,6 +34,7 @@ Run:  /opt/anaconda3/bin/python agent/horizon_forecaster.py          # one tick
 from __future__ import annotations
 
 import argparse, csv, json, math, os, time
+import sys as _s; _s.path.insert(0, "/Users/anupampatil/command-center"); from calibrate import calibrate as _cal  # CAL-001 consumer
 from datetime import datetime, timedelta, timezone
 
 HERE = os.path.dirname(os.path.abspath(__file__))
