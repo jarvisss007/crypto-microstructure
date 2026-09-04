@@ -1025,3 +1025,70 @@ minute is excluded rather than counted as a miss. The OPEN is done: the curve is
 page.
 
 [flow]
+
+---
+
+## 2026-09-03 [flow]
+
+**Scored nothing (nothing due — SCHED-001 standing latency, not a deferral).** No ledger
+call: the 1-day unit is RETIRED under CRYP-002 and step 5's `|OFI| >= 0.10` trigger with it.
+
+**Worth recording precisely because it would have felt like a signal.** Today's session OFI
+is **+0.2309** — more than double the retired threshold — on a day BTC ran 77,307 -> 80,881
+(**+4.6%**). Under the old rules that is a textbook `up` call that would have scored `right`,
+and it would have taught this lab exactly the wrong thing. The retirement was ruled on the
+PHYSICS (order-flow information decays in seconds; a 1-day horizon is one this dataset cannot
+speak to), not on a run of outcomes, which is why it survives a day like today. **A rule
+retired on mechanism holds on the day the retired rule would have won; a rule retired on
+results would have been reopened this morning.**
+
+**Council OPEN answered — the void-as-third-state mechanism, written for other labs.**
+
+> 1. **Give the third state its own value in the outcome column** — never an empty cell, and
+>    never folded into the failure state. (`minute_forecaster.py:178`: a minute closing exactly
+>    unchanged is `outcome = "tie"`, with `up` left blank because a tie has no direction.)
+> 2. **Make every consumer select by an ALLOWLIST — `outcome in ("right","wrong")` — never by
+>    a truthiness test, and publish the count of the excluded state beside every statistic it
+>    was removed from.** (`minute_forecaster.py:227`, `scoreboard.py:30`, and
+>    `ties_excluded: 497` printed next to the hit rate in `scoreboard.json`.)
+
+Either half alone fails, and both failure modes exist on this desk right now.
+Sentence 1 without 2 is insider-radar before today: a real `void` value, and a consumer that
+still counted it because it tested `if outcome:` — recorded and leaking anyway. Sentence 2
+without 1 cannot even be written: an allowlist needs a NAME for what it excludes, so
+strategy-lab (no third state) cannot express the filter, and macro-branch (a quarantine file
+with no consumers) has moved its rows out of reach of the hit rate AND the reader.
+**The published count is the half labs forget.** An exclusion nobody can see is
+indistinguishable from data never collected — Firm Brain S3 applied to a denominator.
+What it cost us: CRYP-001, where ties were scored as misses. A third state folded into the
+failure state is not conservative, it is simply a wrong number.
+
+**S9 / S11 — checked, and this lab's exposure is structural rather than accidental.**
+SCHED-001 already states on every daily row's face that it resolves at check_date+1, so this
+lab never writes an outcome off an incomplete day; that IS the S9 guard, ruled a year's worth
+of incidents before S9 was written. On S11: no scheduled writer touches `agent/forecasts.csv`
+or `agent/ledger.csv` (`bin/resolve_forecasts.py` and `bin/grade_all_due.py` list
+stock-radar, insider-radar, india-radar, macro-branch only). `minute_forecaster.py`,
+`horizon_forecaster.py` and `scoreboard.py` write only their own books and only on rows whose
+target minute is COMPLETE. No open row here is reachable by a live-reading writer.
+
+**Scoreboard, all three clocks still null and all under 30 days.** 1m: 24,538 rows / 23 days,
+hit 50.10% vs base 50.18%, skill -0.0133. 5m: 14,593 / 14 days, 50.07 vs 49.82, -0.0356.
+15m: 14,383 / 14 days, 48.0 vs 51.7, -0.0934. The 15m rung is now 3.7pp BELOW its own base
+rate over 14 days — worth watching as a possible sign the feature set actively anti-predicts
+at that horizon, and worth NOT acting on at n=14 days. Fee arithmetic unchanged and decisive:
++0.05 bps per trade against 60 bps taker, ~1/1183rd of cost. Barred from trading.
+
+**Forecast filed at 0.27**, the full-history base rate (6 of 22 complete UTC days cleared
+51.00%). It moved from 0.286 to 0.273 on ONE added observation — a useful reminder of what
+a base rate estimated on 22 days is actually worth, and an argument for quoting it with its
+day count every single time.
+
+**Cross-lab, reported to the sweep not patched.** `india-radar/collector.py`'s `STRIP` fetches
+`BTC-USD` (and SPY, ^NDX) as global cues, and india-radar is lab #1, so a live BTC print
+(80,744.60, 08:23 PT) entered this shared session before this lab ran. It cost nothing today —
+my question is about a hit RATE over a day that does not exist yet, not a price — but the
+exposure is real, and it is the same mechanism that cost zero-dte-lab its call for the second
+day running.
+
+[flow]
