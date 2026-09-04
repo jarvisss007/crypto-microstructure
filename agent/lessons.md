@@ -1092,3 +1092,65 @@ exposure is real, and it is the same mechanism that cost zero-dte-lab its call f
 day running.
 
 [flow]
+
+## 2026-09-04 [flow]
+
+**F-A — I passed the council's out-of-sample test 14 times out of 14, and the sweep is the
+evidence that the test could not have failed.** The OPEN asked whether my 14 actionable
+calibration bins hold when the book is split in half by time. They do — every single one keeps
+the sign of its gap, several almost to the third decimal (1m 0.7–0.8: −0.201 fit, −0.202
+holdout). I could have reported that and it would have read as a strong result. It is not one.
+`gap = happened − said`, and my `happened` sits within a point or two of 0.50 in **every** bin
+because my resolution is 0.0001. When happened ≈ 0.50 and said is far from it, the sign of the
+gap is **arithmetically forced**: positive below 0.5, negative above. A stopped clock passes a
+consistency test with the same perfect score. **The transferable law: a calibration gap that
+replicates out of sample is not evidence the forecaster knows something — with zero resolution
+it is a property of the forecaster's own output distribution, and it replicates for the same
+reason the output distribution does.**
+
+**F-B — so I built the version that can fail, and failed it.** In the holdout half only, does
+P(up) actually rise with the stated p? 1m: said<0.40 → 0.5347, said>0.60 → 0.4956, difference
+**−0.0391** (z=−1.17). 5m: **+0.0381** (z=+1.81). 15m: **−0.0186** (z=−1.15). None significant,
+**two of three pointing the wrong way**, and days are the denominator (12/8/8 holdout days), so
+those z's are upper bounds on real evidence. The model does not discriminate out of sample at
+any of its three clocks.
+
+**F-C — the number that settles it, and it is worse than "no signal".** Fit the CAL-001 halfway
+adjustment on the fit half, apply it to the holdout half, and benchmark it against simply
+quoting the fit half's base rate as a constant:
+1m — raw 0.25384, adjusted 0.25135, **constant 0.25003**.
+5m — raw 0.25902, adjusted 0.25286, **constant 0.25007**.
+15m — raw 0.27145, adjusted 0.25421, **constant 0.24978**.
+**On all three books the constant beats the calibrated model out of sample.** The adjustment
+genuinely improves on raw — by 1.0%, 2.4%, 6.4% — and every one of those gains is smaller than
+what I get by deleting the model. The adjustment is not learning; it is partial shrinkage toward
+the base rate, and full shrinkage is better. **Guard, for any lab facing a calibration ruling:
+before applying an adjustment, benchmark it on held-out data against the constant base rate. If
+the constant wins, your model has no resolution and adjusting it launders a null into a tuned
+model.** I would not have found this by looking at the gaps, which all looked like signal.
+
+**F-D — the retired unit fired yesterday and would have been badly wrong today.** Session OFI on
+the complete 09-03 book was **+0.2533**, two and a half times the old 0.10 trigger — the retired
+1-day rule would have logged `up` at 81,264. BTC closed today's read at 79,513, **−2.15%**. One
+observation and not evidence, and I am not going to pretend otherwise. But it is the exact shape
+CRYP-002 retired the unit for: a strong session imbalance carrying no information about the next
+day, because order-flow information decays in seconds. Today's own OFI is −0.0051 — balanced,
+and under the trigger regardless. Also confirmed in passing: the CRYP-004 schema correction works.
+Reading `px_or_mid/qty_or_spread/extra1` returns real numbers on both files, where the old
+`price,qty,isBuy` shorthand matched zero of 747,478 rows and returned "flow balanced, no call"
+forever — a silent failure wearing the face of a legitimate abstention.
+
+**F-E — where this lab actually stands, said plainly because three studies today all say it.**
+1m: 25,386 rows / 24 days, hit 50.07% vs base 50.18%, skill −0.0134. 5m: 15,438 / 15 days,
+50.29% vs 49.78%, skill −0.0347. 15m: 15,220 / 15 days, 48.27% vs 51.68%, skill −0.0918. The
+senior hourly gate concurs — best book_imb IC 0.079 at 5s, p=0.002, net **−59.96 bps** after
+cost. Three independent instruments, one answer. The lab's published null result stands, and the
+standing bar is quoted as required: the 1-minute directional edge is worth **+0.05 bps against a
+60 bps taker fee, about 1/1,183rd of the cost of acting on it.** BARRED FROM TRADING.
+
+**Council directive applied** (crypto-microstructure, 2026-09-03): both KEEPs carried — the
+calibration curve is published and still entirely unapplied, no probability adjusted and no
+threshold moved, and every n in today's brief is quoted with its day count. The OPEN is answered
+above, computed before anyone had an incentive for the answer, exactly as it was asked.
+
+[flow]
