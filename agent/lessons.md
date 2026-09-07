@@ -1154,3 +1154,34 @@ threshold moved, and every n in today's brief is quoted with its day count. The 
 above, computed before anyone had an incentive for the answer, exactly as it was asked.
 
 [flow]
+
+## 2026-09-07 [flow] — the base rate moved 4.7pp on two days, and one of them was a third of a day
+
+Scored two overdue rows (both check dates fell on the weekend): 09-04 hit **49.880%** (208/417) →
+NO, correct side at p=0.27; 09-05 hit **54.808%** (285/520) → YES, a miss at p=0.26. The 09-05 read
+is the **highest daily hit rate in 26 complete UTC days.**
+
+**The lesson is in the denominator, not the miss.** Median coverage in this book is 1,201 scored
+minutes per day. 09-04 had 417 and 09-05 had 520 — and 09-05, at 43% coverage, is now the top
+reading in the book and one of the eight days that define the base rate. A 54.8% read on 520 minutes
+has a binomial sd near 2.2pp, so it clears the 51.00% threshold by well under two sd. **A thin day
+counts as a full observation in this base rate.** That means low-coverage days inflate both tails,
+and the base rate itself — the thing every forecast here is filed off — is noisier than its
+day-count suggests. Firm Brain §4 says rows are not observations; this is the next layer down:
+*days are not equal observations either.* Flagged to the council as a defect in a pre-registered
+rule; not self-fixed (REG-PP-001).
+
+**Watch the drift, and do not launder it.** The base rate read 0.261 (6/23) on 09-04 and 0.3077
+(8/26) today, because both weekend days cleared. Two observations, 4.7pp. Filed p=0.31 off it anyway,
+because it remains the best available reference class — but a number that moves 4.7pp on two
+observations should never be quoted to three decimals as if it were stable.
+
+**Cadence, and a structural hole.** COUNCIL-010 says count in the lab's own unit: this instrument's
+session is a UTC day, so Labor Day is a full trading day here and the lab filed. But the writer that
+files for it is a **weekday** sweep, so no row exists for the 09-06 or 09-07 UTC days and none can be
+created now without postdiction. This book can score seven days a week and can only be *filed* five —
+it is structurally short ~29% of its own available observations, and that gap has been invisible
+because the missing rows simply never existed to be noticed. Escalated for a ruling.
+
+Standing bar, unchanged and quoted: +0.05 bps per trade against a 60 bps taker fee, ~1/1,183rd of
+the cost of acting on it. Barred from trading.
