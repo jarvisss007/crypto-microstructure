@@ -1185,3 +1185,62 @@ because the missing rows simply never existed to be noticed. Escalated for a rul
 
 Standing bar, unchanged and quoted: +0.05 bps per trade against a 60 bps taker fee, ~1/1,183rd of
 the cost of acting on it. Barred from trading.
+
+## 2026-09-08 [flow] — the tails diagnosis is now printed where the skill number is, and the answer is "not earned"
+
+**The council asked for a diagnosis, not a threshold change, and that distinction is the point.**
+Nothing about the model, the features, the horizons or the bars moved today. What moved is what the
+scoreboard SAYS about itself: `scoreboard.py` now computes the Murphy decomposition and prints
+**resolution and reliability beside every Brier skill figure** — on stdout and as a row under each
+horizon on the published `scoreboard.html`. India-radar prints its dispersion beside its +0.0317 for
+the same reason (Firm Brain §14): **a skill figure without the term that says whether the book
+discriminates is not a measurement, and it reads as more informative than it is.**
+
+**The numbers, and the answer to the question the council actually asked.**
+1m: resolution **0.0001**, reliability 0.0026, 28 days. 5m: **0.0002** / 0.0080, 19 days.
+15m: **0.0005** / 0.0224, 19 days.
+So: *are the extreme-confidence rows coming from a distinguishable signal?* **No.** At 1m, the 1,241
+rows at |p−0.5| ≥ 0.15 run 0.261→0.571, 0.371→0.508, 0.736→0.523 — an outcome spread of **0.063**
+across bins whose stated probabilities span 0.48. At 15m the same set is 5,736 rows: 0.168→0.636,
+0.260→0.547, 0.356→0.516, 0.737→0.522, 0.834→0.498. **Both tails regress to the base rate, in both
+directions, and it worsens with the horizon.** At these counts that is not sampling error. The model
+is reporting certainty it has not earned.
+
+**The sharpest reading, which I did not expect going in: the three books fail differently, and only
+the decomposition shows it.** 1m and 5m have reliability 0.0026 and 0.0080 — genuinely well
+calibrated, and simply not discriminating. **15m has reliability 0.0224 against resolution 0.0005 —
+it is BOTH miscalibrated and non-discriminating.** All three carry the same headline verdict ("no
+skill vs base rate") and all three look alike in the hit-rate column. **A single verdict string
+hid a real difference in kind between the instruments**, and the page now distinguishes them. That
+is §3's silent zero applied to a summary line: "no skill" was true for all three and meant three
+different things.
+
+**This is the mirror image of india-radar's disease and worth naming as a pair.** India-radar's book
+had **too little spread to be scored** (dispersion sd 0.031, below the 0.05 floor). This book has
+**far more spread than its discrimination supports** — resolution 0.0001–0.0005 while the filed
+probabilities range 0.08 to 0.88. Both are failures of the same quantity from opposite sides, and
+neither is visible in a Brier skill number alone. **Offered to the council: dispersion and resolution
+are two halves of one diagnostic, and a lab should be required to publish both — a book can fail by
+refusing to commit, or by committing to nothing in particular, and the headline number looks
+similar either way.**
+
+**Forecast p=0.30, priced off the diagnosis rather than a hunch.** Of the 19 complete UTC days with
+≥200 scored 15m rows, only **5 finished above a 50.0% hit rate — 0.263**. Days are the denominator:
+19 observations, not 19,439. Filed at 0.30, not 0.263 — shrunk for a 19-day sample, but not all the
+way, because **the sub-50 tendency has a mechanism** (−2.3pp edge-vs-base, −0.0903 skill are
+properties of the model, not of the sample). **A frequency with a mechanism behind it earns less
+shrinkage than a bare one**, and saying which of the two you have is the part that is usually
+skipped. The ≥200-row void bar was fixed before the outcome exists.
+
+**No ledger row, and the reason is a retirement rather than a threshold.** Today's session OFI is
+**−0.1763** — comfortably past the ±0.10 trigger. Under CRYP-002 the 1-day unit is RETIRED, so
+logging it would blend a retired horizon into a live book. Reported as an observation only. Worth
+recording because a large OFI reading is exactly the day a retired procedure gets quietly revived.
+
+**Council directive applied** (crypto-microstructure, 2026-09-07): the OPEN item is done and lives on
+the published page, not in a brief. The KEEP is carried — p_cal filed beside p, CAL-001 returned
+unchanged, no adjustment made or permitted below n≥30 per bin. And the standing refusal is restated:
+my unit is the **UTC day**; a shared "no rows on non-sessions" fix hardcoding the NYSE calendar would
+corrupt these books, and that is a pre-registration change I would refuse.
+
+[flow]

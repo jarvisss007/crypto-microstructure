@@ -46,10 +46,62 @@ def stats(path):
             bins.append({"lo": lo, "hi": hi, "n": len(sel),
                          "said": round(sum(p for p, _ in sel) / len(sel), 3),
                          "happened": round(sum(u for _, u in sel) / len(sel), 3)})
+    # MURPHY DECOMPOSITION — council directive, crypto-microstructure, 2026-09-07.
+    # Brier = reliability - resolution + uncertainty. RESOLUTION is the term that
+    # measures whether the book DISCRIMINATES: it is the spread of the outcome rates
+    # across the forecaster's own bins, weighted by bin size. A book that says 0.83
+    # and a book that says 0.50 score the same reliability if both land near their
+    # stated value, but only the first has EARNED its confidence, and resolution is
+    # the only number that says so. Printed beside the skill figure because a skill
+    # figure without it is not a measurement — the same rule india-radar adopted for
+    # dispersion under Firm Brain §14.
+    resolution = sum(len(sel) * (o - base) ** 2
+                     for sel, o in ((s_, sum(u for _, u in s_) / len(s_))
+                                    for s_ in (
+                                        [(p_, u_) for p_, u_ in ps
+                                         if b["lo"] <= p_ < b["hi"] or (b["hi"] == 1.0 and p_ == 1.0)]
+                                        for b in bins) if s_)) / len(ps)
+    reliability = sum(len(sel) * (sum(p_ for p_, _ in sel) / len(sel)
+                                  - sum(u for _, u in sel) / len(sel)) ** 2
+                      for sel in ([(p_, u_) for p_, u_ in ps
+                                   if b["lo"] <= p_ < b["hi"] or (b["hi"] == 1.0 and p_ == 1.0)]
+                                  for b in bins) if sel) / len(ps)
+
+    # THE TAILS DIAGNOSIS. Bins at |p-0.5| >= 0.15 are the rows where this model
+    # claims to know something. If their outcome rates sit at the base rate, the
+    # confidence is manufactured: the model is reporting certainty it has not earned,
+    # and no amount of n fixes that because it is a statement about resolution, not
+    # about sampling error.
+    tail = [b for b in bins if abs((b["lo"] + b["hi"]) / 2 - 0.5) >= 0.15 and b["n"] >= 30]
+    tail_n = sum(b["n"] for b in tail)
+    tail_spread = (max(b["happened"] for b in tail) - min(b["happened"] for b in tail)) if tail else None
+    if resolution < 0.001:
+        rel_read = ("and reliability {r:.4f} says the stated probabilities do land near their "
+                    "outcomes, so the failure is discrimination alone").format(r=reliability) \
+                   if reliability < 0.01 else \
+                   ("and reliability {r:.4f} is itself poor, so the book is BOTH miscalibrated and "
+                    "non-discriminating — the worse of the two readings").format(r=reliability)
+        diag = (f"RESOLUTION {resolution:.4f} — the book is very nearly forecasting its own "
+                f"base rate ({base:.3f}) every time, {rel_read}. "
+                f"At this value the skill figure above is not evidence about the signal.")
+        if tail:
+            said = ", ".join(f"{b['said']:.3f}->{b['happened']:.3f} (n={b['n']})" for b in tail)
+            diag += (f" The tails confirm it rather than rescue it: {tail_n:,} rows sit at "
+                     f"|p-0.5|>=0.15 and run {said} — an outcome spread of "
+                     f"{tail_spread:.3f} across bins whose stated probabilities span far more. "
+                     f"THE EXTREME-CONFIDENCE ROWS ARE NOT COMING FROM A DISTINGUISHABLE SIGNAL; "
+                     f"they are the model reporting certainty it has not earned.")
+    else:
+        diag = (f"RESOLUTION {resolution:.4f} (reliability {reliability:.4f}) — the book carries "
+                f"real discrimination beyond its base rate {base:.3f}.")
+
     out.update({"hit_rate": round(100 * hit, 2), "up_base_rate": round(100 * base, 2),
                 "edge_vs_base_pp": round(100 * (hit - max(base, 1 - base)), 2),
                 "brier": round(bs, 4), "climatology": round(clim, 4),
                 "brier_skill": round(1 - bs / clim, 4) if clim else None,
+                "reliability": round(reliability, 4), "resolution": round(resolution, 4),
+                "tail_rows": tail_n, "tail_outcome_spread": tail_spread,
+                "diagnosis": diag,
                 "days": len(days), "first_day": days[0], "last_day": days[-1],
                 "bins": bins,
                 "verdict": ("no skill vs base rate" if bs >= clim else "beats base rate")
@@ -68,6 +120,9 @@ def render(d):
                      f"<td class='m {'ok' if s['brier_skill']>0 else 'bad'}'>{s['brier_skill']:+.4f}</td>"
                      f"<td>{s['verdict']}<br><span class=den>{s['days']} day{'' if s['days']==1 else 's'} — <b>days are the denominator, not rows</b>; "
                      f"{s['resolved']:,} rows inside {s['days']} session{'' if s['days']==1 else 's'} is {s['days']} observation{'' if s['days']==1 else 's'} of regime, not {s['resolved']:,}.</span></td></tr>")
+            rows += ("<tr><td></td><td colspan=10 class=diag><b>resolution "
+                     f"{s['resolution']:.4f}</b> &middot; reliability {s['reliability']:.4f} &mdash; "
+                     f"{s['diagnosis']}</td></tr>")
         else:
             rows += f"<tr><td><b>+{h} min</b></td><td class=m>{s.get('filed',0):,}</td><td class=m>0</td><td colspan=8 style='text-align:left;opacity:.7'>{s.get('note','filed, nothing resolved yet')} — {s.get('pending',0)} pending</td></tr>"
     # CAL-001 (council directive, crypto-microstructure, 2026-09-01): publish the
@@ -116,6 +171,7 @@ def render(d):
 body{{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}}.wrap{{max-width:1000px;margin:0 auto;padding:28px 20px 60px}}
 h1{{font-size:22px;margin:0 0 6px}}h3{{font-size:14px;margin:22px 0 6px}}p{{max-width:80ch;color:var(--muted)}}.m{{font-family:ui-monospace,Menlo,monospace;font-variant-numeric:tabular-nums;text-align:right}}
 table{{border-collapse:collapse;width:100%;background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden;font-size:13px}}th,td{{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left}}th{{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}}
+.diag{{font-size:12px;line-height:1.5;opacity:.92;border-top:1px dashed var(--line);padding:8px 10px 12px}}
 .den{{display:block;font-size:11px;color:var(--muted);margin-top:3px}}.ok{{color:var(--ok)}}.bad{{color:var(--bad)}}.law{{border-left:3px solid var(--accent);background:rgba(88,166,255,.08);padding:10px 14px;border-radius:0 8px 8px 0;margin:14px 0}}.tscroll{{overflow-x:auto}}</style></head><body><div class=wrap>
 <h1>BTC-USD · 1 / 5 / 15-minute forecast scoreboard</h1>
 <p>Generated {d['generated']}. One instrument, three clocks: at time T a row is frozen saying p(up) for T+H; at T+H the real last trade of that minute decides. Direction obeyed = right. Rows are never edited. Ties (unchanged minute) are excluded, never counted as misses.</p>
@@ -139,7 +195,8 @@ def main():
     for h in (1, 5, 15):
         s = d["horizons"][str(h)]
         if s.get("resolved"):
-            print(f"+{h:>2}m: {s['resolved']:,} resolved / {s['days']}d · hit {s['hit_rate']:.1f}% vs base {s['up_base_rate']:.1f}% · skill {s['brier_skill']:+.4f} · {s['verdict']}")
+            print(f"+{h:>2}m: {s['resolved']:,} resolved / {s['days']}d · hit {s['hit_rate']:.1f}% vs base {s['up_base_rate']:.1f}% · skill {s['brier_skill']:+.4f} · res {s['resolution']:.4f} · rel {s['reliability']:.4f} · {s['verdict']}")
+            print(f"      {s['diagnosis']}")
         else:
             print(f"+{h:>2}m: {s.get('filed',0)} filed, nothing resolved yet")
 
