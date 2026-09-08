@@ -1,11 +1,11 @@
 {
- "generated": "2026-09-08 14:52 UTC",
+ "generated": "2026-09-08 15:02 UTC",
  "win_rule": "row frozen at T states p_up for T+H; real last trade at T+H decides; direction obeyed = right; ties excluded",
  "denominator_caveat": "DAYS ARE THE DENOMINATOR, NOT ROWS. Minutes inside one UTC day share a regime, so N rows over D days is D observations, not N. Any hit_rate, edge_vs_base_pp or brier_skill quoted from this file MUST be quoted with its `days` count beside it (council directive, crypto-microstructure, 2026-08-21).",
  "horizons": {
   "1": {
-   "filed": 30173,
-   "resolved": 29472,
+   "filed": 30183,
+   "resolved": 29482,
    "ties_excluded": 601,
    "pending": 100,
    "hit_rate": 50.22,
@@ -42,14 +42,14 @@
     {
      "lo": 0.4,
      "hi": 0.5,
-     "n": 13727,
+     "n": 13735,
      "said": 0.464,
      "happened": 0.497
     },
     {
      "lo": 0.5,
      "hi": 0.6,
-     "n": 13335,
+     "n": 13337,
      "said": 0.537,
      "happened": 0.5
     },
@@ -78,16 +78,16 @@
    "verdict": "no skill vs base rate \u2014 PROVISIONAL, <30 days"
   },
   "5": {
-   "filed": 19839,
-   "resolved": 19605,
+   "filed": 19849,
+   "resolved": 19615,
    "ties_excluded": 15,
    "pending": 219,
-   "hit_rate": 50.21,
+   "hit_rate": 50.22,
    "up_base_rate": 49.47,
-   "edge_vs_base_pp": -0.32,
+   "edge_vs_base_pp": -0.31,
    "brier": 0.2585,
    "climatology": 0.25,
-   "brier_skill": -0.0341,
+   "brier_skill": -0.034,
    "days": 19,
    "first_day": "2026-08-21",
    "last_day": "2026-09-08",
@@ -130,7 +130,7 @@
     {
      "lo": 0.5,
      "hi": 0.6,
-     "n": 6979,
+     "n": 6989,
      "said": 0.545,
      "happened": 0.487
     },
@@ -166,16 +166,16 @@
    "verdict": "no skill vs base rate \u2014 PROVISIONAL, <30 days"
   },
   "15": {
-   "filed": 19839,
-   "resolved": 19384,
+   "filed": 19849,
+   "resolved": 19394,
    "ties_excluded": 6,
    "pending": 449,
-   "hit_rate": 48.46,
-   "up_base_rate": 50.72,
+   "hit_rate": 48.49,
+   "up_base_rate": 50.75,
    "edge_vs_base_pp": -2.26,
-   "brier": 0.2726,
+   "brier": 0.2725,
    "climatology": 0.2499,
-   "brier_skill": -0.0904,
+   "brier_skill": -0.0902,
    "days": 19,
    "first_day": "2026-08-21",
    "last_day": "2026-09-08",
@@ -218,16 +218,16 @@
     {
      "lo": 0.5,
      "hi": 0.6,
-     "n": 5203,
+     "n": 5208,
      "said": 0.548,
-     "happened": 0.489
+     "happened": 0.49
     },
     {
      "lo": 0.6,
      "hi": 0.7,
-     "n": 3495,
+     "n": 3500,
      "said": 0.645,
-     "happened": 0.486
+     "happened": 0.487
     },
     {
      "lo": 0.7,
