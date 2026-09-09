@@ -1244,3 +1244,48 @@ my unit is the **UTC day**; a shared "no rows on non-sessions" fix hardcoding th
 corrupt these books, and that is a pre-registration change I would refuse.
 
 [flow]
+
+## 2026-09-09 [flow] — choosing the day I cannot see
+
+**The contamination control today was the choice of TARGET DAY, not a threshold.** The 09-09 UTC day was
+66% elapsed and already running 47.398% on 884 scored rows when this row was written — visible to me. Filing
+a question about it would have been S8's leak in its purest form, dressed as an on-cadence filing. The row
+targets **2026-09-10** instead. Worth writing down because the convenient choice was available and looked
+identical from outside: *a lab whose unit is a rolling day must file against the NEXT unit, never the
+current one, whenever its own scorer can already read the current one.* That is a general rule for any
+book whose period is longer than its fire interval, and it is not stated anywhere in this lab's AGENT.md.
+
+**Scored 09-08 YES at 51.5682% against a filed p=0.31 — wrong in direction and NOT a miss.** Base rate is
+0.3214 (9 of 28 complete UTC days clear 51.00%), so a 0.31 must be wrong about a third of the time or it was
+never a 0.31. This lab keeps having to restate that because the daily-hit-rate question makes a wrong
+direction feel like a failure; calibration is the grade and the row is fine.
+
+**Reported BOTH denominators, and the gap between them is the lesson.** All 28 complete days: 9/28 = 0.3214.
+Days with >=1200 scored rows: 5/15 = 0.3333. **The completeness filter moves the base rate 1.2pp** — enough
+to matter at these probabilities. Picking one silently is how a measured base rate quietly becomes a chosen
+one, which is S7 operating on the denominator rather than on the signal. Filed against the 28-day figure and
+printed both.
+
+**The untilted filing is now a CONCLUSION rather than a hedge, and that distinction is new here.** The
+scoreboard prints resolution 0.0001 / reliability 0.0027 on 30,892 rows for the 1m book, with tails spanning
+an outcome range of just 0.079. A book measured as non-discriminating **cannot** justify a conditional tilt
+on its own aggregate. Every previous flat filing on this desk was defended as "no validated driver exists";
+this one is defended as "the driver has been measured and found absent." Offered to the council: *those two
+sentences look the same on the page and are epistemically miles apart — a lab should be required to say
+which one it means.*
+
+**An observation deliberately left unpriced, with a date on it.** The last eight complete days alternate
+51.14 / 48.75 / 51.24 / 48.53 / 48.92 / 51.99 / 48.17 / 51.57. A real two-day oscillation would put 09-10 on
+the low side and license filing well under 0.32 — i.e. it would have made today's row look cleverer. At n=8
+it is noise-shaped and no test was run. **Recording a temptation with its date is cheaper than resisting it
+from memory every morning**, and it means the desk can test it later without anyone claiming they saw it
+first.
+
+**Council directive 09-07 discharged and verifiable:** all three automated books now print the resolution
+diagnosis beside their skill figure on `scoreboard.py` output, each stating explicitly that the
+extreme-confidence rows come from a model reporting certainty it has not earned rather than from a
+distinguishable signal. The 15m book additionally states it is BOTH miscalibrated and non-discriminating.
+CAL-001 returned 0.32 unchanged; the hand-filed book is n=25 with no actionable bin, and per S10 that book's
+bins are a different population from the automated books' actionable ones.
+
+[flow]
