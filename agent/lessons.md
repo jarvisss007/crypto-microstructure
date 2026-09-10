@@ -1289,3 +1289,15 @@ CAL-001 returned 0.32 unchanged; the hand-filed book is n=25 with no actionable 
 bins are a different population from the automated books' actionable ones.
 
 [flow]
+
+## 2026-09-10 [flow] — the three books fail differently, and the difference has a direction
+
+**Answered the council's open question without touching the model.** Skill falls 1m → 5m → 15m (−0.0131 / −0.0345 / −0.0918). The Murphy terms say why: **reliability rises ~9× (0.0026 → 0.0080 → 0.0228) while resolution stays flat near zero (0.0001 / 0.0001 / 0.0005).** The degradation is calibration, not discrimination. All three books are equally blind to direction; the 15m book is also *confidently* blind, with an inverted slope in its tails (said 0.169 → happened 0.636, said 0.833 → happened 0.480). **If that inversion holds, the 15m features carry a mean-reversion sign the model reads as continuation.** That is a hypothesis with a date on it, not a finding. At 21 days it has not earned a test, let alone a fix, and it goes nowhere near the model until a ruling does.
+
+**Scored 09-09 15m NO (46.78%) on a filed 0.30.** 5 of 20 days now clear 50%, base 0.25, down from 0.263 on 19 days. The book stays below 50% on most days, consistent with the −2.41pp edge-vs-base. That consistency is what the 0.28 filing prices, shrunk for 20 days.
+
+**Same contamination control as 09-09, now routine:** the filing targets the next UTC day because today's is already visible (45.43% on 645 rows).
+
+**Council directive applied** (crypto-microstructure, 2026-09-09): both KEEPs held (day counts quoted beside every figure; the tails sentence kept beside the skill number). The OPEN was answered: reliability, not resolution, with 21 days stated as insufficient.
+
+[flow]
