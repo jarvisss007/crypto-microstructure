@@ -1,16 +1,16 @@
 {
- "generated": "2026-09-10 12:44 UTC",
+ "generated": "2026-09-10 15:20 UTC",
  "win_rule": "row frozen at T states p_up for T+H; real last trade at T+H decides; direction obeyed = right; ties excluded",
  "denominator_caveat": "DAYS ARE THE DENOMINATOR, NOT ROWS. Minutes inside one UTC day share a regime, so N rows over D days is D observations, not N. Any hit_rate, edge_vs_base_pp or brier_skill quoted from this file MUST be quoted with its `days` count beside it (council directive, crypto-microstructure, 2026-08-21).",
  "horizons": {
   "1": {
-   "filed": 32730,
-   "resolved": 32006,
+   "filed": 32736,
+   "resolved": 32009,
    "ties_excluded": 622,
-   "pending": 102,
+   "pending": 105,
    "hit_rate": 50.19,
    "up_base_rate": 49.89,
-   "edge_vs_base_pp": 0.08,
+   "edge_vs_base_pp": 0.07,
    "brier": 0.2533,
    "climatology": 0.25,
    "brier_skill": -0.0131,
@@ -54,7 +54,7 @@
     {
      "lo": 0.5,
      "hi": 0.6,
-     "n": 14210,
+     "n": 14213,
      "said": 0.536,
      "happened": 0.498
     },
@@ -83,16 +83,16 @@
    "verdict": "no skill vs base rate"
   },
   "5": {
-   "filed": 22397,
-   "resolved": 22157,
+   "filed": 22403,
+   "resolved": 22158,
    "ties_excluded": 15,
-   "pending": 225,
+   "pending": 230,
    "hit_rate": 50.2,
-   "up_base_rate": 49.36,
-   "edge_vs_base_pp": -0.44,
+   "up_base_rate": 49.35,
+   "edge_vs_base_pp": -0.45,
    "brier": 0.2586,
    "climatology": 0.25,
-   "brier_skill": -0.0344,
+   "brier_skill": -0.0345,
    "reliability": 0.008,
    "resolution": 0.0001,
    "tail_rows": 3781,
@@ -147,9 +147,9 @@
     {
      "lo": 0.6,
      "hi": 0.7,
-     "n": 2372,
+     "n": 2373,
      "said": 0.636,
-     "happened": 0.503
+     "happened": 0.502
     },
     {
      "lo": 0.7,
@@ -176,10 +176,10 @@
    "verdict": "no skill vs base rate \u2014 PROVISIONAL, <30 days"
   },
   "15": {
-   "filed": 22397,
+   "filed": 22403,
    "resolved": 21935,
    "ties_excluded": 6,
-   "pending": 456,
+   "pending": 462,
    "hit_rate": 48.27,
    "up_base_rate": 50.68,
    "edge_vs_base_pp": -2.41,
