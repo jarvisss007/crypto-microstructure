@@ -1,11 +1,11 @@
 {
- "generated": "2026-09-10 03:18 UTC",
+ "generated": "2026-09-10 03:28 UTC",
  "win_rule": "row frozen at T states p_up for T+H; real last trade at T+H decides; direction obeyed = right; ties excluded",
  "denominator_caveat": "DAYS ARE THE DENOMINATOR, NOT ROWS. Minutes inside one UTC day share a regime, so N rows over D days is D observations, not N. Any hit_rate, edge_vs_base_pp or brier_skill quoted from this file MUST be quoted with its `days` count beside it (council directive, crypto-microstructure, 2026-08-21).",
  "horizons": {
   "1": {
-   "filed": 32240,
-   "resolved": 31527,
+   "filed": 32250,
+   "resolved": 31537,
    "ties_excluded": 611,
    "pending": 102,
    "hit_rate": 50.16,
@@ -47,7 +47,7 @@
     {
      "lo": 0.4,
      "hi": 0.5,
-     "n": 14869,
+     "n": 14879,
      "said": 0.464,
      "happened": 0.497
     },
@@ -83,21 +83,21 @@
    "verdict": "no skill vs base rate"
   },
   "5": {
-   "filed": 21909,
-   "resolved": 21669,
+   "filed": 21919,
+   "resolved": 21679,
    "ties_excluded": 15,
    "pending": 225,
-   "hit_rate": 50.11,
-   "up_base_rate": 49.45,
-   "edge_vs_base_pp": -0.43,
+   "hit_rate": 50.1,
+   "up_base_rate": 49.44,
+   "edge_vs_base_pp": -0.46,
    "brier": 0.2587,
    "climatology": 0.25,
-   "brier_skill": -0.0347,
+   "brier_skill": -0.0349,
    "reliability": 0.0081,
    "resolution": 0.0001,
    "tail_rows": 3680,
    "tail_outcome_spread": 0.17300000000000004,
-   "diagnosis": "RESOLUTION 0.0001 \u2014 the book is very nearly forecasting its own base rate (0.495) every time, and reliability 0.0081 says the stated probabilities do land near their outcomes, so the failure is discrimination alone. At this value the skill figure above is not evidence about the signal. The tails confirm it rather than rescue it: 3,680 rows sit at |p-0.5|>=0.15 and run 0.166->0.511 (n=90), 0.267->0.505 (n=529), 0.362->0.484 (n=2685), 0.735->0.540 (n=341), 0.834->0.657 (n=35) \u2014 an outcome spread of 0.173 across bins whose stated probabilities span far more. THE EXTREME-CONFIDENCE ROWS ARE NOT COMING FROM A DISTINGUISHABLE SIGNAL; they are the model reporting certainty it has not earned.",
+   "diagnosis": "RESOLUTION 0.0001 \u2014 the book is very nearly forecasting its own base rate (0.494) every time, and reliability 0.0081 says the stated probabilities do land near their outcomes, so the failure is discrimination alone. At this value the skill figure above is not evidence about the signal. The tails confirm it rather than rescue it: 3,680 rows sit at |p-0.5|>=0.15 and run 0.166->0.511 (n=90), 0.267->0.505 (n=529), 0.362->0.484 (n=2685), 0.735->0.540 (n=341), 0.834->0.657 (n=35) \u2014 an outcome spread of 0.173 across bins whose stated probabilities span far more. THE EXTREME-CONFIDENCE ROWS ARE NOT COMING FROM A DISTINGUISHABLE SIGNAL; they are the model reporting certainty it has not earned.",
    "days": 21,
    "first_day": "2026-08-21",
    "last_day": "2026-09-10",
@@ -140,16 +140,16 @@
     {
      "lo": 0.5,
      "hi": 0.6,
-     "n": 7755,
+     "n": 7758,
      "said": 0.545,
      "happened": 0.49
     },
     {
      "lo": 0.6,
      "hi": 0.7,
-     "n": 2344,
+     "n": 2351,
      "said": 0.636,
-     "happened": 0.504
+     "happened": 0.503
     },
     {
      "lo": 0.7,
@@ -176,21 +176,21 @@
    "verdict": "no skill vs base rate \u2014 PROVISIONAL, <30 days"
   },
   "15": {
-   "filed": 21909,
-   "resolved": 21448,
+   "filed": 21919,
+   "resolved": 21457,
    "ties_excluded": 6,
-   "pending": 455,
-   "hit_rate": 48.3,
-   "up_base_rate": 50.71,
-   "edge_vs_base_pp": -2.42,
+   "pending": 456,
+   "hit_rate": 48.28,
+   "up_base_rate": 50.69,
+   "edge_vs_base_pp": -2.41,
    "brier": 0.2728,
-   "climatology": 0.2499,
-   "brier_skill": -0.0914,
-   "reliability": 0.0227,
+   "climatology": 0.25,
+   "brier_skill": -0.0915,
+   "reliability": 0.0228,
    "resolution": 0.0005,
-   "tail_rows": 6280,
-   "tail_outcome_spread": 0.14200000000000002,
-   "diagnosis": "RESOLUTION 0.0005 \u2014 the book is very nearly forecasting its own base rate (0.507) every time, and reliability 0.0227 is itself poor, so the book is BOTH miscalibrated and non-discriminating \u2014 the worse of the two readings. At this value the skill figure above is not evidence about the signal. The tails confirm it rather than rescue it: 6,280 rows sit at |p-0.5|>=0.15 and run 0.169->0.636 (n=231), 0.261->0.546 (n=1121), 0.357->0.518 (n=3357), 0.737->0.505 (n=1308), 0.834->0.494 (n=263) \u2014 an outcome spread of 0.142 across bins whose stated probabilities span far more. THE EXTREME-CONFIDENCE ROWS ARE NOT COMING FROM A DISTINGUISHABLE SIGNAL; they are the model reporting certainty it has not earned.",
+   "tail_rows": 6281,
+   "tail_outcome_spread": 0.14400000000000002,
+   "diagnosis": "RESOLUTION 0.0005 \u2014 the book is very nearly forecasting its own base rate (0.507) every time, and reliability 0.0228 is itself poor, so the book is BOTH miscalibrated and non-discriminating \u2014 the worse of the two readings. At this value the skill figure above is not evidence about the signal. The tails confirm it rather than rescue it: 6,281 rows sit at |p-0.5|>=0.15 and run 0.169->0.636 (n=231), 0.261->0.546 (n=1121), 0.357->0.518 (n=3357), 0.737->0.505 (n=1308), 0.833->0.492 (n=264) \u2014 an outcome spread of 0.144 across bins whose stated probabilities span far more. THE EXTREME-CONFIDENCE ROWS ARE NOT COMING FROM A DISTINGUISHABLE SIGNAL; they are the model reporting certainty it has not earned.",
    "days": 21,
    "first_day": "2026-08-21",
    "last_day": "2026-09-10",
@@ -226,21 +226,21 @@
     {
      "lo": 0.4,
      "hi": 0.5,
-     "n": 5511,
+     "n": 5512,
      "said": 0.452,
      "happened": 0.52
     },
     {
      "lo": 0.5,
      "hi": 0.6,
-     "n": 5765,
+     "n": 5768,
      "said": 0.547,
      "happened": 0.49
     },
     {
      "lo": 0.6,
      "hi": 0.7,
-     "n": 3836,
+     "n": 3840,
      "said": 0.645,
      "happened": 0.486
     },
@@ -254,9 +254,9 @@
     {
      "lo": 0.8,
      "hi": 0.9,
-     "n": 263,
-     "said": 0.834,
-     "happened": 0.494
+     "n": 264,
+     "said": 0.833,
+     "happened": 0.492
     },
     {
      "lo": 0.9,
