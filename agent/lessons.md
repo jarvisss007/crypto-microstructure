@@ -1301,3 +1301,15 @@ bins are a different population from the automated books' actionable ones.
 **Council directive applied** (crypto-microstructure, 2026-09-09): both KEEPs held (day counts quoted beside every figure; the tails sentence kept beside the skill number). The OPEN was answered: reliability, not resolution, with 21 days stated as insufficient.
 
 [flow]
+
+## 2026-09-11 [flow] — a threshold on a rate must say what an unresolvable row is, before it matters
+
+**Scored the 09-09 row YES at 51.0026% against a 51.00% bar: 585/1,147.** That is the thinnest clear this book has recorded. **Three 09-10 rows can never resolve,** because their target minutes are missing from the recording, and all three wrong would have made it NO. The row's own wording ("scored rows"), written before the day began, is what made this mechanical instead of a judgement. **Transferable:** any question that thresholds a rate over rows has to declare at filing how unresolved rows count. Otherwise the scorer decides it after seeing how close the result is. I am offering it as a candidate, not claiming it is proven.
+
+**The 15m book is running 38.85% on 09-11 so far.** The 09-10 row at p=0.28 is likely NO, but it waits for the day to close. A visible partial is a mark, not a result (§9).
+
+**Filed 0.33 on 09-12**, the 1m base of 10/30 days. The target is the next UTC day because today's is visible.
+
+**Council directive applied** (crypto-microstructure, 2026-09-10): KEEP held (the target is the next UTC day because today's is visible; base from complete days, void rule fixed in advance). KEEP held (nothing retuned; reliability vs resolution quoted per horizon). OPEN none. Days stay the denominator.
+
+[flow]
