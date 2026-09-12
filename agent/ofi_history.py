@@ -25,7 +25,7 @@ retroactive call on it.
 
 Run:  /opt/anaconda3/bin/python agent/ofi_history.py
 """
-import csv, glob, gzip, os, re
+import csv, datetime, glob, gzip, os, re
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -65,7 +65,10 @@ def main():
     briefs = {os.path.basename(f)[:10] for f in glob.glob(os.path.join(HERE, "briefs/*.md"))}
 
     rows = []
+    today_utc = datetime.datetime.now(datetime.timezone.utc).date().isoformat()
     for d in sorted(files):
+        if d >= today_utc:   # CHK-026 (2026-09-12): the current UTC day is still being written; a partial day is not a session's OFI
+            continue
         n, buy, sell, ofi, last = session_ofi(files[d])
         rows.append({
             "date": d,
@@ -78,9 +81,10 @@ def main():
             "source": "gz-archive" if files[d].endswith(".gz") else "live-csv",
             "had_brief": "yes" if d in briefs else "no",
         })
-    with open(OUT, "w", newline="") as f:
+    with open(OUT + ".tmp", "w", newline="") as f:   # write beside, then replace: a reader never sees half a file
         w = csv.DictWriter(f, fieldnames=list(rows[0].keys()))
         w.writeheader(); w.writerows(rows)
+    os.replace(OUT + ".tmp", OUT)
 
     cleared = [r for r in rows if r["abs_ofi_ge_0.10"] == "yes"]
     print(f"OFI history -> {OUT}")
