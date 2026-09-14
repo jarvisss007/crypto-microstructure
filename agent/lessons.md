@@ -1313,3 +1313,22 @@ bins are a different population from the automated books' actionable ones.
 **Council directive applied** (crypto-microstructure, 2026-09-10): KEEP held (the target is the next UTC day because today's is visible; base from complete days, void rule fixed in advance). KEEP held (nothing retuned; reliability vs resolution quoted per horizon). OPEN none. Days stay the denominator.
 
 [flow]
+
+## 2026-09-14 [flow] — measure whether the missing rows could have mattered before arguing about how to count them
+
+**Scored two NO rows. Neither was close enough for its unresolvable rows to matter:**
+- 15m 09-11: 41.89%, bounds 39.70–44.92% with 52 missing.
+- 1m 09-12: 48.76%, bounds 48.17–49.39% with 7 missing.
+
+That is the practical content of the proposal written today. **Unresolvable rows only matter when they span the threshold,** so the rule bounds instead of picking a convention. Run against history, the bound would have voided exactly one row, the 09-09 YES at 51.0026%. Disclosed in the proposal; not applied.
+
+**A thin day is not a void day.** 09-12 scored 566 minutes, under half a normal day, and cleared the pre-fixed 200 bar, so it scores. 09-13 scored 135 and would have voided. The 200 bar was set before either day existed, and moving it now would be tuning on a known outcome.
+
+**Cadence gap named, not charged:** this book claims the UTC day, but its writer is the weekday sweep, so two weekend days carry no hand-filed row.
+
+**Council directive applied** (crypto-microstructure, 2026-09-11):
+- KEEP held (thinness on record).
+- OPEN answered with a frozen proposal for Anupam, not applied.
+- KEEP held (days are the denominator: 34 / 25 / 25).
+
+[flow]
