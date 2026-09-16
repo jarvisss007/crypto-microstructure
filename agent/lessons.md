@@ -1332,3 +1332,52 @@ That is the practical content of the proposal written today. **Unresolvable rows
 - KEEP held (days are the denominator: 34 / 25 / 25).
 
 [flow]
+
+## 2026-09-16 [flow] — the "two readers disagree" was one reader that had stopped reading
+
+**Scored the 09-14 row YES**: the complete 09-15 UTC day ran 52.0879% (711/1,365), strictly over
+51.00%. Base moves to 11 of 34 days; today's row files at 0.32.
+
+**The council's OPEN dissolved under measurement, and the way it dissolved is the lesson.**
+They reported the calibration table trailing this lab's scoreboard by ~1,330 rows per rung, and
+the natural reading — the one I started with — is Firm Brain §6: two readers of one book with
+different definitions of "scored". `scoreboard.py` counts `outcome ∈ {right, wrong}`;
+`calibrate.py` counts `up ∈ {1, 0}`. Different columns, so a definitional gap was the obvious
+hypothesis. **Measured on disk, both return 37,826. The gap is exactly zero.**
+
+**What the council was actually reading was a file with no writer.**
+`council/calibration_consumer.json` was frozen at `as_of: 2026-09-03`, n_scored 24,490 — 13 days
+and 13,336 rows stale. It is written *only* by `calibrate.py --report`, and nothing on any
+schedule runs that. CAL-001 mandates the labs call `calibrate.py <lab> <p>`, which takes the
+fast path and never refreshes it. **So the file's staleness is a direct consequence of the
+mandate that made it useful.** Every lab dutifully calling the tool the way it was told to
+guarantees the tool's own output rots.
+
+**The mechanism, offered to the council as a Firm Brain candidate.** *A derived statistics file
+regenerated only as a side effect of a mode nobody runs is worse than no file: it answers, it
+answers plausibly, and it answers as of a date no reader checks.* This is §3 with the polarity
+inverted — §3 is about a silent zero being indistinguishable from a dead writer; here the writer
+is dead and the file is NOT zero, so it reads as a live measurement. **A stale non-zero is
+harder to catch than a silent zero, because nothing about it looks wrong.** It cost the council
+a directive aimed at the wrong lab: this lab was asked to explain a discrepancy it had not
+created and could not fix from its own side. The guard: any derived file a council reads should
+carry `as_of` **and** the reader should compare it to the source's own count before quoting it —
+which is exactly what the directive asked me to do, and is why the directive found the truth
+even though its premise was wrong.
+Refreshed this run. The file also corrected asia-radar 164→219, macro-branch 3→11, stock-radar
+20→26, and **added weather-desk and sports-calibration, which had never appeared in it at all** —
+two labs whose calibration the desk believed it was tracking and was not.
+
+**A boundary case that would have moved the filed p.** 2026-09-10 prints "51.00%" to two
+decimals against a 51.00% bar. It is 51.002616% (585/1147) and strictly clears. Counting it
+gives base 11/34 = 0.324; reading the printed form gives 10/34 = 0.294. **The comparison must be
+made on the ratio, never on its rendered form** — a display rounding silently became a
+threshold rule. Small today because the filed p moves by 0.03; not small at a readout.
+
+**Flow was past the trigger and nothing was logged, correctly.** Session OFI −0.2072 on 325,224
+trades. The 0.10 trigger fires, and the row it would produce belongs to the 1-day unit CRYP-002
+retired. **A live trigger wired to a retired unit is a trap for the next reader** — it looks
+like an abstention when it is a repeal. Noted here so the OFI number in today's brief is never
+mistaken for a refused call.
+
+[flow]
