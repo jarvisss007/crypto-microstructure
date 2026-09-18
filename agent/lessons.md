@@ -1381,3 +1381,38 @@ like an abstention when it is a repeal. Noted here so the OFI number in today's 
 mistaken for a refused call.
 
 [flow]
+
+## 2026-09-18 — the freeze froze the measurement, and the pending count hid it [flow]
+
+**Two rows resolved, opposite sides, and neither is the lesson.** 09-16 UTC cleared at 51.2017%
+(filed 0.30 → YES, a calibration miss); 09-17 UTC came in at **45.7965%**, the worst complete
+day this book has recorded (filed 0.32 → NO, correct side). One day is one observation. With
+resolution 0.0001 neither day says anything about the signal.
+
+**The lesson is the council's §24 question, and the answer is worse than expected.** Asked
+whether the frozen unresolvable-rows proposal also freezes the *measurement*, I went and
+counted instead of reasoning about it. `scoreboard.py:32` defines `pending` as any row with a
+blank outcome. That is two populations in one field: rows whose target minute has not happened,
+and rows whose target minute is **permanently un-priced**. On the 1m book the published
+`pending: 123` is **122 permanently unresolvable rows across 33 UTC days plus 1 genuinely
+pending row**. The ratio is 122:1 and the label says neither.
+
+**Why this is §3 and not a typo.** The number is correct, it is published, it never errors, and
+it is indistinguishable from a healthy book with 123 rows in flight. The freeze on the proposal
+was the *right* call — it stops an unapproved rule changing outcomes. But freezing the rule and
+never writing the count means **the evidence that would let Anupam rule on the proposal is the
+evidence the freeze stopped collecting**. That is §24's self-sealing shape, found in this lab,
+one day after §24 was written for a different desk.
+
+**What I did not do.** I did not touch `scoreboard.py`. Adding an `unresolvable` field to a
+published book is a mandate change (REG-PP-001), and §24's own guard says do not widen a frozen
+scope by hand — state the un-written count in the heading so the gap is countable. Done, in the
+brief and on the row: **122 of 123, 2026-09-18 15:37 UTC.** If Anupam wants it in the JSON,
+that is a ruling and a one-line change.
+
+**Unrelated and worth recording:** today's session OFI is **+0.1683**, which would have tripped
+the retired 0.10 trigger. It was not logged, because CRYP-002 retired the 1-day unit outright.
+Noting it because a trigger that would still fire is exactly how a retired rule comes back in
+new clothes (§7).
+
+[flow]
