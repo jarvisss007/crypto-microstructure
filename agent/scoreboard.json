@@ -1,11 +1,11 @@
 {
- "generated": "2026-09-18 13:13 UTC",
+ "generated": "2026-09-18 13:23 UTC",
  "win_rule": "row frozen at T states p_up for T+H; real last trade at T+H decides; direction obeyed = right; ties excluded",
  "denominator_caveat": "DAYS ARE THE DENOMINATOR, NOT ROWS. Minutes inside one UTC day share a regime, so N rows over D days is D observations, not N. Any hit_rate, edge_vs_base_pp or brier_skill quoted from this file MUST be quoted with its `days` count beside it (council directive, crypto-microstructure, 2026-08-21).",
  "horizons": {
   "1": {
-   "filed": 41248,
-   "resolved": 40413,
+   "filed": 41258,
+   "resolved": 40423,
    "ties_excluded": 712,
    "pending": 123,
    "hit_rate": 50.1,
@@ -47,14 +47,14 @@
     {
      "lo": 0.4,
      "hi": 0.5,
-     "n": 19442,
+     "n": 19450,
      "said": 0.464,
      "happened": 0.496
     },
     {
      "lo": 0.5,
      "hi": 0.6,
-     "n": 17769,
+     "n": 17771,
      "said": 0.535,
      "happened": 0.496
     },
@@ -83,12 +83,12 @@
    "verdict": "no skill vs base rate"
   },
   "5": {
-   "filed": 30902,
-   "resolved": 30585,
+   "filed": 30912,
+   "resolved": 30595,
    "ties_excluded": 22,
    "pending": 295,
-   "hit_rate": 49.89,
-   "up_base_rate": 49.3,
+   "hit_rate": 49.88,
+   "up_base_rate": 49.31,
    "edge_vs_base_pp": -0.81,
    "brier": 0.2591,
    "climatology": 0.25,
@@ -133,7 +133,7 @@
     {
      "lo": 0.4,
      "hi": 0.5,
-     "n": 11393,
+     "n": 11403,
      "said": 0.455,
      "happened": 0.496
     },
@@ -176,13 +176,13 @@
    "verdict": "no skill vs base rate \u2014 PROVISIONAL, <30 days"
   },
   "15": {
-   "filed": 30902,
-   "resolved": 30271,
+   "filed": 30912,
+   "resolved": 30280,
    "ties_excluded": 7,
-   "pending": 624,
+   "pending": 625,
    "hit_rate": 48.37,
-   "up_base_rate": 50.2,
-   "edge_vs_base_pp": -1.83,
+   "up_base_rate": 50.21,
+   "edge_vs_base_pp": -1.84,
    "brier": 0.2726,
    "climatology": 0.25,
    "brier_skill": -0.0904,
@@ -226,21 +226,21 @@
     {
      "lo": 0.4,
      "hi": 0.5,
-     "n": 7873,
+     "n": 7877,
      "said": 0.452,
      "happened": 0.517
     },
     {
      "lo": 0.5,
      "hi": 0.6,
-     "n": 8184,
+     "n": 8188,
      "said": 0.548,
-     "happened": 0.49
+     "happened": 0.489
     },
     {
      "lo": 0.6,
      "hi": 0.7,
-     "n": 5264,
+     "n": 5265,
      "said": 0.644,
      "happened": 0.481
     },
