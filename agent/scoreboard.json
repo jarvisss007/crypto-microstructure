@@ -1,15 +1,15 @@
 {
- "generated": "2026-09-18 15:06 UTC",
+ "generated": "2026-09-18 15:16 UTC",
  "win_rule": "row frozen at T states p_up for T+H; real last trade at T+H decides; direction obeyed = right; ties excluded",
  "denominator_caveat": "DAYS ARE THE DENOMINATOR, NOT ROWS. Minutes inside one UTC day share a regime, so N rows over D days is D observations, not N. Any hit_rate, edge_vs_base_pp or brier_skill quoted from this file MUST be quoted with its `days` count beside it (council directive, crypto-microstructure, 2026-08-21).",
  "horizons": {
   "1": {
-   "filed": 41359,
-   "resolved": 40524,
+   "filed": 41369,
+   "resolved": 40534,
    "ties_excluded": 712,
    "pending": 123,
    "hit_rate": 50.11,
-   "up_base_rate": 49.8,
+   "up_base_rate": 49.79,
    "edge_vs_base_pp": -0.1,
    "brier": 0.2533,
    "climatology": 0.25,
@@ -54,7 +54,7 @@
     {
      "lo": 0.5,
      "hi": 0.6,
-     "n": 17841,
+     "n": 17851,
      "said": 0.535,
      "happened": 0.497
     },
@@ -83,16 +83,16 @@
    "verdict": "no skill vs base rate"
   },
   "5": {
-   "filed": 31011,
-   "resolved": 30694,
+   "filed": 31021,
+   "resolved": 30704,
    "ties_excluded": 22,
    "pending": 295,
-   "hit_rate": 49.9,
-   "up_base_rate": 49.38,
-   "edge_vs_base_pp": -0.72,
+   "hit_rate": 49.89,
+   "up_base_rate": 49.37,
+   "edge_vs_base_pp": -0.74,
    "brier": 0.2591,
    "climatology": 0.25,
-   "brier_skill": -0.0366,
+   "brier_skill": -0.0367,
    "reliability": 0.0084,
    "resolution": 0.0001,
    "tail_rows": 5174,
@@ -140,16 +140,16 @@
     {
      "lo": 0.5,
      "hi": 0.6,
-     "n": 10820,
+     "n": 10825,
      "said": 0.544,
      "happened": 0.489
     },
     {
      "lo": 0.6,
      "hi": 0.7,
-     "n": 3252,
+     "n": 3257,
      "said": 0.636,
-     "happened": 0.494
+     "happened": 0.493
     },
     {
      "lo": 0.7,
@@ -176,21 +176,21 @@
    "verdict": "no skill vs base rate \u2014 PROVISIONAL, <30 days"
   },
   "15": {
-   "filed": 31011,
-   "resolved": 30380,
+   "filed": 31021,
+   "resolved": 30389,
    "ties_excluded": 7,
-   "pending": 624,
-   "hit_rate": 48.36,
-   "up_base_rate": 50.33,
+   "pending": 625,
+   "hit_rate": 48.35,
+   "up_base_rate": 50.32,
    "edge_vs_base_pp": -1.97,
    "brier": 0.2727,
    "climatology": 0.25,
-   "brier_skill": -0.0907,
-   "reliability": 0.0223,
+   "brier_skill": -0.091,
+   "reliability": 0.0224,
    "resolution": 0.0004,
-   "tail_rows": 9021,
-   "tail_outcome_spread": 0.17600000000000005,
-   "diagnosis": "RESOLUTION 0.0004 \u2014 the book is very nearly forecasting its own base rate (0.503) every time, and reliability 0.0223 is itself poor, so the book is BOTH miscalibrated and non-discriminating \u2014 the worse of the two readings. At this value the skill figure above is not evidence about the signal. The tails confirm it rather than rescue it: 9,021 rows sit at |p-0.5|>=0.15 and run 0.072->0.659 (n=44), 0.168->0.610 (n=346), 0.260->0.523 (n=1768), 0.357->0.516 (n=4744), 0.737->0.493 (n=1753), 0.834->0.483 (n=321), 0.932->0.511 (n=45) \u2014 an outcome spread of 0.176 across bins whose stated probabilities span far more. THE EXTREME-CONFIDENCE ROWS ARE NOT COMING FROM A DISTINGUISHABLE SIGNAL; they are the model reporting certainty it has not earned.",
+   "tail_rows": 9030,
+   "tail_outcome_spread": 0.17800000000000005,
+   "diagnosis": "RESOLUTION 0.0004 \u2014 the book is very nearly forecasting its own base rate (0.503) every time, and reliability 0.0224 is itself poor, so the book is BOTH miscalibrated and non-discriminating \u2014 the worse of the two readings. At this value the skill figure above is not evidence about the signal. The tails confirm it rather than rescue it: 9,030 rows sit at |p-0.5|>=0.15 and run 0.072->0.659 (n=44), 0.168->0.610 (n=346), 0.260->0.523 (n=1768), 0.357->0.516 (n=4744), 0.737->0.491 (n=1759), 0.834->0.481 (n=324), 0.932->0.511 (n=45) \u2014 an outcome spread of 0.178 across bins whose stated probabilities span far more. THE EXTREME-CONFIDENCE ROWS ARE NOT COMING FROM A DISTINGUISHABLE SIGNAL; they are the model reporting certainty it has not earned.",
    "days": 29,
    "first_day": "2026-08-21",
    "last_day": "2026-09-18",
@@ -247,16 +247,16 @@
     {
      "lo": 0.7,
      "hi": 0.8,
-     "n": 1753,
+     "n": 1759,
      "said": 0.737,
-     "happened": 0.493
+     "happened": 0.491
     },
     {
      "lo": 0.8,
      "hi": 0.9,
-     "n": 321,
+     "n": 324,
      "said": 0.834,
-     "happened": 0.483
+     "happened": 0.481
     },
     {
      "lo": 0.9,
