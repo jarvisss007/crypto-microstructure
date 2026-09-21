@@ -1416,3 +1416,58 @@ Noting it because a trigger that would still fire is exactly how a retired rule 
 new clothes (§7).
 
 [flow]
+
+## 2026-09-21 — the 0.33 came in, and ENV-001 is not fixed where I thought it was [flow]
+
+**Scored:** the 09-18 row resolved **YES (1)** — 2026-09-19 UTC ran **51.9207%** (419 right of
+807 scored, 14 ties excluded as registered), clearing the 51.00% bar by 0.92pp. Filed at 0.33,
+so this is the wrong side. **That is what a calibrated 0.33 does one time in three and it is
+not a lesson about the signal.** The reference class now reads **13 of 39 complete days = 0.3333**;
+09-19 joining the cleared list is precisely what keeps the base rate at a third. Today's row is
+filed at 0.33 again, unchanged, because nothing conditional exists to move it.
+
+**The book still has no discrimination, at every rung.** 1m: 44,005 resolved over **41 days**,
+hit 50.0% vs a 49.8% up-base-rate, skill −0.0135, **resolution 0.0001**, reliability 0.0027 —
+it is forecasting its own base rate every time and the probabilities land near their outcomes,
+so the failure is discrimination alone. 5m: resolution 0.0001 over 32 days. 15m: resolution
+0.0003 and **hit 48.7% against its own 50.3% base — now below it.** Days, not rows: 41, not
+44,005. And the standing arithmetic: +0.05 bps against a 60 bps taker fee, **1/1,183rd of the
+cost.** Barred from trading, as written.
+
+**Firm Brain §25 — answered, and the council's premise about this lab is STALE in the lab's
+favour while the estate-level fact is worse than assumed.**
+
+1. **`crypto-rotate.sh` is already fixed.** The silent `git commit … 2>/dev/null && git push`
+   the directive names was replaced on **2026-09-20** with a three-way report that reads the
+   return code and exits 1 loud. The directive was written against the old file.
+2. **ENV-001 is NOT fixed at the OS level.** Measured this run, three ways, same repo:
+   - attended shell → `git rev-parse --git-dir` = `.git`, **rc=0**
+   - `env -i PATH=/usr/bin:/bin:/usr/sbin:/sbin sh -c …` → **rc=69**, *"You have not agreed to
+     the Xcode license agreements"*
+   - `env -i … /bin/zsh -c …` → `.git`, **rc=0**
+3. **The difference is `~/.zshenv`.** It sets `DEVELOPER_DIR=/Library/Developer/CommandLineTools`,
+   and `zsh` sources it even non-interactively. **My three collectors' plists carry no
+   `EnvironmentVariables` at all** — they are covered only because their `ProgramArguments`
+   start `/bin/zsh`.
+
+**The mechanism this pays for, and I think it is NEW.** §25 says *fix the environment where the
+job runs*. This estate did — but the fix lives in a **dotfile**, and a dotfile is not part of the
+job definition. Scanned all 26 `com.anupam` plists: **17 launch through `/bin/zsh` and inherit
+the fix by accident of their launcher; 6 launch a bare `/opt/anaconda3/bin/python` and inherit
+nothing; 1 launches `/bin/bash`, which does not read `~/.zshenv` either.** Of the six bare-python
+jobs only `track-score` shells out to git, and its plist happens to set `DEVELOPER_DIR`
+explicitly — so the estate has **zero uncovered git exposure today**. It is covered by two
+different mechanisms, one of them invisible, and **the day anyone rewrites a zsh-wrapped job as a
+bare binary it silently loses git and nothing will say so.**
+
+**Proposed guard (reported, not applied — REG-PP-001):** an environment fix belongs in the
+plist's own `EnvironmentVariables`, or in a wrapper the plist names. Test for it by launcher, not
+by job: `env -i PATH=<plist PATH> <the plist's exact ProgramArguments[0]> -c <guard>`. A guard
+tested through a shell you did not declare is a guard tested in someone else's environment.
+
+**No ledger call.** The 1-day unit is retired under CRYP-002 and stays retired; today's session
+OFI is **+0.181** on 429,408 trade rows (buy 4,998.94 / sell 3,466.45 BTC, last 85,890.00), which
+would have tripped the old |OFI| ≥ 0.10 trigger. Recorded as an observation, not a call — the
+horizon this lab can speak to is one minute, not one day.
+
+[flow]
