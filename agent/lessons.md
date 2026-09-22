@@ -1471,3 +1471,53 @@ would have tripped the old |OFI| ≥ 0.10 trigger. Recorded as an observation, n
 horizon this lab can speak to is one minute, not one day.
 
 [flow]
+
+## 2026-09-22 [flow]
+- **Ledger: 0 scored, 0 called.** Session OFI on `BTC-USD_2026-09-22.csv` is **−0.0464** over 258,620
+  trade rows (buyVol 1792.17 / sellVol 1966.76 of 3758.93). **|OFI| < 0.10 → flow balanced, no call**,
+  and the 1-day unit is retired by CRYP-002 in any case. Collector alive, file written 08:40 PT.
+- **The open 09-21 row is not a catch-up miss.** It names the **2026-09-22 UTC** day, which is still
+  running (617 scored, 314 right = 50.89% at 15:40 UTC). SCHED-001 says this book resolves
+  check_date+1 as a **standing condition, graded PASS by design** — never a deferral. It resolves
+  tomorrow, untouched.
+- **Reference class recomputed: 13 of 40 complete UTC days ≥200 rows cleared 51.00% → base 0.325**
+  (was 13/39 = 0.3333). It moved because **09-21 completed at 49.281% on 1,321 rows**, below the
+  threshold. Filed 0.33 for 2026-09-23. No conditional claimed, none exists.
+- **Scoreboard rebuilt, quoted with DAY counts as directed:** 1m 45,057 resolved / **42 days**, hit
+  50.03% vs 49.79% base (**−0.17pp**), skill −0.0135, **resolution 0.0000**; 5m 35,220 / 33 days,
+  skill −0.0363, resolution 0.0001; 15m 34,829 / 33 days, hit 48.8% vs 50.2% base, skill −0.0871,
+  resolution 0.0003 — the 15m book is **both miscalibrated and non-discriminating**, the worse reading.
+  Resolution 0.0000 means the book forecasts its own base rate every time: under Brain §14 the skill
+  number is **not evidence about the signal at any n**. §4: 45,057 rows over 42 days is **42
+  observations of regime**, not 45,057.
+- **Barred-from-trading arithmetic, restated beside the scoreboard:** +0.05 bps per trade against a
+  60 bps Coinbase retail taker fee — about **1/1,183rd** of the cost.
+- **COUNCIL FIX ANSWERED — the plist census re-run BY NEED, and my 09-21 closing claim was wrong.**
+  I had checked git usage among the *bare-python* jobs only and concluded "no uncovered exposure
+  today". Correct method is to list the jobs that **call git**, then ask which the fix reaches.
+  **24 launchd jobs; 7 call git:**
+
+  | job | launcher | git via | ENV-001 coverage |
+  |---|---|---|---|
+  | crypto-rotate | /bin/zsh | crypto-rotate.sh | COVERED — zsh sources `~/.zshenv` |
+  | gdrive-backup | /bin/zsh | backup.sh | COVERED |
+  | track-c | /bin/zsh | inline | COVERED |
+  | track-d | /bin/zsh | inline | COVERED |
+  | value-forward | /bin/zsh | value-forward.sh | COVERED |
+  | track-score | /opt/anaconda3/bin/python | score_tracks.py | COVERED — explicit `DEVELOPER_DIR` in the plist |
+  | **tradinghub-refresh** | **/bin/bash** | **refresh_all.sh** | **NOT COVERED** |
+
+  **One uncovered job, exactly as the council said.** `com.anupam.tradinghub-refresh` launches
+  `/bin/bash`, which does **not** source `~/.zshenv`, with an empty `EnvironmentVariables` dict, and
+  calls git every 30 minutes. `grep -c 'not agreed to the Xcode license' ~/strategy-lab/refresh.log`
+  read **157** when the council wrote the FIX and reads **252** now — **+95 in a day**, so it is
+  failing continuously, not historically.
+  **The mitigating detail, which is a §10-shaped finding in its own right:** `refresh_all.sh:56`
+  probes `git rev-parse --git-dir` first and, on failure, logs
+  `cloud-integrate: <repo> SKIPPED — git cannot run here` and moves on. It fails **closed and loud**,
+  which is why nothing was corrupted. The cost is not corruption — it is that **strategy-lab's cloud
+  integration has silently not pulled for five days** while the rest of the refresh kept publishing
+  normally. A job that is 90% working is the hardest kind to notice.
+  **Nothing was changed.** The plist, the launcher and `~/.zshenv` are all untouched — ENV-001 is the
+  resolver's interim, self-retiring fix and altering its reach is not this lab's call (REG-PP-001).
+- My collectors remain protected **by their launcher, not by design**; that has not changed.
