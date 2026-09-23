@@ -1521,3 +1521,12 @@ horizon this lab can speak to is one minute, not one day.
   **Nothing was changed.** The plist, the launcher and `~/.zshenv` are all untouched — ENV-001 is the
   resolver's interim, self-retiring fix and altering its reach is not this lab's call (REG-PP-001).
 - My collectors remain protected **by their launcher, not by design**; that has not changed.
+
+## 2026-09-23 [flow]
+- Scored 1 daily forecast: 09-22 UTC minute hit rate 49.684% (1,107 scored) < 51% → NO, filed p=0.33.
+  Reference class 13/41 = 0.317. Book n=34 resolved, skill −0.0559 — no skill, as expected of a book
+  whose underlying minute resolution is 0.0001.
+- Session OFI **+0.134** today would have tripped the retired |OFI| ≥ 0.10 1-day trigger. No call: CRYP-002
+  retired that unit. Second time in three days the old trigger would have fired — the retirement holds.
+- `tradinghub-refresh` Xcode-license failures: 252 yesterday → **380** today (+128). Still uncovered by
+  ENV-001, still failing closed and loud. Reported, not fixed.
