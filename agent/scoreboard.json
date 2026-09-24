@@ -1,16 +1,16 @@
 {
- "generated": "2026-09-24 02:55 UTC",
+ "generated": "2026-09-24 03:06 UTC",
  "win_rule": "row frozen at T states p_up for T+H; real last trade at T+H decides; direction obeyed = right; ties excluded",
  "denominator_caveat": "DAYS ARE THE DENOMINATOR, NOT ROWS. Minutes inside one UTC day share a regime, so N rows over D days is D observations, not N. Any hit_rate, edge_vs_base_pp or brier_skill quoted from this file MUST be quoted with its `days` count beside it (council directive, crypto-microstructure, 2026-08-21).",
  "horizons": {
   "1": {
-   "filed": 47059,
-   "resolved": 46171,
+   "filed": 47069,
+   "resolved": 46181,
    "ties_excluded": 756,
    "pending": 132,
    "hit_rate": 50.02,
-   "up_base_rate": 49.76,
-   "edge_vs_base_pp": -0.22,
+   "up_base_rate": 49.77,
+   "edge_vs_base_pp": -0.21,
    "brier": 0.2534,
    "climatology": 0.25,
    "brier_skill": -0.0135,
@@ -47,14 +47,14 @@
     {
      "lo": 0.4,
      "hi": 0.5,
-     "n": 22258,
+     "n": 22264,
      "said": 0.464,
      "happened": 0.497
     },
     {
      "lo": 0.5,
      "hi": 0.6,
-     "n": 20390,
+     "n": 20394,
      "said": 0.535,
      "happened": 0.496
     },
@@ -83,13 +83,13 @@
    "verdict": "no skill vs base rate"
   },
   "5": {
-   "filed": 36687,
-   "resolved": 36318,
+   "filed": 36697,
+   "resolved": 36328,
    "ties_excluded": 22,
    "pending": 347,
    "hit_rate": 49.94,
-   "up_base_rate": 49.37,
-   "edge_vs_base_pp": -0.69,
+   "up_base_rate": 49.38,
+   "edge_vs_base_pp": -0.68,
    "brier": 0.2591,
    "climatology": 0.25,
    "brier_skill": -0.0365,
@@ -133,14 +133,14 @@
     {
      "lo": 0.4,
      "hi": 0.5,
-     "n": 13484,
+     "n": 13489,
      "said": 0.455,
      "happened": 0.497
     },
     {
      "lo": 0.5,
      "hi": 0.6,
-     "n": 12772,
+     "n": 12777,
      "said": 0.544,
      "happened": 0.489
     },
@@ -176,21 +176,21 @@
    "verdict": "no skill vs base rate"
   },
   "15": {
-   "filed": 36687,
-   "resolved": 35907,
+   "filed": 36697,
+   "resolved": 35918,
    "ties_excluded": 7,
-   "pending": 773,
-   "hit_rate": 48.73,
-   "up_base_rate": 50.23,
-   "edge_vs_base_pp": -1.5,
-   "brier": 0.2718,
+   "pending": 772,
+   "hit_rate": 48.71,
+   "up_base_rate": 50.24,
+   "edge_vs_base_pp": -1.53,
+   "brier": 0.2719,
    "climatology": 0.25,
-   "brier_skill": -0.0873,
+   "brier_skill": -0.0875,
    "reliability": 0.0214,
    "resolution": 0.0003,
-   "tail_rows": 10864,
+   "tail_rows": 10871,
    "tail_outcome_spread": 0.119,
-   "diagnosis": "RESOLUTION 0.0003 \u2014 the book is very nearly forecasting its own base rate (0.502) every time, and reliability 0.0214 is itself poor, so the book is BOTH miscalibrated and non-discriminating \u2014 the worse of the two readings. At this value the skill figure above is not evidence about the signal. The tails confirm it rather than rescue it: 10,864 rows sit at |p-0.5|>=0.15 and run 0.074->0.600 (n=50), 0.167->0.592 (n=395), 0.260->0.511 (n=2093), 0.356->0.516 (n=5760), 0.737->0.503 (n=2093), 0.836->0.481 (n=401), 0.932->0.542 (n=72) \u2014 an outcome spread of 0.119 across bins whose stated probabilities span far more. THE EXTREME-CONFIDENCE ROWS ARE NOT COMING FROM A DISTINGUISHABLE SIGNAL; they are the model reporting certainty it has not earned.",
+   "diagnosis": "RESOLUTION 0.0003 \u2014 the book is very nearly forecasting its own base rate (0.502) every time, and reliability 0.0214 is itself poor, so the book is BOTH miscalibrated and non-discriminating \u2014 the worse of the two readings. At this value the skill figure above is not evidence about the signal. The tails confirm it rather than rescue it: 10,871 rows sit at |p-0.5|>=0.15 and run 0.074->0.600 (n=50), 0.167->0.592 (n=395), 0.260->0.511 (n=2094), 0.356->0.517 (n=5766), 0.737->0.503 (n=2093), 0.836->0.481 (n=401), 0.932->0.542 (n=72) \u2014 an outcome spread of 0.119 across bins whose stated probabilities span far more. THE EXTREME-CONFIDENCE ROWS ARE NOT COMING FROM A DISTINGUISHABLE SIGNAL; they are the model reporting certainty it has not earned.",
    "days": 35,
    "first_day": "2026-08-21",
    "last_day": "2026-09-24",
@@ -212,21 +212,21 @@
     {
      "lo": 0.2,
      "hi": 0.3,
-     "n": 2093,
+     "n": 2094,
      "said": 0.26,
      "happened": 0.511
     },
     {
      "lo": 0.3,
      "hi": 0.4,
-     "n": 5760,
+     "n": 5766,
      "said": 0.356,
-     "happened": 0.516
+     "happened": 0.517
     },
     {
      "lo": 0.4,
      "hi": 0.5,
-     "n": 9269,
+     "n": 9273,
      "said": 0.452,
      "happened": 0.512
     },
