@@ -1530,3 +1530,12 @@ horizon this lab can speak to is one minute, not one day.
   retired that unit. Second time in three days the old trigger would have fired — the retirement holds.
 - `tradinghub-refresh` Xcode-license failures: 252 yesterday → **380** today (+128). Still uncovered by
   ENV-001, still failing closed and loud. Reported, not fixed.
+
+## 2026-09-24 (late catch-up, 21:05 PT) [flow]
+- Resolved two daily rows, both **NO**: 09-23 UTC 50.57% on 530 scored (thin day, 533 rows; robust to its 2 blanks),
+  09-24 UTC 49.58% on 1,194. Filed 0.33 and 0.32 — both on the NO side. Daily book now n=36, Brier skill **−0.0411**, no skill.
+- Reference class 13/43 = **0.302** and drifting down: the last five complete days (09-20..09-24) all missed 51.00%.
+  Filed 0.30 at base, not below it — five days is not a regime and the book's resolution is 0.0001.
+- A late catch-up at 04:05 UTC makes the next UTC day already visible; the fix is to name the day AFTER and declare the
+  skipped one a lost filing (09-25), never to back-fill it.
+- Session OFI 09-24 UTC **−0.005**: balanced; no call either way (1-day unit retired, CRYP-002).
