@@ -1539,3 +1539,10 @@ horizon this lab can speak to is one minute, not one day.
 - A late catch-up at 04:05 UTC makes the next UTC day already visible; the fix is to name the day AFTER and declare the
   skipped one a lost filing (09-25), never to back-fill it.
 - Session OFI 09-24 UTC **−0.005**: balanced; no call either way (1-day unit retired, CRYP-002).
+
+## 2026-09-28 [flow]
+- Daily hit-rate book: 09-26 → YES (52.24%, 1,072 scored; 89 ties — unusually many) and 09-27 → YES (51.69% on a thin
+  532 scored, weekend recorder gap). Both filed at p 0.30, both on the NO side. Book n=38, Brier skill −0.067 (no skill).
+- Two YES days in a row move the base only 13/43 → 15/46 = 0.326. Not a streak to tilt on: 1m resolution is still 0.0001.
+- Session OFI −0.09 (below the retired 0.10 trigger; the 1-day unit stays retired under CRYP-002 either way — no call).
+- BARRED FROM TRADING: +0.05 bps per trade vs a 60 bps taker fee, ~1/1,183rd of the cost.
