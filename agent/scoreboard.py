@@ -22,14 +22,31 @@ BOOKS = {1: os.path.join(HERE, "minute_forecasts.csv"),
          15: os.path.join(HERE, "forecasts_15m.csv")}
 
 
-def stats(path):
+def _target(r):
+    try:
+        t = dt.datetime.fromisoformat((r.get("target_minute_utc") or "").strip())
+    except ValueError:
+        return None
+    return t if t.tzinfo else t.replace(tzinfo=dt.timezone.utc)
+
+
+def stats(path, now=None):
     if not os.path.exists(path):
         return {"filed": 0, "resolved": 0, "note": "no book yet"}
-    rows = list(csv.DictReader(open(path)))
+    now = now or dt.datetime.now(dt.timezone.utc)
+    cut = now.strftime("%Y-%m-%dT%H:%M:%S")
+    rows = [r for r in csv.DictReader(open(path)) if (r.get("made_at_utc") or "")[:19] <= cut]   # the book as of this build
     done = [r for r in rows if r.get("outcome") in ("right", "wrong")]
     ties = sum(1 for r in rows if r.get("outcome") == "tie")
+    # CRYP-007 (2026-09-28): `pending` used to count EVERY blank outcome, so a row whose target passed weeks ago and can
+    # never be priced read as a temporary wait - a dead book looked busy. Pending is now only a blank row whose target
+    # minute is still ahead of this build; one whose target has passed unpriced is `past_due`, published beside it.
+    blank = [(r, _target(r)) for r in rows if not (r.get("outcome") or "").strip()]
     out = {"filed": len(rows), "resolved": len(done), "ties_excluded": ties,
-           "pending": sum(1 for r in rows if not (r.get("outcome") or "").strip())}
+           "pending": sum(1 for _, t in blank if t is not None and t >= now),
+           "past_due": sum(1 for _, t in blank if t is not None and t < now)}
+    if any(t is None for _, t in blank):
+        out["no_target"] = sum(1 for _, t in blank if t is None)
     if not done:
         return out
     ps = [(float(r["p_up"]), 1 if r["up"] == "1" else 0) for r in done]
@@ -124,7 +141,7 @@ def render(d):
                      f"{s['resolution']:.4f}</b> &middot; reliability {s['reliability']:.4f} &mdash; "
                      f"{s['diagnosis']}</td></tr>")
         else:
-            rows += f"<tr><td><b>+{h} min</b></td><td class=m>{s.get('filed',0):,}</td><td class=m>0</td><td colspan=8 style='text-align:left;opacity:.7'>{s.get('note','filed, nothing resolved yet')} — {s.get('pending',0)} pending</td></tr>"
+            rows += f"<tr><td><b>+{h} min</b></td><td class=m>{s.get('filed',0):,}</td><td class=m>0</td><td colspan=8 style='text-align:left;opacity:.7'>{s.get('note','filed, nothing resolved yet')} — {s.get('pending',0)} pending, {s.get('past_due',0)} past due and never priced</td></tr>"
     # CAL-001 (council directive, crypto-microstructure, 2026-09-01): publish the
     # calibration curve so the finding is VISIBLE while it waits for Anupam's ruling.
     # This block renders a diagnostic and nothing else. It adjusts no probability, sets
@@ -183,13 +200,15 @@ table{{border-collapse:collapse;width:100%;background:var(--panel);border:1px so
 
 
 def main():
-    d = {"generated": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
+    built = dt.datetime.now(dt.timezone.utc).replace(microsecond=0)
+    d = {"generated": built.strftime("%Y-%m-%d %H:%M UTC"),
+         "built_utc": built.strftime("%Y-%m-%dT%H:%M:%SZ"),   # the instant pending/past_due are split at (CRYP-007)
          "win_rule": "row frozen at T states p_up for T+H; real last trade at T+H decides; direction obeyed = right; ties excluded",
          "denominator_caveat": ("DAYS ARE THE DENOMINATOR, NOT ROWS. Minutes inside one UTC day share a regime, so "
                                 "N rows over D days is D observations, not N. Any hit_rate, edge_vs_base_pp or "
                                 "brier_skill quoted from this file MUST be quoted with its `days` count beside it "
                                 "(council directive, crypto-microstructure, 2026-08-21)."),
-         "horizons": {str(h): stats(p) for h, p in BOOKS.items()}}
+         "horizons": {str(h): stats(p, built) for h, p in BOOKS.items()}}
     json.dump(d, open(os.path.join(HERE, "scoreboard.json"), "w"), indent=1)
     open(os.path.join(ROOT, "scoreboard.html"), "w").write(render(d))
     for h in (1, 5, 15):
