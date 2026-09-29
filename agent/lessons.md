@@ -1546,3 +1546,16 @@ horizon this lab can speak to is one minute, not one day.
 - Two YES days in a row move the base only 13/43 → 15/46 = 0.326. Not a streak to tilt on: 1m resolution is still 0.0001.
 - Session OFI −0.09 (below the retired 0.10 trigger; the 1-day unit stays retired under CRYP-002 either way — no call).
 - BARRED FROM TRADING: +0.05 bps per trade vs a 60 bps taker fee, ~1/1,183rd of the cost.
+
+## 2026-09-29 [flow]
+- **Nothing resolved this run** — the only open forecast (filed 09-28, targets 09-29 UTC) is not due until
+  the 09-30 run under the standing SCHED-001 condition; that's correct, not a drought (score_forecasts.py's
+  "NO GROWTH" flag is expected here, checked and explained rather than treated as a bug).
+- Filed today's row targeting 2026-09-30 UTC at p=0.32, base rate 15/47 = 0.319 (complete days, >=200
+  right+wrong scored rows, ties excluded from denominator). Last three complete days ran above the bar
+  (09-26 52.24%, 09-27 51.69%, 09-28 50.58%) but three days doesn't move p off the unconditional base —
+  1-minute resolution is still ~0.0001, no day-level signal.
+- Session OFI 09-29 (so far) **−0.116** — crosses the retired 0.10 trigger, but the 1-day unit stays
+  retired under CRYP-002 regardless of magnitude; no ledger call made. Reported for the record only.
+- Collector, crypto-minute and crypto-horizons all present and running in launchctl.
+- BARRED FROM TRADING: +0.05 bps per trade vs a 60 bps taker fee, ~1/1,183rd of the cost.
