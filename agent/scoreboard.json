@@ -1,18 +1,18 @@
 {
- "generated": "2026-09-29 14:02 UTC",
- "built_utc": "2026-09-29T14:02:49Z",
+ "generated": "2026-09-29 14:33 UTC",
+ "built_utc": "2026-09-29T14:33:15Z",
  "win_rule": "row frozen at T states p_up for T+H; real last trade at T+H decides; direction obeyed = right; ties excluded",
  "denominator_caveat": "DAYS ARE THE DENOMINATOR, NOT ROWS. Minutes inside one UTC day share a regime, so N rows over D days is D observations, not N. Any hit_rate, edge_vs_base_pp or brier_skill quoted from this file MUST be quoted with its `days` count beside it (council directive, crypto-microstructure, 2026-08-21).",
  "horizons": {
   "1": {
-   "filed": 53360,
-   "resolved": 52313,
+   "filed": 53390,
+   "resolved": 52343,
    "ties_excluded": 903,
-   "pending": 1,
-   "past_due": 143,
+   "pending": 0,
+   "past_due": 144,
    "hit_rate": 50.09,
    "up_base_rate": 49.86,
-   "edge_vs_base_pp": -0.04,
+   "edge_vs_base_pp": -0.05,
    "brier": 0.2533,
    "climatology": 0.25,
    "brier_skill": -0.0133,
@@ -49,21 +49,21 @@
     {
      "lo": 0.4,
      "hi": 0.5,
-     "n": 24905,
+     "n": 24917,
      "said": 0.464,
      "happened": 0.497
     },
     {
      "lo": 0.5,
      "hi": 0.6,
-     "n": 23298,
+     "n": 23315,
      "said": 0.536,
      "happened": 0.498
     },
     {
      "lo": 0.6,
      "hi": 0.7,
-     "n": 1833,
+     "n": 1834,
      "said": 0.63,
      "happened": 0.52
     },
@@ -85,22 +85,22 @@
    "verdict": "no skill vs base rate"
   },
   "5": {
-   "filed": 42979,
-   "resolved": 42566,
+   "filed": 43009,
+   "resolved": 42596,
    "ties_excluded": 27,
    "pending": 5,
    "past_due": 381,
-   "hit_rate": 49.88,
-   "up_base_rate": 49.45,
-   "edge_vs_base_pp": -0.67,
+   "hit_rate": 49.87,
+   "up_base_rate": 49.44,
+   "edge_vs_base_pp": -0.69,
    "brier": 0.2592,
    "climatology": 0.25,
-   "brier_skill": -0.0368,
+   "brier_skill": -0.037,
    "reliability": 0.0084,
-   "resolution": 0.0001,
-   "tail_rows": 7180,
+   "resolution": 0.0,
+   "tail_rows": 7183,
    "tail_outcome_spread": 0.08899999999999997,
-   "diagnosis": "RESOLUTION 0.0001 \u2014 the book is very nearly forecasting its own base rate (0.495) every time, and reliability 0.0084 says the stated probabilities do land near their outcomes, so the failure is discrimination alone. At this value the skill figure above is not evidence about the signal. The tails confirm it rather than rescue it: 7,180 rows sit at |p-0.5|>=0.15 and run 0.168->0.500 (n=146), 0.267->0.510 (n=913), 0.363->0.484 (n=5392), 0.735->0.496 (n=647), 0.839->0.573 (n=82) \u2014 an outcome spread of 0.089 across bins whose stated probabilities span far more. THE EXTREME-CONFIDENCE ROWS ARE NOT COMING FROM A DISTINGUISHABLE SIGNAL; they are the model reporting certainty it has not earned.",
+   "diagnosis": "RESOLUTION 0.0000 \u2014 the book is very nearly forecasting its own base rate (0.494) every time, and reliability 0.0084 says the stated probabilities do land near their outcomes, so the failure is discrimination alone. At this value the skill figure above is not evidence about the signal. The tails confirm it rather than rescue it: 7,183 rows sit at |p-0.5|>=0.15 and run 0.168->0.500 (n=146), 0.267->0.510 (n=913), 0.363->0.484 (n=5393), 0.735->0.495 (n=649), 0.839->0.573 (n=82) \u2014 an outcome spread of 0.089 across bins whose stated probabilities span far more. THE EXTREME-CONFIDENCE ROWS ARE NOT COMING FROM A DISTINGUISHABLE SIGNAL; they are the model reporting certainty it has not earned.",
    "days": 40,
    "first_day": "2026-08-21",
    "last_day": "2026-09-29",
@@ -129,37 +129,37 @@
     {
      "lo": 0.3,
      "hi": 0.4,
-     "n": 5392,
+     "n": 5393,
      "said": 0.363,
      "happened": 0.484
     },
     {
      "lo": 0.4,
      "hi": 0.5,
-     "n": 15681,
+     "n": 15694,
      "said": 0.455,
      "happened": 0.499
     },
     {
      "lo": 0.5,
      "hi": 0.6,
-     "n": 15112,
+     "n": 15119,
      "said": 0.544,
      "happened": 0.49
     },
     {
      "lo": 0.6,
      "hi": 0.7,
-     "n": 4557,
+     "n": 4564,
      "said": 0.636,
      "happened": 0.5
     },
     {
      "lo": 0.7,
      "hi": 0.8,
-     "n": 647,
+     "n": 649,
      "said": 0.735,
-     "happened": 0.496
+     "happened": 0.495
     },
     {
      "lo": 0.8,
@@ -179,17 +179,17 @@
    "verdict": "no skill vs base rate"
   },
   "15": {
-   "filed": 42979,
-   "resolved": 42102,
+   "filed": 43009,
+   "resolved": 42132,
    "ties_excluded": 9,
    "pending": 15,
    "past_due": 853,
    "hit_rate": 48.56,
-   "up_base_rate": 50.29,
-   "edge_vs_base_pp": -1.73,
+   "up_base_rate": 50.27,
+   "edge_vs_base_pp": -1.71,
    "brier": 0.2723,
    "climatology": 0.25,
-   "brier_skill": -0.0891,
+   "brier_skill": -0.089,
    "reliability": 0.0218,
    "resolution": 0.0003,
    "tail_rows": 12706,
@@ -230,23 +230,23 @@
     {
      "lo": 0.4,
      "hi": 0.5,
-     "n": 10842,
+     "n": 10855,
      "said": 0.452,
      "happened": 0.511
     },
     {
      "lo": 0.5,
      "hi": 0.6,
-     "n": 11171,
+     "n": 11187,
      "said": 0.548,
      "happened": 0.489
     },
     {
      "lo": 0.6,
      "hi": 0.7,
-     "n": 7383,
+     "n": 7384,
      "said": 0.645,
-     "happened": 0.487
+     "happened": 0.486
     },
     {
      "lo": 0.7,
