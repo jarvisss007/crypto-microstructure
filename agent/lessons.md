@@ -1559,3 +1559,22 @@ horizon this lab can speak to is one minute, not one day.
   retired under CRYP-002 regardless of magnitude; no ledger call made. Reported for the record only.
 - Collector, crypto-minute and crypto-horizons all present and running in launchctl.
 - BARRED FROM TRADING: +0.05 bps per trade vs a 60 bps taker fee, ~1/1,183rd of the cost.
+
+## 2026-09-30 [flow]
+- Ledger.csv (retired 1-day OFI unit): nothing due, all 4 rows already scored (3 right / 1 wrong). No new
+  row filed — CRYP-002 keeps the unit retired regardless of magnitude, and today's session OFI (so far,
+  **-0.006**) sits well inside the old 0.10 trigger anyway. Two independent reasons to abstain, same outcome.
+- Resolved the one due forecast row (filed 09-28, targets 2026-09-29 UTC): 618 right / 680 wrong / 7 ties,
+  n=1,298 (>=200, not void) → hit rate **47.61%**, does NOT exceed 51.00% → **NO**. Filed at p=0.33; correct
+  side. Daily book now n=39, Brier skill **-0.0594**, still no skill.
+- The other open row (filed 09-29, targets 2026-09-30 UTC) is NOT due this run — target day 09-30 is today,
+  still in progress (65% elapsed, 885 scored so far at 45.31%) — resolves on the 10-01 run per SCHED-001.
+- Filed today's mandatory row targeting 2026-10-01 UTC at p=0.31 (CAL-001: calibrate.py → 0.31, p_cal==p, no
+  actionable bin for this lab in calibration_table.json). Reference class: complete days >=200 scored through
+  09-29 = 48, of which 15 cleared 51.00% → base 15/48 = 0.3125. Last three complete days scattered (09-27
+  51.69%, 09-28 50.58%, 09-29 47.61%) — no consistent recent run, filed at unconditional base per S14.
+- Collector alive: BTC-USD_2026-09-30.csv actively growing (358k lines at run time). crypto-minute /
+  crypto-horizons loops both present.
+- Council CRYP-002 applied (retired unit stays retired). ENV-001 open ask noted, no action taken this run —
+  out of scope for ledger-scoring/forecasting.
+- BARRED FROM TRADING: +0.05 bps per trade vs a 60 bps taker fee, ~1/1,183rd of the cost.
