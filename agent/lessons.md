@@ -1578,3 +1578,30 @@ horizon this lab can speak to is one minute, not one day.
 - Council CRYP-002 applied (retired unit stays retired). ENV-001 open ask noted, no action taken this run —
   out of scope for ledger-scoring/forecasting.
 - BARRED FROM TRADING: +0.05 bps per trade vs a 60 bps taker fee, ~1/1,183rd of the cost.
+
+## 2026-10-01 [flow]
+- Ledger.csv (retired 1-day OFI unit): nothing due, all 4 rows already scored. Session OFI 10-01 (so far)
+  **+0.036** on 389,350 trades — well inside the retired 0.10 trigger; no ledger call either way (CRYP-002
+  keeps the unit retired regardless of magnitude).
+- Resolved the one due forecast row (filed 09-29, targets 2026-09-30 UTC): 656 right / 720 wrong / 1 tie,
+  n=1,376 (>=200, not void) → hit rate **47.67%**, does NOT exceed 51.00% → **NO**. Filed at p=0.32; correct
+  side (third day in a row the NO side has won: 09-28 50.58% YES, 09-29 47.61% NO, 09-30 47.67% NO). Daily
+  book now n=40, Brier skill unchanged in sign, still no skill.
+- The other open row (filed 09-30, targets 2026-10-01 UTC) is NOT due this run — today is still in
+  progress, resolves on the 10-02 run per SCHED-001.
+- Filed today's mandatory row targeting 2026-10-02 UTC at p=0.31 (CAL-001: calibrate.py → 0.31, p_cal==p,
+  no actionable bin). Reference class: complete days >=200 scored through 09-30 = 49, of which 15 cleared
+  51.00% → base 15/49 = 0.3061. Last three complete days now all below base after today's resolution
+  (09-28 50.58%, 09-29 47.61%, 09-30 47.67%) — two sub-base days in a row, still not a conditional at this
+  book's own S14 standard (1m autocorrelation ~0.0001).
+- Collector alive: BTC-USD_2026-10-01.csv actively growing (456k+ lines at run time, no ETH-USD file
+  today). crypto-minute, crypto-horizons, crypto-collector, crypto-rotate, crypto-desk all present in
+  launchctl.
+- Scoreboard (1/5/15-min instrument, `scoreboard.json`, generated 19:12 UTC): 1-min hit 50.00% (edge
+  -0.15pp, Brier skill -0.0134, 51 days); 5-min hit 49.88% (edge -0.56pp, skill -0.0373, 42 days); 15-min
+  hit 48.59% (edge -1.79pp, skill -0.0902, 42 days). All three still "no skill vs base rate" — the 1-min
+  diagnosis names discrimination (not reliability) as the failure: resolution 0.0000, the book is
+  forecasting its own base rate.
+- Council CRYP-002 applied (retired unit stays retired). ENV-001 open ask noted, no action taken this run
+  — out of scope for ledger-scoring/forecasting.
+- BARRED FROM TRADING: +0.05 bps per trade vs a 60 bps taker fee, ~1/1,183rd of the cost.
