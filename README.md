@@ -1,5 +1,86 @@
 # Crypto Microstructure Lab
 
+> ## STATUS 2026-10-02 — the 1/5/15-minute direction forecasters are RETIRED (CRYPTO-006)
+>
+> **Ruling.** Anupam, 2026-10-02 10:24 PT, "go ahead", adopting the recommended option (a) STOP.
+> `ruled_by`: Anupam ('go ahead', 2026-10-02 10:24 PT), adopting the recommended option. Register row CRYPTO-006
+> (`~/command-center/council/issues.json`).
+>
+> **The question is ANSWERED: no skill.** *Does a self-learning online model call the direction of the next 1, 5 or 15 minutes of
+> BTC better than the base rate?* No. Precisely: the live forecasters were price-only (momentum and mean-reversion features; the
+> order-flow and book-imbalance inputs are carried at zero in `minute_forecaster.py` and `horizon_forecaster.py`), so this answers
+> that model, not the offline order-flow backtest (`research/NULL_RESULT.md`, untouched). The three books, frozen at the stop
+> (crypto-minute at 12:11:20 PT, crypto-horizons at 12:17:53 PT):
+>
+> | horizon | scored (ties excluded) | UTC days | hit rate | up base rate | Brier | climatology | Brier skill | resolution |
+> |---|---|---|---|---|---|---|---|---|
+> | +1 min | 55,939 | 52 | 49.99% | 49.83% | 0.2534 | 0.2500 | -0.0135 | 0.0001 |
+> | +5 min | 46,185 | 43 | 49.91% | 49.53% | 0.2593 | 0.2500 | -0.0374 | 0.0000 |
+> | +15 min | 45,695 | 43 | 48.49% | 50.36% | 0.2727 | 0.2500 | -0.0908 | 0.0003 |
+>
+> 147,819 scored forecasts in all, the largest samples in the firm, and every Brier skill is below zero (worse than always
+> saying the base rate) with resolution about 0: the forecasts carry no information about direction. Days are the
+> denominator, not rows (`scoreboard.html` says so on every line); the verdict is the same read either way. Not answered here: the
+> point-forecast (`pred_px`) question, which the ruling does not cover; `research/exact_minute_study.py` can still be run on the
+> frozen books.
+>
+> **What was turned off.** The two always-on launchd jobs that wrote those books: `com.anupam.crypto-minute` (the 1-minute book)
+> and `com.anupam.crypto-horizons` (the 5- and 15-minute books, and the scoreboard rebuild). Both were `launchctl bootout`-ed on 2026-10-02
+> (crypto-minute at 12:11:20 PT, crypto-horizons at 12:17:53 PT), each in the quiet window right after a tick (the tick's last file 3 to 40 s old, no child process, the job
+> asleep; the 5/15-minute job right after a scoreboard rebuild) so no write was cut short: every book re-parsed as a complete CSV
+> with its exact header and was byte-unchanged across each kill. Their plists were then moved to
+> `~/Library/LaunchAgents/retired/`.
+>
+> **What keeps running.** `com.anupam.crypto-collector` (the order-flow recorder: the tape), `com.anupam.crypto-rotate` (nightly
+> minute files + archive) and the paper crypto desk `com.anupam.crypto-desk` (`~/crypto-desk`), which reads only the recorded tape
+> and minute files, never these books.
+>
+> **The gap, counted (Firm Brain 24).** While the Mac was awake the forecasters filed about 1,000 to 1,400 rows per UTC day per
+> horizon (the 1-minute book's observed range was 140 to 1,390 rows a day). None of that is written from now on, and nothing
+> back-fills it.
+>
+> **What is frozen, exactly as recorded (BENCH-002).** The three books and their state files are history. Their bytes at the stop
+> (sha256). The same pins are held by the `_crypto006_books_frozen` check in `PROPOSED_resolver_changes_CRYPTO-006.py` (proposed,
+> not yet wired into `resolver.py`):
+>
+> | file | bytes | data rows | sha256 |
+> |---|---|---|---|
+> | `agent/minute_forecasts.csv` | 11,321,970 | 57,004 | `4878c4a97d389707181b51d7d52f18f6dbaf57d05bcbcfc80d581c1f758a695a` |
+> | `agent/forecasts_5m.csv` | 9,436,742 | 46,618 | `5dd85b0b12272336d3823b605fd287c7fde0f883bf9ffff9563ce03b0536890c` |
+> | `agent/forecasts_15m.csv` | 9,476,280 | 46,618 | `2d5b04632bbc35d3aa6368c1f76c99d6804bec466175435e4d4f19835287d605` |
+> | `agent/minute_state.json` | 142 |  | `46c6958c63d8c6d632b51410187aac37c572330aec53e54329ae531330e5d9f4` |
+> | `agent/state_5m.json` | 139 |  | `25b318bf16f9ba3123151a8983ceb4263bfb52418ce919de88bd0428ab9d3c49` |
+> | `agent/state_15m.json` | 141 |  | `3e17978ce1aca2bdc8a8eae38714ca88ea1858ceabf4f6ad06cdb0276ef552d2` |
+> | `~/Library/LaunchAgents/retired/com.anupam.crypto-minute.plist` | 641 | | `cad366ed6b58019304827635cdb8efd1271f4d5edb22b8a8fd3097033d75c406` |
+> | `~/Library/LaunchAgents/retired/com.anupam.crypto-horizons.plist` | 649 | | `9c7410b8618c3efe0e7de5a2ab2e68738922d69c395955e7d15bac03d35cb495` |
+>
+> `scoreboard.json` / `scoreboard.html` are frozen at the last build (`built_utc` 2026-10-02T19:17:48Z), made by the 5/15-minute job after
+> the 1-minute job had stopped and seconds before it stopped itself; they will not refresh. Rows filed in the last minutes before
+> each stop never reached their target minute under a running scorer, so they stay unpriced (past due by construction, excluded
+> from every score): the 1-minute book's last row, and the last few rows of the 5- and 15-minute books, which the frozen
+> scoreboard still lists as `pending` (0 / 5 / 15 rows at +1 / +5 / +15 min) although none will ever resolve.
+>
+> **Restore** — only with Anupam's ruling. Reverses the stop; the roster, the retired markers and the resolver exemptions below go
+> back with it, and the gap between the stop and a restart stays unforecast (a forecast is written before its minute; nothing back-fills).
+>
+> ```bash
+> mv ~/Library/LaunchAgents/retired/com.anupam.crypto-minute.plist   ~/Library/LaunchAgents/
+> mv ~/Library/LaunchAgents/retired/com.anupam.crypto-horizons.plist ~/Library/LaunchAgents/
+> launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.anupam.crypto-minute.plist
+> launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.anupam.crypto-horizons.plist
+> launchctl list | grep -E 'crypto-(minute|horizons)'      # expect both, with a PID
+> ```
+>
+> Then: (1) re-add `launchd:com.anupam.crypto-minute` and `launchd:com.anupam.crypto-horizons` to Garuda's `automations` in
+> `~/command-center/council/roster.json` and delete their entries from its `retired` map (else `roster_names_every_automation` goes red); (2) empty the `RETIRED` dicts in
+> `~/bin/score_forecasts.py` and `~/command-center/calibrate.py`; (3) drop the `_crypto006_` checks and the CRYPTO-006 exemptions
+> from `resolver.py` if they were wired; (4) move `~/claude-config/launchd/retired/*.plist` back up one level; (5) revert the two RETIRED rows in
+> `~/command-center/caretaker/agent_registry.md` and the Garuda row in `~/command-center/council/THE_COURT.md`.
+>
+> **Open consequence, not decided here.** The flow agent's standing daily forecast (`agent/AGENT.md`: "minute forecaster directional
+> hit rate on <day> UTC scored rows exceeds ...") has no new rows to resolve against after 2026-10-02. Retiring or re-aiming it is
+> Anupam's ruling; `agent/AGENT.md` was deliberately not edited.
+
 A single-file, live crypto order-flow dashboard + data recorder. No backend, no
 API key, no dependencies. Streams real trades and full order-book depth from
 **Coinbase's public WebSocket** and computes microstructure metrics in real time.
@@ -131,14 +212,14 @@ Coinbase has real US-legal volume *and* a public `level2_batch` depth feed, so a
 single venue powers every panel with no API key.
 
 
-## The 1 / 5 / 15-minute scoreboard (2026-08-21)
+## The 1 / 5 / 15-minute scoreboard (2026-08-21) — RETIRED 2026-10-02 (CRYPTO-006), see the status block at the top
 
 One instrument, three clocks. Every minute a row is frozen stating p(up) for the price 1, 5
 and 15 minutes ahead; at the target minute the real last trade decides; direction obeyed =
 right; rows are never edited; unchanged minutes are ties and excluded. The three books are
 `agent/minute_forecasts.csv`, `agent/forecasts_5m.csv`, `agent/forecasts_15m.csv`; the
 scoreboard is [`scoreboard.html`](scoreboard.html) (rebuilt every ~10 minutes by the running
-job) with per-horizon hit rate vs base rate, Brier skill and a reliability table, n and day
+job until the 2026-10-02 stop; now frozen at its last build) with per-horizon hit rate vs base rate, Brier skill and a reliability table, n and day
 count said out loud. **Calibration instrument, barred from trading** — see
 `research/NULL_RESULT.md` for why the only real short-horizon edge is ~1/1,183rd of the fee.
 
