@@ -490,6 +490,7 @@ def _crypto006_simulate():
     snap = {"when": days[-1], "counts": hist[-1]["counts"], "history": hist}
     tmp = tempfile.mkdtemp()
     os.makedirs(tmp + "/.claude")
+    # BOOK-001 does not apply: the simulator writes a scratch copy inside a temp directory, never a shared book
     json.dump(snap, open(tmp + "/.claude/forecast_counts.json", "w"))
     keep_r, keep_m = R.HOME, me.HOME
     R.HOME, me.HOME = tmp, tmp
