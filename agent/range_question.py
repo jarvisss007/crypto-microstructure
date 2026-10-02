@@ -71,13 +71,21 @@ def _load(name, path):
     return mod
 
 
+_ATOM = None
+
+
 def _atomic():
-    """stock-radar/atomicio.py by path. Writers REFUSE without it: a fallback to open(path, "w") is the one-sided guard BOOK-001 forbids."""
-    try:
-        return _load("_atomicio_cr008", f"{HOME}/stock-radar/atomicio.py")
-    except Exception as e:
-        raise SystemExit(f"REFUSED: stock-radar/atomicio.py could not be loaded ({type(e).__name__}: {e}); "
-                         f"BOOK-001 forbids a non-atomic write of a shared book")
+    """stock-radar/atomicio.py by path, loaded ONCE per process (its hold_book is idempotent per path only within one module instance: a
+    second copy would try to flock a file this process already holds). Writers REFUSE without it: a fallback to open(path, "w") is the
+    one-sided guard BOOK-001 forbids."""
+    global _ATOM
+    if _ATOM is None:
+        try:
+            _ATOM = _load("_atomicio_cr008", f"{HOME}/stock-radar/atomicio.py")
+        except Exception as e:
+            raise SystemExit(f"REFUSED: stock-radar/atomicio.py could not be loaded ({type(e).__name__}: {e}); "
+                             f"BOOK-001 forbids a non-atomic write of a shared book")
+    return _ATOM
 
 
 # ---------------------------------------------------------------------------------------------------------- the tape
@@ -197,7 +205,9 @@ def cmd_file(args):
     note = (args.note or "").strip()
     if len(note) < 20:
         raise SystemExit("REFUSED: --note must carry the run's own reasoning (at least 20 characters); a bare number is not a forecast")
-    now_local = dt.datetime.now().astimezone() if not args.now else dt.datetime.fromisoformat(args.now).astimezone()
+    now_local = dt.datetime.now().astimezone() if not args.now else dt.datetime.fromisoformat(args.now)
+    if now_local.tzinfo is None:                   # --now is a test hook: an aware ISO time keeps its own offset as "local"
+        now_local = now_local.astimezone()
     now_utc = now_local.astimezone(dt.timezone.utc)
     atom = None if args.dry else _atomic()
     if atom:
@@ -215,7 +225,7 @@ def cmd_file(args):
         "date": filed_date, "instrument": "BTC", "horizon_days": str((target - now_local.date()).days),
         "question": QUESTION.format(d=target.isoformat(), x=x), "p": format(p, "f"), "check_date": target.isoformat(), "outcome": "",
         "notes": (f"[flow] [tech] [p_cal={pcal}] Resolves check_date+1 (standing, SCHED-001) -- a PASS by construction, never a deferral. "
-                  f"Filed {now_local:%Y-%m-%d %H:%M %Z} ({now_utc:%H:%M} UTC) by range_question.py (CRYPTO-008 standing question). "
+                  f"Filed {now_local:%Y-%m-%d %H:%M %Z} = {now_utc:%Y-%m-%dT%H:%MZ} by range_question.py (CRYPTO-008 standing question). "
                   f"TARGET {target} UTC, not today's: no target day may have begun at filing (S8); ONE ROW PER RESOLVING DAY. "
                   f"{ref['line']} VOID RULE fixed in advance: fewer than {MIN_MINUTES} valid minutes in research/minutes/BTC-USD_{target}.csv "
                   f"= void; a gap in the tape is never imputed. RESOLUTION, mechanical: `python agent/range_question.py resolve` "
