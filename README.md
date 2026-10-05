@@ -77,9 +77,12 @@
 > from `resolver.py` if they were wired; (4) move `~/claude-config/launchd/retired/*.plist` back up one level; (5) revert the two RETIRED rows in
 > `~/command-center/caretaker/agent_registry.md` and the Garuda row in `~/command-center/council/THE_COURT.md`.
 >
-> **Open consequence, not decided here.** The flow agent's standing daily forecast (`agent/AGENT.md`: "minute forecaster directional
-> hit rate on <day> UTC scored rows exceeds ...") has no new rows to resolve against after 2026-10-02. Retiring or re-aiming it is
-> Anupam's ruling; `agent/AGENT.md` was deliberately not edited.
+> **The flow agent's daily forecast was RE-AIMED (CRYPTO-008, effective 2026-10-04).** The question it used to file ("minute forecaster directional
+> hit rate on <day> UTC ...") could not resolve once the forecasters stopped. It now files ONE standing volatility question on the
+> recorded tape, `BTC-USD UTC-day high-low range on <D> (minute file, 100*(max high - min low)/min low) exceeds 3.0%`, base rate 0.435
+> over the 23 eligible complete UTC days to 2026-10-01, filed and resolved with `agent/range_question.py` (`reference`, `file`,
+> `resolve`; `agent/AGENT.md`, THE STANDING QUESTION). The retired question's rows in `agent/forecasts.csv` are untouched, and its
+> two still-open rows resolve once more under their own rule.
 
 A single-file, live crypto order-flow dashboard + data recorder. No backend, no
 API key, no dependencies. Streams real trades and full order-book depth from

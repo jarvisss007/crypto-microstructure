@@ -8,6 +8,12 @@ by the time a retail WebSocket sees it. The ledger exists to prove or
 disprove exactly that at a horizon we can actually act on — it is expected
 to come back "coin flip", and finding that out cleanly is the point.
 
+> **STATUS (CRYPTO-006, CRYPTO-008; effective 2026-10-04).** The minute forecaster and the 5/15-minute forecaster are STOPPED and retired
+> (CRYPTO-006: question answered, no skill). This lab's ONE daily forecast is THE STANDING QUESTION (CRYPTO-008), the section after
+> "MANDATORY forecast" below, filed and resolved with `agent/range_question.py`. Every mention below of the minute forecaster, the
+> 1/5/15-minute instrument or the scoreboard is history: do not file a question about the stopped forecasters and do not quote their
+> frozen scoreboard as live. "The falsifiable unit is now ONE MINUTE" no longer governs.
+
 ## The falsifiable unit
 
 "Yesterday's session-wide order-flow imbalance in product P was positive/
@@ -84,9 +90,11 @@ negative → price is higher/lower one day later." Direction call `up` or
    - **Flow read**: session OFI, and the latest verdict line from
      `backtest_log.txt` — the sub-second honest gate is the senior study;
      never contradict it. NOTE: this ledger tested only the 1-day horizon; under
-     CRYP-002 the unit becomes 1 minute once the runner is rewired.
+     CRYP-002 the unit becomes 1 minute once the runner is rewired. (Retired: CRYPTO-006
+     stopped the minute runner; the daily forecast is the standing question below.)
    - **Today's call** (or "no call" and why).
-   - **Scorecard line**: hit rate so far and pending count.
+   - **Scorecard line**: hit rate so far and pending count, and, for the standing question, the row you filed (target day, p = the
+     reference base), the scored / YES / void / waiting DAY counts from `range_question.py resolve`, and the trailing-25 sd of your filed p.
 
 ## Hard rules
 - Never present a call as a trade, and never suggest trading crypto off this.
@@ -127,8 +135,13 @@ Format: `date,instrument,horizon_days,question,p,check_date,outcome,notes`
 - Prefer questions you are actually unsure about. Forecasting 0.99 on a
   near-certainty scores well and teaches nothing.
 
+**From 2026-10-04 the question is FIXED (CRYPTO-008): BTC only, and only THE STANDING QUESTION below. The row is filed by
+`agent/range_question.py file`, never typed by hand, and no other question is filed in this lab.** The generic rules above
+(instrument BTC or ETH; any binary that resolves mechanically) are superseded for this lab by that section.
+
 **Scoring:** on each run, resolve every row whose `check_date <= today` by
-setting `outcome` to 1 (YES) or 0 (NO), mechanically. Then run:
+setting `outcome` to 1 (YES) or 0 (NO), mechanically. **Rows of the standing question
+(CRYPTO-008, below) are resolved by `agent/range_question.py resolve`, never by hand.** Then run:
 
 ```
 /opt/anaconda3/bin/python ~/bin/score_forecasts.py --lab crypto-microstructure
@@ -137,7 +150,93 @@ setting `outcome` to 1 (YES) or 0 (NO), mechanically. Then run:
 You are graded on **calibration, not on being right.** Saying 60% and being
 wrong is fine. Saying 90% and being wrong repeatedly is not.
 
+## THE STANDING QUESTION (CRYPTO-008) — the one forecast you file
+
+**EFFECTIVE 2026-10-04** (the day this section was applied: no row of this question is dated earlier, and the resolver's checks hold the book
+to that). Ruled by Anupam on 2026-10-04 (register row CRYPTO-008).
+
+**Why this exists.** CRYPTO-006 stopped the minute forecaster (question answered: no skill), so the question you had been filing,
+"minute forecaster directional hit rate on <day> UTC scored rows exceeds 51.00%", can never resolve for a new day. CRYPTO-008 re-aims the
+daily forecast to a volatility question on the recorded Coinbase tape, which the order-flow recorder still collects. It is ONE forecast
+question, not a strategy: a calibration instrument, BARRED FROM TRADING like everything in this lab.
+
+**The question** (exact wording; `agent/range_question.py` writes it, so it is never typed by hand):
+
+    BTC-USD UTC-day high-low range on <D> (minute file, 100*(max high - min low)/min low) exceeds 3.0%
+
+- **Range** = 100 x (max `high` - min `low`) / min `low` over the minutes of UTC day D in `research/minutes/BTC-USD_<D>.csv` (rows whose
+  `minute_utc` is on D and whose `high` and `low` are both readable: a minute with a trade; the file forward-fills the rest). **YES** iff it
+  STRICTLY exceeds 3.0 (exact decimal arithmetic; exactly 3.0 is NO). The tool scores only this exact text: a row at another X is
+  UNREGISTERED and any other spelling ("3%", "3.00%", a stray space) is NONCANONICAL; both are listed and never scored.
+- **X = 3.0, frozen.** Pre-declared from the tape's own history before any row existed: over the 23 eligible complete UTC days to
+  2026-10-01 (UTC-slice minute files from 2026-08-22 with at least 1,300 trade-bearing minutes) the range exceeded 3.0% on 10, a base rate of
+  0.435 with a standard error of about 0.10. A union of every minute file since 2026-07-06 gives 16 of 39 = 0.410. On the same 23 days a bar of
+  2.5% would have run 0.65 and 3.5% 0.30, so 3.0% is the round bar inside 0.3 to 0.5. Two NO days sat just under the bar on tapes with gaps
+  (2026-08-27 at 2.91% on 1,336 trade-bearing minutes, 2026-09-28 at 2.96% on 1,417): on a full tape the base could be 12 of 23.
+  `range_question.py reference --as-of 2026-10-02` reproduces the 23 and the 10. X NEVER moves: a different bar or wording is a NEW question,
+  registered anew.
+- **Void rule, fixed in advance:** fewer than 1,300 trade-bearing minutes in D's minute file makes the row `void`. The number is crypto-desk's
+  `MIN_MINUTES_FOR_DAY`, but the count is not the desk's: the desk counts every row of the file, forward-filled minutes included (it finds 40 of
+  the 41 UTC-slice days eligible), while this question counts only minutes with a trade (it finds 23), because a range read through a gap is
+  only a lower bound. A gap can only SHRINK the observed range, so a YES is certain even on a thin day and a NO means "no more than 3.0% in the
+  minutes recorded": voiding only the thin NO days would bias the scored sample toward YES, so the rule is symmetric. A gap is never imputed.
+  Expect about four rows in ten to void while the laptop sleeps. A void does not advance the resolved count, so FCST-004 can honestly read this
+  lab FLAT in a void-heavy window: it is not exempted.
+- **WAITING, never guessed:** D's minute file is written once, after the day ends (about 00:40 UTC on D+1, by the nightly rotation, and not
+  atomically). Until it exists, or while it was modified less than 10 minutes ago, the row is WAITING. A missing file voids only when 3 or
+  more days have passed, a LATER day's file exists and no raw tape exists for D (`research/data/BTC-USD_<D>.csv` or `.csv.gz`): then nothing
+  was recorded. A raw tape without a minute file is BROKEN (the rotation did not derive it): the row keeps waiting, loudly, and is never voided.
+- **Target day (S8), one row per resolving day:** the target is the first UTC day strictly after the UTC date at filing that no row already
+  targets. A day that has begun at filing is partly visible and is never a target. One row per run: a second `file` on the same date prints NOOP.
+- **Which days are asked:** the sweep runs Monday to Friday and files tomorrow's UTC day, so the days asked are Tuesday to Saturday, never
+  Sunday or Monday. On the 23 reference days Tuesday to Saturday ran 6 of 15 = 0.40 and Sunday and Monday 4 of 8: the registered base stays
+  the all-days 0.435, and a weekday-conditional base is a variant, not an adjustment.
+
+**Every run, in this order** (the old rule stands: there is no "no forecast today"):
+
+1. `/opt/anaconda3/bin/python ~/crypto-microstructure/agent/range_question.py resolve` scores every due row (YES, NO or void) from the
+   minute files and writes `agent/forecasts.csv` atomically (BOOK-001). A scored or void row is never touched again (BENCH-002). It names
+   every row it left waiting, BROKEN, listed or refused.
+2. `/opt/anaconda3/bin/python ~/crypto-microstructure/agent/range_question.py reference` prints the base rate over the eligible
+   complete UTC days through yesterday.
+3. `/opt/anaconda3/bin/python ~/crypto-microstructure/agent/range_question.py file --note "<your reasoning>"` files ONE row at p = that base
+   to two decimals; the tool computes p and refuses any other. A conditional ("yesterday's range predicts today's") is a NEW registered
+   variant: you may say so in the note, but p does not move. The tool fills the standard parts of `notes` (tags `[flow] [tech]`,
+   `[p_cal=...]` from `calibrate.py`, so CAL-001 below applies unchanged; `Resolves check_date+1 (standing, SCHED-001)`; the reference class;
+   the void rule; the resolution statement; BARRED FROM TRADING); your `--note` is the reasoning. NOOP means a row was already filed on this
+   date: a correct retry, not a fault. Only REFUSED is a fault: say so in the brief as BROKEN and file nothing by hand, because a hand-written
+   row of this form is never scored.
+4. File BEFORE reading `~/crypto-desk/agent/forecasts.csv` or its reports: desks make their own call before reading another's (roster rule 1).
+5. Then the rest of the run (brief, lessons) and `score_forecasts.py --lab crypto-microstructure` as above.
+
+**What the brief must say (Brain §14).** Filing at the base gives zero dispersion by construction, so Brier skill sits near 0 and resolution
+at 0 until a registered variant exists. Say so beside any skill figure and print the trailing-25 sd of your filed p: a skill number without
+it is not a measurement.
+
+**Overlap with the paper crypto desk.** `~/crypto-desk` files its own daily question, |UTC-day return| above 2%, from the same minute files.
+On the 23 reference days all 5 days with a return above 2% also had a range above 3%, and 5 of the 10 range days had a return above 2%: one
+regime observation read twice. Quote scored DAYS, and never count the two questions as independent evidence.
+
+**Calibration pool.** `score_forecasts.py --lab crypto-microstructure` pools every resolved row in `forecasts.csv`: the 40 filed before
+CRYPTO-008 and these. Your p falls in the 0.4-0.5 bin, which holds 5 of those 40 and is not actionable (n < 30). `[p_cal=...]` is recorded
+beside p, never in place of it, and no gap in that bin is a fact about THIS question until 30 of its own days are scored.
+
+**The Hard rules above** (stop after 20+ coin-flip calls) govern `ledger.csv` calls, not this forecast, which is filed every run.
+
+**n is counted in independent days:** one row is one UTC day, and the day's 1,440 minutes are one observation of regime. Quote scored
+DAYS beside any hit rate, never rows.
+
+**THE RETIRED QUESTION (history).** Rows whose question begins "minute forecaster directional hit rate on" were filed under CRYP-002; the
+rule written on each row governs it, and no new one is filed. Two are still pending: filed 2026-09-30 (target 2026-10-01) and 2026-10-01
+(target 2026-10-02). Resolve each once, by its own rule, on the frozen `agent/minute_forecasts.csv`, writing `forecasts.csv` only through
+`~/stock-radar/atomicio.py` (`hold_book`, then `atomic_csv`; BOOK-001), never `open(path, "w")`. The second row's day is truncated: the
+minute forecaster stopped on 2026-10-02 at 19:11 UTC (309 rows on that day); it still scores under its own "fewer than 200 scored rows =
+void" rule. `range_question.py` lists both as LEGACY and leaves them alone.
+
 ## The falsifiable unit is now ONE MINUTE (Anupam, 2026-08-12, CRYP-002)
+
+> **RETIRED (CRYPTO-006): history only.** The minute forecaster is stopped. The OBSERVED THROUGHPUT line below is kept
+> verbatim because the resolver verifies it against the frozen book (CRYP-003).
 
 The old unit was a 1-DAY direction call. That was a horizon this lab's own data
 cannot speak to: it records sub-second order flow, and order-flow information
@@ -205,12 +304,14 @@ deferral — never file it as a deferral, and the council grades it PASS by desi
 already written are not moved.
 
 ## THE 1 / 5 / 15-MINUTE INSTRUMENT (2026-08-21) — one scoreboard, three clocks
+> **RETIRED (CRYPTO-006): history only.** All three forecasters are stopped and the scoreboard is frozen.
 Anupam's brief: "a prediction for 1, 5 and 15 minutes ahead that is frozen when made; at the
 target time, did the price obey it — win or loss." The 1-minute rung is `minute_forecaster.py`
 (since 08-12). The 5- and 15-minute rungs are `horizon_forecaster.py` (launchd
 `com.anupam.crypto-horizons`, books `forecasts_5m.csv` / `forecasts_15m.csv`): same features,
 same SGD, same never-edit-a-row rule, same tie exclusion. `scoreboard.py` publishes all three
-to `scoreboard.json` and `../scoreboard.html` (Pages). Read `scoreboard.json` in every run and
-quote the per-horizon hit rate vs up-base-rate, Brier skill and DAY count in the brief. It is
+to `scoreboard.json` and `../scoreboard.html` (Pages). ~~Read `scoreboard.json` in every run and
+quote the per-horizon hit rate vs up-base-rate, Brier skill and DAY count in the brief.~~ **WITHDRAWN
+(CRYPTO-006): the scoreboard is frozen history; do not read or quote it as live.** It is
 a calibration instrument and is BARRED FROM TRADING — the lab's published null result stands
 until the scoreboard says otherwise over 30+ days, and even then the fee arithmetic applies.

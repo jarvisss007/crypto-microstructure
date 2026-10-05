@@ -31,8 +31,9 @@ itself for.
   into resolver.py): never edit, re-score or void a row (BENCH-002).
   A quiet scoreboard is the intended state, not a dead
   writer. The collector, the nightly rotation and the paper crypto desk (`~/crypto-desk`) keep running. A restart is Anupam's ruling.
-  Open consequence, NOT decided here: the flow agent's standing daily forecast (`agent/AGENT.md`, "minute forecaster directional hit
-  rate on <day> UTC ...") has no new rows to resolve against after 2026-10-02 - retiring or re-aiming it is Anupam's ruling.
+  The flow agent's daily forecast was RE-AIMED by CRYPTO-008 (effective 2026-10-04): it files ONE standing volatility question on the recorded tape,
+  `BTC-USD UTC-day high-low range on <D> ... exceeds 3.0%` (frozen X, base 0.435 over 23 eligible UTC days), with `agent/range_question.py`
+  (`reference` / `file` / `resolve`; see `agent/AGENT.md`, THE STANDING QUESTION). Never type or score a row of that form by hand.
 - The 1-minute book inflates 791×: n is HOURS, never rows. Learning/data tool, not a strategy.
 **Standing rulings live in `~/command-center/council/issues.json` — grep it before
 rewriting any recorded row.** Commit this repo at session end (push if it has a remote).
