@@ -1605,3 +1605,26 @@ horizon this lab can speak to is one minute, not one day.
 - Council CRYP-002 applied (retired unit stays retired). ENV-001 open ask noted, no action taken this run
   — out of scope for ledger-scoring/forecasting.
 - BARRED FROM TRADING: +0.05 bps per trade vs a 60 bps taker fee, ~1/1,183rd of the cost.
+
+## 2026-10-05 [flow]
+
+**First CRYPTO-008 standing-question row filed.** CRYPTO-008 went effective 2026-10-04 (Sunday —
+no weekday sweep ran that day), so today is the first run to file it: target 2026-10-06 UTC, p=0.43
+(frozen reference base, 10/23 eligible days through 10-01 exceeded 3.0%; last three eligible days
+2.20%/3.26%/2.57%). `range_question.py resolve` found nothing due today. No sd-of-last-25 is
+computable yet (n=1 standing-question row) — will be reportable once a trailing window exists.
+
+**No ledger call.** Session OFI today = -0.039 (buy_vol 1,709.9, sell_vol 1,847.97), inside the
+retired |0.10| CRYP-002 trigger. Collector alive: `BTC-USD_2026-10-05.csv` actively recording.
+
+**LEGACY rows unchanged**: the two retired minute-forecaster forecast rows (filed 09-30 target
+10-01, filed 10-01 target 10-02) remain listed as LEGACY by `range_question.py` — not this tool's
+to score, not touched.
+
+**Sabha/Firm Brain**: no new per-run-vs-per-session compounding surface found in this lab's books —
+`agent/forecasts.csv` and `ledger.csv` both gate on `check_date <= today AND outcome empty`, one row
+per target day by construction (`range_question.py file` NOOPs on a repeat).
+
+**Council directive acknowledgment**: Council: applied (KEEP — correctly filed the standing
+question rather than skip the slot, same discipline as 10-01; ENV-001 still open, no new exposure
+found or claimed this run).
