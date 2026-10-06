@@ -1628,3 +1628,27 @@ per target day by construction (`range_question.py file` NOOPs on a repeat).
 **Council directive acknowledgment**: Council: applied (KEEP — correctly filed the standing
 question rather than skip the slot, same discipline as 10-01; ENV-001 still open, no new exposure
 found or claimed this run).
+
+## 2026-10-06 [flow] — GARUDA (labs-morning-sweep)
+
+**Flow:** session OFI -0.0098 on 246,553 trade rows (buy 1631.02 / sell 1663.44) — well
+inside the retired |0.10| trigger. No ledger call. Collector alive, today's session CSV
+fresh (08:45, 13.5MB). backtest_log.txt verdict unchanged: no signal net-positive after
+costs at any horizon (5s-60s), the honest expected result.
+
+**Ledger:** 0 pending rows; nothing to score.
+
+**Standing question (CRYPTO-008):** filed row #2 since the re-aim (target 2026-10-07,
+p=0.43, base rate unchanged: 23 eligible days, 10 exceeded 3.0%). Row #1 (target 10-06)
+still WAITING — today hasn't ended, correctly not forced. Trailing dispersion of filed p
+on the standing question: n=2, sd=0.0 (both at the same unmoved base rate — disclosed per
+Brain S14, not yet a measurement at this n).
+
+**score_forecasts.py:** n=40 resolved (pool includes retired minute-forecaster history),
+Brier skill -0.0519, no skill. DROUGHT TEST flagged NO GROWTH — expected, not a defect:
+the only due standing-question row (10-06 target) is still WAITING on its own day ending,
+and the pooled n only grows when a day resolves.
+
+**Firm Brain check (S31, live-quote-gated screen called twice):** this run read the
+session CSV once and the Coinbase candles endpoint zero times (no pending ledger score
+needed). No re-pricing exposure this run.
