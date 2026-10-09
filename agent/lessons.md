@@ -1652,3 +1652,8 @@ and the pooled n only grows when a day resolves.
 **Firm Brain check (S31, live-quote-gated screen called twice):** this run read the
 session CSV once and the Coinbase candles endpoint zero times (no pending ledger score
 needed). No re-pricing exposure this run.
+
+## 2026-10-08 [flow] — GARUDA late catch-up (retry 20:16 PT)
+Scored 4: standing question 10-06 NO (1.88%), 10-07 YES (3.49%); legacy minute-forecaster rows 10-01 NO (50.11%) and 10-02 NO (49.34%). The retired question's last two days both sat under 51%, consistent with CRYPTO-006's no-skill verdict.
+A late run loses a day of the standing question: at 03:40 UTC the 10-09 day has begun, so the target became 10-10 and 10-09 is never asked. Missed sweeps leave gaps in the asked days; they are not back-filled.
+10-08 OFI -0.111 crossed the retired 0.10 trigger. No call: retired unit. Logged here so nobody mistakes the abstention for a balanced tape.
