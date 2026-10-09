@@ -13,3 +13,9 @@ research/sample_*.csv
 .claude/
 .DS_Store
 __pycache__/
+
+# AUDIT-013 (7), 2026-10-09: BOOK-001 operational state, never data. The flock file beside a shared book (atomicio.hold_book) and the write-beside file a crash
+# between write and os.replace can leave (<book>.tmp.<pid>) must not be swept into a commit by a `git add -A` session-end sweep. Same two patterns as stock-radar,
+# zero-dte-lab, insider-radar, command-center and asia-radar. (Lock files already tracked stay tracked: ignoring never untracks.)
+*.lock
+*.tmp.*
