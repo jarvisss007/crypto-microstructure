@@ -13,7 +13,10 @@ else counts, and a row is never edited after it is written.
 
 Reads only. Says n out loud. NOT a strategy.
 """
-import csv, json, os, datetime as dt
+import csv, json, os, sys, datetime as dt
+
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))   # BOOK-001: atomicio sits beside this file (appended: never shadows)
+from atomicio import atomic_json, atomic_write_text   # BOOK-001: never truncate a book in place
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -209,8 +212,8 @@ def main():
                                 "brier_skill quoted from this file MUST be quoted with its `days` count beside it "
                                 "(council directive, crypto-microstructure, 2026-08-21)."),
          "horizons": {str(h): stats(p, built) for h, p in BOOKS.items()}}
-    json.dump(d, open(os.path.join(HERE, "scoreboard.json"), "w"), indent=1)
-    open(os.path.join(ROOT, "scoreboard.html"), "w").write(render(d))
+    atomic_json(os.path.join(HERE, "scoreboard.json"), d, indent=1)          # BOOK-001: the resolver and the dashboards read these; write beside and replace
+    atomic_write_text(os.path.join(ROOT, "scoreboard.html"), render(d))
     for h in (1, 5, 15):
         s = d["horizons"][str(h)]
         if s.get("resolved"):
