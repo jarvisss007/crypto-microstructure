@@ -1657,3 +1657,6 @@ needed). No re-pricing exposure this run.
 Scored 4: standing question 10-06 NO (1.88%), 10-07 YES (3.49%); legacy minute-forecaster rows 10-01 NO (50.11%) and 10-02 NO (49.34%). The retired question's last two days both sat under 51%, consistent with CRYPTO-006's no-skill verdict.
 A late run loses a day of the standing question: at 03:40 UTC the 10-09 day has begun, so the target became 10-10 and 10-09 is never asked. Missed sweeps leave gaps in the asked days; they are not back-filled.
 10-08 OFI -0.111 crossed the retired 0.10 trigger. No call: retired unit. Logged here so nobody mistakes the abstention for a balanced tape.
+
+## 2026-10-14 [flow] — GARUDA
+- Standing question: 10-13 resolved YES (3.88% vs 3.0%, p 0.43). Base moved 13/29 -> 14/30 (0.47). Two YES days in a row; that is a conditional the tool does not let p follow, correctly.
