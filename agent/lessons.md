@@ -1660,3 +1660,7 @@ A late run loses a day of the standing question: at 03:40 UTC the 10-09 day has 
 
 ## 2026-10-14 [flow] — GARUDA
 - Standing question: 10-13 resolved YES (3.88% vs 3.0%, p 0.43). Base moved 13/29 -> 14/30 (0.47). Two YES days in a row; that is a conditional the tool does not let p follow, correctly.
+
+## 2026-10-15 [flow] — GARUDA
+- Standing question: 10-14 resolved YES (3.357% vs 3.0%, p 0.45). Base 14/30 -> 15/31 (0.48). Three YES days in a row (3.22/3.88/3.36); still a conditional, not a registered variant, so p stays at base.
+- 10-14 session OFI −0.209 crossed the retired 0.10 trigger; no call (retired unit). Logged so the abstention is not mistaken for a balanced tape.
