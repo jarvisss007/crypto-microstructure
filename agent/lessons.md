@@ -1672,3 +1672,8 @@ A late run loses a day of the standing question: at 03:40 UTC the 10-09 day has 
 ## 2026-10-19 [flow] — GARUDA
 - Standing question: 10-16 resolved NO (2.649%, p 0.48) and 10-17 resolved NO (1.184%, p 0.50), both by prep. Base 16/32 -> 16/35 (0.457 -> filed 0.46 for 10-20). The four-YES streak ended with three sub-3% days (10-16/17/18); at 8 scored days the book is 4/4 and says nothing yet.
 - 10-18 session OFI +0.025, under the retired 0.10 trigger; no call (retired unit anyway).
+
+## 2026-10-23 [flow] — GARUDA (late: no sweep fired 10-20/21/22)
+- Standing question: 10-20 resolved NO (2.79%, p 0.46) by prep on an earlier day; nothing due today. Base 16/35 -> 17/39 (0.436, filed 0.44 for 10-24). The three unasked days (10-21 2.81%, 10-22 4.35%, 10-23 in progress) count in the reference class but not in the book — a drought in the sweep, not in the tape.
+- 10-22 session OFI −0.189, the most one-sided session since the −0.209 10-14 tape, on a −1.2% SPY day; under the retired unit it is a record, not a call.
+- Sabha §4: the standing question's n is 9 scored DAYS = 9 observations; the 1-day OFI series is one number per day as well. No row here is more than one day.
