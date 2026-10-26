@@ -1677,3 +1677,8 @@ A late run loses a day of the standing question: at 03:40 UTC the 10-09 day has 
 - Standing question: 10-20 resolved NO (2.79%, p 0.46) by prep on an earlier day; nothing due today. Base 16/35 -> 17/39 (0.436, filed 0.44 for 10-24). The three unasked days (10-21 2.81%, 10-22 4.35%, 10-23 in progress) count in the reference class but not in the book — a drought in the sweep, not in the tape.
 - 10-22 session OFI −0.189, the most one-sided session since the −0.209 10-14 tape, on a −1.2% SPY day; under the retired unit it is a record, not a call.
 - Sabha §4: the standing question's n is 9 scored DAYS = 9 observations; the 1-day OFI series is one number per day as well. No row here is more than one day.
+
+## 2026-10-26 [flow] — GARUDA
+- Standing question: 10-24 resolved NO (2.527%, p 0.44) by prep this morning. Days scored 10, YES 4; base 17/39 -> 17/42 (0.405, filed 0.40 for 10-27). Three quiet eligible days in a row (10-23 1.94%, 10-24 2.53%, 10-25 1.50%) after 10-22's 4.35%: the base drifted down 3 points; still filed at base.
+- 10-25 session OFI −0.126 (sellers) on a weekend tape; under the retired unit it is a record, not a call.
+- Sabha §15 (per-run books): forecasts.csv is appended by range_question.py, which keys the row to the first UTC day no row already targets and prints NOOP on a second file the same date — it tests the EVENT (an untargeted day), not "today is new"; rows since Friday's close before today: 0. Nothing double-counts.
