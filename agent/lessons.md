@@ -1682,3 +1682,6 @@ A late run loses a day of the standing question: at 03:40 UTC the 10-09 day has 
 - Standing question: 10-24 resolved NO (2.527%, p 0.44) by prep this morning. Days scored 10, YES 4; base 17/39 -> 17/42 (0.405, filed 0.40 for 10-27). Three quiet eligible days in a row (10-23 1.94%, 10-24 2.53%, 10-25 1.50%) after 10-22's 4.35%: the base drifted down 3 points; still filed at base.
 - 10-25 session OFI −0.126 (sellers) on a weekend tape; under the retired unit it is a record, not a call.
 - Sabha §15 (per-run books): forecasts.csv is appended by range_question.py, which keys the row to the first UTC day no row already targets and prints NOOP on a second file the same date — it tests the EVENT (an untargeted day), not "today is new"; rows since Friday's close before today: 0. Nothing double-counts.
+
+## 2026-10-28 [flow] — GARUDA
+- 10-27 standing question scored NO (range 2.29%, n=1,436 minutes; filed p 0.40). Four quiet days in a row under the bar (2.53/1.50/1.84/2.29 since 10-24); the base drifted 0.40 -> 0.39. A quiet-streak conditional is a NEW registered variant, never a shading of p. Days: YES 4 / NO 7 / void 1.
