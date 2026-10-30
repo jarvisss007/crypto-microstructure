@@ -1685,3 +1685,6 @@ A late run loses a day of the standing question: at 03:40 UTC the 10-09 day has 
 
 ## 2026-10-28 [flow] — GARUDA
 - 10-27 standing question scored NO (range 2.29%, n=1,436 minutes; filed p 0.40). Four quiet days in a row under the bar (2.53/1.50/1.84/2.29 since 10-24); the base drifted 0.40 -> 0.39. A quiet-streak conditional is a NEW registered variant, never a shading of p. Days: YES 4 / NO 7 / void 1.
+
+## 2026-10-30 [flow]
+- 10-29 range 5.39% scored YES at p 0.39 after two NO days (2.29%, 1.80%); base now 18/46 = 0.391. One clustered big day is not a regime — p stays at the base. A missed sweep (10-29) leaves its target day (10-30) unasked forever. [flow]
