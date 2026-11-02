@@ -1688,3 +1688,6 @@ A late run loses a day of the standing question: at 03:40 UTC the 10-09 day has 
 
 ## 2026-10-30 [flow]
 - 10-29 range 5.39% scored YES at p 0.39 after two NO days (2.29%, 1.80%); base now 18/46 = 0.391. One clustered big day is not a regime — p stays at the base. A missed sweep (10-29) leaves its target day (10-30) unasked forever. [flow]
+
+## 2026-11-02 [flow] — GARUDA
+- 10-31 standing question scored NO by prep (0.897%, p 0.39); 11-01 read 1.20%. Two quiet days after 10-30's 3.28%; base 19/49 = 0.388, filed 0.39 for 11-03. The weekday pattern (Tue–Sat asked) means 11-01/11-02 are never asked — by design, not a gap. [flow]
