@@ -1691,3 +1691,7 @@ A late run loses a day of the standing question: at 03:40 UTC the 10-09 day has 
 
 ## 2026-11-02 [flow] — GARUDA
 - 10-31 standing question scored NO by prep (0.897%, p 0.39); 11-01 read 1.20%. Two quiet days after 10-30's 3.28%; base 19/49 = 0.388, filed 0.39 for 11-03. The weekday pattern (Tue–Sat asked) means 11-01/11-02 are never asked — by design, not a gap. [flow]
+
+## 2026-11-06 [flow] — GARUDA (labs-morning-sweep)
+- Prep's resolver scored 11-05 YES (range 7.741%, n=1440, at p 0.37). Standing question: 17 scored days, 7 YES / 10 NO (41%) vs the filed ~0.38-0.40 — in line, n small. Two 7%+ range days back to back (11-04, 11-05) during the US equity selloff.
+- Session OFI read -0.10001 on today's partial tape — one hair past the old 0.10 bar. The 1-day ledger procedure is RETIRED (CRYP-002), so no call; noted only so a later reader does not mistake the absence for a balanced tape.
