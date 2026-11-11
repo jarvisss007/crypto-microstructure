@@ -1695,3 +1695,8 @@ A late run loses a day of the standing question: at 03:40 UTC the 10-09 day has 
 ## 2026-11-06 [flow] — GARUDA (labs-morning-sweep)
 - Prep's resolver scored 11-05 YES (range 7.741%, n=1440, at p 0.37). Standing question: 17 scored days, 7 YES / 10 NO (41%) vs the filed ~0.38-0.40 — in line, n small. Two 7%+ range days back to back (11-04, 11-05) during the US equity selloff.
 - Session OFI read -0.10001 on today's partial tape — one hair past the old 0.10 bar. The 1-day ledger procedure is RETIRED (CRYP-002), so no call; noted only so a later reader does not mistake the absence for a balanced tape.
+
+## 2026-11-11 [flow] — GARUDA (labs-morning-sweep)
+- 11-10 was unfiled (sweep died on the 5-hour usage limit, SCHED-033): there is no standing-question row targeting 2026-11-11 and none is back-filed. One missing target day on the book.
+- Resolver (prep): target 11-10 range 3.71% > 3.0% -> YES at p 0.39. Standing question now 20 scored days: 8 YES / 12 NO (40%), base 23/57 = 0.404 — the book is sitting on its base, as a base-rate filing must. No skill is claimed or possible until a registered variant exists.
+- Session-so-far OFI -0.163 on 11-11; the 1-day OFI unit is retired (CRYP-002), so it is noted, not called.
