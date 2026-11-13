@@ -1700,3 +1700,8 @@ A late run loses a day of the standing question: at 03:40 UTC the 10-09 day has 
 - 11-10 was unfiled (sweep died on the 5-hour usage limit, SCHED-033): there is no standing-question row targeting 2026-11-11 and none is back-filed. One missing target day on the book.
 - Resolver (prep): target 11-10 range 3.71% > 3.0% -> YES at p 0.39. Standing question now 20 scored days: 8 YES / 12 NO (40%), base 23/57 = 0.404 — the book is sitting on its base, as a base-rate filing must. No skill is claimed or possible until a registered variant exists.
 - Session-so-far OFI -0.163 on 11-11; the 1-day OFI unit is retired (CRYP-002), so it is noted, not called.
+
+## 2026-11-13 [flow] — GARUDA (labs-morning-sweep)
+- Standing question: 11-12 scored YES (4.388%, full 1,440-minute tape) at p 0.40. 21 scored days: 9 YES / 12 NO (0.43) against a filed ~0.40 — in line, and filing at base cannot show skill either way.
+- Two of the last three eligible days exceeded 3.0% (3.71, 2.23, 4.39). A volatility-clustering conditional would be a NEW registered variant; p stayed at base 0.41 (24/59).
+- Session OFI -0.127, third sell-heavy day. Not read as a call; the unit is retired.
