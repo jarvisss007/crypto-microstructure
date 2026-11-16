@@ -1705,3 +1705,9 @@ A late run loses a day of the standing question: at 03:40 UTC the 10-09 day has 
 - Standing question: 11-12 scored YES (4.388%, full 1,440-minute tape) at p 0.40. 21 scored days: 9 YES / 12 NO (0.43) against a filed ~0.40 — in line, and filing at base cannot show skill either way.
 - Two of the last three eligible days exceeded 3.0% (3.71, 2.23, 4.39). A volatility-clustering conditional would be a NEW registered variant; p stayed at base 0.41 (24/59).
 - Session OFI -0.127, third sell-heavy day. Not read as a call; the unit is retired.
+
+## 2026-11-16 [flow] — GARUDA (labs-morning-sweep)
+- Resolver (prep): 11-13 scored YES (5.735%, n=1440, at p 0.40) and 11-14 scored YES (8.076%, n=1434, at p 0.41). Standing question now 23 scored days: 11 YES / 12 NO (0.48) against a filed ~0.40 — four YES in a row; the base (27/62 = 0.435) is catching up, which is all a base-rate filing can do.
+- No sweep ran on the weekend, so no row targets 11-15 (6.71%) or 11-16. Not back-filed. The book has rows only for days after a session sweep; that is its cadence, not a drought.
+- Three eligible days in a row above 5.7%. A volatility-clustering conditional is still a NEW registered variant; p filed at base 0.44.
+- Session-so-far OFI -0.026 (balanced) through 16:34 UTC. Not read as a call; the unit is retired.
