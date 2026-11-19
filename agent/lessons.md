@@ -1711,3 +1711,6 @@ A late run loses a day of the standing question: at 03:40 UTC the 10-09 day has 
 - No sweep ran on the weekend, so no row targets 11-15 (6.71%) or 11-16. Not back-filed. The book has rows only for days after a session sweep; that is its cadence, not a drought.
 - Three eligible days in a row above 5.7%. A volatility-clustering conditional is still a NEW registered variant; p filed at base 0.44.
 - Session-so-far OFI -0.026 (balanced) through 16:34 UTC. Not read as a call; the unit is retired.
+
+## 2026-11-19 [flow] — GARUDA sweep
+- Standing question: 11-18 resolved YES at 4.731% (p 0.43). Days now 13 YES / 12 NO / 1 void over 25 scored days: 52% YES against a filed base drifting 0.43 -> 0.45. Two straight range days (3.36%, 4.73%); a persistence variant is a new registration, not a shading of p.
