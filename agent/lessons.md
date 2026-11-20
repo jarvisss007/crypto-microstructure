@@ -1714,3 +1714,7 @@ A late run loses a day of the standing question: at 03:40 UTC the 10-09 day has 
 
 ## 2026-11-19 [flow] — GARUDA sweep
 - Standing question: 11-18 resolved YES at 4.731% (p 0.43). Days now 13 YES / 12 NO / 1 void over 25 scored days: 52% YES against a filed base drifting 0.43 -> 0.45. Two straight range days (3.36%, 4.73%); a persistence variant is a new registration, not a shading of p.
+
+## 2026-11-20 [flow] — GARUDA sweep
+- Standing question: 11-19 resolved YES at 4.358% (p 0.44). Days now 14 YES / 12 NO / 1 void over 26 scored days. Three straight range days; base drifts to 30/66 = 0.45. Persistence stays an unregistered variant.
+- Session-so-far OFI -0.115 through ~16:55 UTC — past the old 0.10 trigger on the sell side. Recorded, not called: the 1-day unit is retired (CRYP-002) and a partial session is not a session.
