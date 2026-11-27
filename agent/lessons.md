@@ -1718,3 +1718,7 @@ A late run loses a day of the standing question: at 03:40 UTC the 10-09 day has 
 ## 2026-11-20 [flow] — GARUDA sweep
 - Standing question: 11-19 resolved YES at 4.358% (p 0.44). Days now 14 YES / 12 NO / 1 void over 26 scored days. Three straight range days; base drifts to 30/66 = 0.45. Persistence stays an unregistered variant.
 - Session-so-far OFI -0.115 through ~16:55 UTC — past the old 0.10 trigger on the sell side. Recorded, not called: the 1-day unit is retired (CRYP-002) and a partial session is not a session.
+
+## 2026-11-27 [flow] — GARUDA sweep
+- Standing question: resolver (prep) scored 11-25 YES at 5.731% (p 0.49) and 11-26 NO at 2.815% (p 0.49, n=1439) — the four-day run of range days ended on Thanksgiving. Base now 36/73 = 0.493; filed 11-28 at 0.49.
+- Full 11-26 session OFI -0.154 (852,981 trades), past the old 0.10 sell-side trigger. Recorded, not called: the 1-day ledger unit is retired (CRYP-002). Senior gate: "no signal is net-positive after costs".
